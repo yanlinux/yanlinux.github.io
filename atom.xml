@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>焱黎的博客</title>
+  
+  <subtitle>焱黎的博客</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://www.yanlinux.cn/"/>
+  <updated>2022-08-26T02:07:25.000Z</updated>
+  <id>http://www.yanlinux.cn/</id>
+  
+  <author>
+    <name>焱黎</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>今日小技巧</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6cr0002s8akt9db4olb/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6cr0002s8akt9db4olb/</id>
+    <published>2022-08-26T02:07:25.000Z</published>
+    <updated>2022-08-26T02:07:25.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;code&gt;zabbix&lt;/code&gt;常用的监控架构平台:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;1、&lt;code&gt;server-agentd&lt;/code&gt;模式：&lt;/p&gt;
+&lt;p&gt;这个是最简单的架构了，常用于&lt;strong&gt;监控主机比较少&lt;/strong&gt;的情况下。&lt;/p&gt;
+&lt;/li
+        
+      
+    
+    </summary>
+    
+      <category term="知识点" scheme="http://www.yanlinux.cn/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="zabbix" scheme="http://www.yanlinux.cn/tags/zabbix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第四周作业</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6fr001ns8akbxttp3zj/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6fr001ns8akbxttp3zj/</id>
+    <published>2022-08-25T11:36:04.000Z</published>
+    <updated>2022-08-27T10:36:04.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1、自定义写出10个定时任务的示例：&quot;&gt;&lt;a href=&quot;#1、自定义写出10个定时任务的示例：&quot; class=&quot;headerlink&quot; title=&quot;1、自定义写出10个定时任务的示例：&quot;&gt;&lt;/a&gt;1、自定义写出10个定时任务的示例：&lt;/h1&gt;&lt;h2
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="crontab" scheme="http://www.yanlinux.cn/tags/crontab/"/>
+    
+      <category term="进程" scheme="http://www.yanlinux.cn/tags/%E8%BF%9B%E7%A8%8B/"/>
+    
+      <category term="启动流程" scheme="http://www.yanlinux.cn/tags/%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"/>
+    
+      <category term="systemd" scheme="http://www.yanlinux.cn/tags/systemd/"/>
+    
+      <category term="Linux内核编译安装" scheme="http://www.yanlinux.cn/tags/Linux%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/"/>
+    
+      <category term="awk" scheme="http://www.yanlinux.cn/tags/awk/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>每日小技巧1</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6cu0004s8akro5vs5lj/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6cu0004s8akro5vs5lj/</id>
+    <published>2022-08-19T05:21:49.000Z</published>
+    <updated>2022-08-19T05:21:49.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1、redis配置文件详解&quot;&gt;&lt;a href=&quot;#1、redis配置文件详解&quot; class=&quot;headerlink&quot; title=&quot;1、redis配置文件详解&quot;&gt;&lt;/a&gt;1、redis配置文件详解&lt;/h1&gt;&lt;pre class=&quot;line-numbers
+        
+      
+    
+    </summary>
+    
+      <category term="知识点" scheme="http://www.yanlinux.cn/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="redis" scheme="http://www.yanlinux.cn/tags/redis/"/>
+    
+      <category term="mysql" scheme="http://www.yanlinux.cn/tags/mysql/"/>
+    
+      <category term="内存利用" scheme="http://www.yanlinux.cn/tags/%E5%86%85%E5%AD%98%E5%88%A9%E7%94%A8/"/>
+    
+      <category term="日志" scheme="http://www.yanlinux.cn/tags/%E6%97%A5%E5%BF%97/"/>
+    
+      <category term="文件IO分配" scheme="http://www.yanlinux.cn/tags/%E6%96%87%E4%BB%B6IO%E5%88%86%E9%85%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第三周作业</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6cz000as8aklhdlhzo7/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6cz000as8aklhdlhzo7/</id>
+    <published>2022-08-14T07:19:59.000Z</published>
+    <updated>2022-08-15T04:19:00.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-yum私有仓库的实现及博客输出&quot;&gt;&lt;a href=&quot;#1-yum私有仓库的实现及博客输出&quot; class=&quot;headerlink&quot; title=&quot;1 yum私有仓库的实现及博客输出&quot;&gt;&lt;/a&gt;1
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
+    
+      <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
+    
+      <category term="expect" scheme="http://www.yanlinux.cn/tags/expect/"/>
+    
+      <category term="TCP/IP协议" scheme="http://www.yanlinux.cn/tags/TCP-IP%E5%8D%8F%E8%AE%AE/"/>
+    
+      <category term="网卡IP" scheme="http://www.yanlinux.cn/tags/%E7%BD%91%E5%8D%A1IP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第二周作业</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6d1000cs8akz5783c0s/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6d1000cs8akz5783c0s/</id>
+    <published>2022-08-06T05:50:35.000Z</published>
+    <updated>2022-08-06T05:50:35.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/week2works.sh&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;脚本&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
+    
+      <category term="Linux基本操作" scheme="http://www.yanlinux.cn/tags/Linux%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第一周作业总结</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6d3000hs8ako8mvb6ac/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6d3000hs8ako8mvb6ac/</id>
+    <published>2022-07-31T05:08:48.000Z</published>
+    <updated>2022-07-31T15:12:58.731Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、开源许可证-GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？&quot;&gt;&lt;a href=&quot;#一、开源许可证-GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="Linux基本操作" scheme="http://www.yanlinux.cn/tags/Linux%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    
+      <category term="系统安装" scheme="http://www.yanlinux.cn/tags/%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/"/>
+    
+      <category term="开源许可证" scheme="http://www.yanlinux.cn/tags/%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E8%AF%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>测试篇</title>
+    <link href="http://www.yanlinux.cn/cl7c0s6cx0008s8aktl0qzenv/"/>
+    <id>http://www.yanlinux.cn/cl7c0s6cx0008s8aktl0qzenv/</id>
+    <published>2022-07-29T10:52:16.000Z</published>
+    <updated>2022-07-29T10:56:57.854Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;测试&lt;/p&gt;
+&lt;script&gt;
+        document.querySelectorAll(&#39;.github-emoji&#39;)
+          .forEach(el =&gt; {
+            if (!el.dataset.src) { return;
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
