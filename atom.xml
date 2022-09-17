@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.yanlinux.cn/"/>
-  <updated>2022-08-26T02:07:25.000Z</updated>
+  <updated>2022-09-17T01:42:44.000Z</updated>
   <id>http://www.yanlinux.cn/</id>
   
   <author>
@@ -17,9 +17,49 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>第五周作业</title>
+    <link href="http://www.yanlinux.cn/cl859ew0q000e7cakf1gj6oz4/"/>
+    <id>http://www.yanlinux.cn/cl859ew0q000e7cakf1gj6oz4/</id>
+    <published>2022-09-17T01:42:44.000Z</published>
+    <updated>2022-09-17T01:42:44.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识&quot;&gt;&lt;a href=&quot;#sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="mysql" scheme="http://www.yanlinux.cn/tags/mysql/"/>
+    
+      <category term="sudo" scheme="http://www.yanlinux.cn/tags/sudo/"/>
+    
+      <category term="pam" scheme="http://www.yanlinux.cn/tags/pam/"/>
+    
+      <category term="DNS解析" scheme="http://www.yanlinux.cn/tags/DNS%E8%A7%A3%E6%9E%90/"/>
+    
+      <category term="ntp" scheme="http://www.yanlinux.cn/tags/ntp/"/>
+    
+      <category term="iptables" scheme="http://www.yanlinux.cn/tags/iptables/"/>
+    
+      <category term="firewall" scheme="http://www.yanlinux.cn/tags/firewall/"/>
+    
+      <category term="nft" scheme="http://www.yanlinux.cn/tags/nft/"/>
+    
+  </entry>
+  
+  <entry>
     <title>今日小技巧</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvz30004a0akbuiod30g/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvz30004a0akbuiod30g/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0f00027cak2ie9d8yt/"/>
+    <id>http://www.yanlinux.cn/cl859ew0f00027cak2ie9d8yt/</id>
     <published>2022-08-26T02:07:25.000Z</published>
     <updated>2022-08-26T02:07:25.000Z</updated>
     
@@ -48,8 +88,8 @@
   
   <entry>
     <title>第四周作业</title>
-    <link href="http://www.yanlinux.cn/cl7c0ww1y001na0akm2bjv1i2/"/>
-    <id>http://www.yanlinux.cn/cl7c0ww1y001na0akm2bjv1i2/</id>
+    <link href="http://www.yanlinux.cn/cl859ew3c00237cakun9sz5ek/"/>
+    <id>http://www.yanlinux.cn/cl859ew3c00237cakun9sz5ek/</id>
     <published>2022-08-25T11:36:04.000Z</published>
     <updated>2022-08-27T10:36:04.000Z</updated>
     
@@ -84,8 +124,8 @@
   
   <entry>
     <title>每日小技巧1</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvz00002a0akz00xiw0t/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvz00002a0akz00xiw0t/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0m00087cak2occzyzx/"/>
+    <id>http://www.yanlinux.cn/cl859ew0m00087cak2occzyzx/</id>
     <published>2022-08-19T05:21:49.000Z</published>
     <updated>2022-08-19T05:21:49.000Z</updated>
     
@@ -118,8 +158,8 @@
   
   <entry>
     <title>第三周作业</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvza000ca0akql6f503s/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvza000ca0akql6f503s/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0p000d7caktadsn634/"/>
+    <id>http://www.yanlinux.cn/cl859ew0p000d7caktadsn634/</id>
     <published>2022-08-14T07:19:59.000Z</published>
     <updated>2022-08-15T04:19:00.000Z</updated>
     
@@ -138,9 +178,9 @@
       <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
     
     
-      <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
-    
       <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
+    
+      <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
     
       <category term="expect" scheme="http://www.yanlinux.cn/tags/expect/"/>
     
@@ -152,8 +192,8 @@
   
   <entry>
     <title>第二周作业</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvzd000ga0akvfwaaqs8/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvzd000ga0akvfwaaqs8/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0n00097cakifqw49n0/"/>
+    <id>http://www.yanlinux.cn/cl859ew0n00097cakifqw49n0/</id>
     <published>2022-08-06T05:50:35.000Z</published>
     <updated>2022-08-06T05:50:35.000Z</updated>
     
@@ -183,8 +223,8 @@
   
   <entry>
     <title>第一周作业总结</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvz60008a0akr7h63tdv/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvz60008a0akr7h63tdv/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0l00077cak1drnuogq/"/>
+    <id>http://www.yanlinux.cn/cl859ew0l00077cak1drnuogq/</id>
     <published>2022-07-31T05:08:48.000Z</published>
     <updated>2022-07-31T15:12:58.731Z</updated>
     
@@ -213,8 +253,8 @@
   
   <entry>
     <title>测试篇</title>
-    <link href="http://www.yanlinux.cn/cl7c0wvz7000aa0akmdjs0ubz/"/>
-    <id>http://www.yanlinux.cn/cl7c0wvz7000aa0akmdjs0ubz/</id>
+    <link href="http://www.yanlinux.cn/cl859ew0j00047caksqln1aj3/"/>
+    <id>http://www.yanlinux.cn/cl859ew0j00047caksqln1aj3/</id>
     <published>2022-07-29T10:52:16.000Z</published>
     <updated>2022-07-29T10:56:57.854Z</updated>
     
