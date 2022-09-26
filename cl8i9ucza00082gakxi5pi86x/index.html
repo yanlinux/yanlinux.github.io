@@ -1,0 +1,2252 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <!-- shw2018 洪卫  modify 2019.08.15-->
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="keywords" content="第一周作业总结, Linux SRE Python R">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="KeoTn_OFy4ndJwXNmm2gMeQfPhd7alqE9vQDwI32KCY">
+    <meta name="description" content="一、开源许可证 GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？
+讲到开源许可证（Open Source License），首先需要了解什么是开源许可(⊙⊙?)。它其实就是一种法律许可，这样你就可以开源自己的代码，其他">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>第一周作业总结 | 焱黎的博客</title>
+    <link rel="icon" type="image/jpeg" href="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image_20220801100631.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/lightgallery/1.6.12/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <style type="text/css">
+        
+            
+            code[class*="language-"],
+            pre[class*="language-"] {
+                white-space: pre !important;
+            }
+
+        
+    </style>
+
+    <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    <body>
+
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">焱黎的博客</span>
+                </a>
+            </div>
+            
+
+
+<!-- <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/AV" class="waves-effect waves-light">
+            
+            <i class="fa fa-music"></i>
+            
+            <span>视听</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/galleries" class="waves-effect waves-light">
+            
+            <i class="fa fa-photo"></i>
+            
+            <span>相册</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-envelope"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul> -->
+
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right nav-menu">
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/" class="waves-effect waves-light">
+              
+                <i class="fa fa-home"></i>
+              
+              <span>首页</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/tags" class="waves-effect waves-light">
+              
+                <i class="fa fa-tags"></i>
+              
+              <span>标签</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/categories" class="waves-effect waves-light">
+              
+                <i class="fa fa-bookmark"></i>
+              
+              <span>分类</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/archives" class="waves-effect waves-light">
+              
+                <i class="fa fa-archive"></i>
+              
+              <span>归档</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/AV" class="waves-effect waves-light">
+              
+                <i class="fa fa-music"></i>
+              
+              <span>视听</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/galleries" class="waves-effect waves-light">
+              
+                <i class="fa fa-photo"></i>
+              
+              <span>相册</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/about" class="waves-effect waves-light">
+              
+                <i class="fa fa-user-circle-o"></i>
+              
+              <span>关于我</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/contact" class="waves-effect waves-light">
+              
+                <i class="fa fa-envelope"></i>
+              
+              <span>留言板</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/friends" class="waves-effect waves-light">
+              
+                <i class="fa fa-address-book"></i>
+              
+              <span>友情链接</span>
+            </a>
+
+            
+      </li>
+    
+
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">焱黎的博客</div>
+        <div class="logo-desc">
+            
+            Linux | SRE | Python
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/AV" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-music"></i>
+                
+                视听
+            </a>
+        </li>
+        
+        <li>
+            <a href="/galleries" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-photo"></i>
+                
+                相册
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envelope"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+   
+   
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<!-- <ul class="menu-list mobile-menu-list">
+    
+        <li class="m-nav-item">
+                
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-home"></i>
+                        
+                        首页
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/tags" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-tags"></i>
+                        
+                        标签
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/categories" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-bookmark"></i>
+                        
+                        分类
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/archives" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-archive"></i>
+                        
+                        归档
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/AV" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-music"></i>
+                        
+                        视听
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/galleries" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-photo"></i>
+                        
+                        相册
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/about" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-user-circle-o"></i>
+                        
+                        关于我
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/contact" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-envelope"></i>
+                        
+                        留言板
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/friends" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-address-book"></i>
+                        
+                        友情链接
+                    </a>
+              
+            </li>
+        
+
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul> -->
+
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/yanlinux/yanlinux.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+        
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301319595.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        第一周作业总结
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- shw2018 洪卫  modify 2019.08.15-->
+<!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Linux基本操作/" target="_blank">
+                                <span class="chip bg-color">Linux基本操作</span>
+                            </a>
+                        
+                            <a href="/tags/系统安装/" target="_blank">
+                                <span class="chip bg-color">系统安装</span>
+                            </a>
+                        
+                            <a href="/tags/开源许可证/" target="_blank">
+                                <span class="chip bg-color">开源许可证</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                作业
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-07-31
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                        焱黎
+                    
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        6.6k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        26 分
+                    </div>
+                    
+                
+                
+                
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv" ></span>
+    
+                
+
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="一、开源许可证-GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？"><a href="#一、开源许可证-GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？" class="headerlink" title="一、开源许可证 GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？"></a>一、开源许可证 GPL、BSD、MIT、Mozilla、Apache和LGPL的区别？</h1><blockquote>
+<p>讲到开源许可证（Open Source License），首先需要了解什么是开源许可(⊙⊙?)。它其实就是一种法律许可，这样你就可以开源自己的代码，其他人可以免费使用以及修改，不会带来侵权行为。</p>
+<p>国际上有上百种开源许可证，其中大致分为两类：宽松式许可证、Copyleft许可证。</p>
+<ul>
+<li>宽松式许可证主要包含：<a href="https://baike.baidu.com/item/BSD%E8%AE%B8%E5%8F%AF%E8%AF%81/10642412" target="_blank" rel="noopener">BSD</a>、<a href="https://baike.baidu.com/item/MIT%E8%AE%B8%E5%8F%AF%E8%AF%81" target="_blank" rel="noopener">MIT</a>、<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener">Apache</a></li>
+<li>copyleft许可证：AGPL、<a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank" rel="noopener">LGPL</a>、<a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener">GPL</a>、<a href="https://www.mozilla.org/en-US/MPL/" target="_blank" rel="noopener">Mozilla</a></li>
+</ul>
+</blockquote>
+<p>主流的开源许可证主要有：GPL、Mozilla(MPL)、LGPL、BSD、MIT、Apache。这六种主流开源许可协议的宽松程度，可参考下图：</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301508785.png" alt="许可协议图解"></p>
+<h2 id="1-GPL许可证"><a href="#1-GPL许可证" class="headerlink" title="1. GPL许可证"></a>1. GPL许可证</h2><ul>
+<li>GPL是<strong>GNU通用公共许可协议</strong>，由自由软件基金会公布的。最显著的特征就是<strong>强制继承性</strong>。也就是说只要在一个软件中使用了GPL，那么该软件必须采用GPL。所以商业软件以及对代码保密要求高的部门就不适合集成或采用作为类库以及二次开发的基础。</li>
+<li>GPL许可证允许源代码<strong>公开</strong>并被<strong>随意支配修改</strong>，从而<strong>衍生</strong>出自己的作品。但也就意味着自身的作品也必须开源随意任别人支配。</li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301511313.png" alt=""></p>
+<h2 id="2-MPL"><a href="#2-MPL" class="headerlink" title="2. MPL"></a>2. MPL</h2><ul>
+<li>MPL是Mozilla公共许可证，由Mozilla基金会发布。因为Netscape公司认为GPL许可证不能很好的平衡开发者对源代码的需求以及利用源代码获得利益。</li>
+<li>MPL一个特点就是不像GPL许可证那么强制性，它允许与<strong>其他许可证授权</strong>的文件混合。也就是说一个遵循MPL许可的软件可以对MPL源代码再度开发，但是引用MPL的部分以及修改的部分<strong>必须是MPL许可</strong>的；额外的部分可以不用受MPL许可证强制对外许可了。</li>
+<li>MPL既不像MIT和BSD那样允许派生作品完全转化为私有，也不像GPL那样要求所有的派生作品包括新的组件在内的作品全部必须保持GPL。</li>
+<li>MPL协议通过<strong>允许</strong>在派生项目中存在<strong>私有模块</strong>，同时保证<strong>核心文件的开源</strong>，同时激励了商业及开源社区来参与帮助开发核心软件。该协议融合BSD和GPL的特性，追求平衡专有软件和开源软件开发者之间的顾虑。</li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301538481.png" alt=""></p>
+<h2 id="3-LGPL"><a href="#3-LGPL" class="headerlink" title="3. LGPL"></a>3. LGPL</h2><ul>
+<li>是GNU宽通用公共许可证。</li>
+<li>专门用于类库使用的开源协议，他允许商业软件通过<strong>类库引用</strong>方式使用LGPL类库，但<strong>不用开源</strong>商业软件代码。这样就可以将采用LGPL的开源代码用于商业用途。</li>
+<li>LGPL协议适合于那些将LGPL协议的开源代码作为<strong>第三方类库</strong>来使用，不适合将开源代码修改和衍生的<strong>再度开发</strong>的软件使用，因为所有修改的代码、设计修改部分的额外代码和衍生的代码都必须采用LGPL协议。</li>
+</ul>
+<h2 id="4-BSD许可协议"><a href="#4-BSD许可协议" class="headerlink" title="4. BSD许可协议"></a>4. BSD许可协议</h2><ul>
+<li>由加州大学伯克利分校发布和维护，是自由软件中使用最广泛的许可协议之一。</li>
+<li>它赋予使用者很大的自由，可以<strong>自由</strong>使用、修改源代码，最主要的是修改后的代码可以开源也可<strong>专有发布</strong>。</li>
+<li>这么大权限的背后也是有限制的，若你发布使用BSD协议的代码或以BSD协议代码为基础再度开发的产品，须满足三点：<ul>
+<li>若再发布的产品包含<strong>源代码</strong>，则在源代码中必须带有代码中的BSD协议。</li>
+<li>若再发布的只是<strong>二进制类库或软件</strong>，则需要在类库或软件的<strong>文档和版权声明</strong>中包含原来代码的BSD协议。</li>
+<li><strong>不可</strong>以用开源代码的<strong>作者或机构</strong>名字和原来<strong>产品的名字</strong>做市场推广。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301607488.png" alt=""></p>
+<h2 id="5-MIT"><a href="#5-MIT" class="headerlink" title="5. MIT"></a>5. MIT</h2><ul>
+<li>来源于麻省理工学院，又称<strong>X许可证</strong>或<strong>X11许可证</strong>。是许多软件许可条款中广泛使用之一。MIT协议是比较宽松的软件许可协议，赋予软件被许可人<strong>更大的权利</strong>与<strong>更少的限制</strong>。</li>
+<li>被许可人有权使用、修改、合并、出版发行软件，授予<strong>供应人同等权利</strong>。但是在软件和软件的所有副本中都必须包含以上著作权声明和本许可声明。</li>
+<li>MIT的<strong>内容</strong>可依照软件代码著作权者的<strong>需求更改</strong>内容。</li>
+<li>也可与其他许可协议<strong>共存</strong></li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301619276.png" alt=""></p>
+<h2 id="6-Apache许可证协议"><a href="#6-Apache许可证协议" class="headerlink" title="6. Apache许可证协议"></a>6. Apache许可证协议</h2><ul>
+<li>由Apache软件基金会发布。与BSD类似，鼓励<strong>代码共享</strong>和尊重<strong>原作者著作权</strong>。</li>
+<li>对<strong>未修改的部分</strong>应用相同许可，并且在每个许可文件中，必须保留原代码中的任何<strong>原始著作权</strong>、<strong>专利</strong>、<strong>商标</strong>和<strong>归属通知</strong>。（若声明文件作为原始作品发布，衍生产品必须包含）</li>
+<li>更改的文件中，必须加一条<strong>说明</strong>，标明对该文件进行了修改。</li>
+<li><strong>不强制</strong>要求派生的产品使用<strong>相同的许可协议</strong>来发布。</li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301631761.png" alt=""></p>
+<h2 id="7-概括总结"><a href="#7-概括总结" class="headerlink" title="7. 概括总结"></a>7. 概括总结</h2><ul>
+<li>这几种开源许可证有宽松到严谨依次为MIT许可证、BSD许可证、Apache许可证、LGPL许可证、Mozilla许可证以及GPL许可证。</li>
+<li>MIT、BSD许可证源自大学，体现了简单开放和包容的特点。</li>
+<li>MIT、BSD、Apache都支持闭源的后续开发。</li>
+<li>LGPL、Mozilla、GPL转染性开源，编译的代码里采用这些许可的，都必须开源。</li>
+</ul>
+<blockquote>
+<p>对于开发人员在将自己软件代码开源时，一定要选择合适的许可证。</p>
+</blockquote>
+<p><strong>参考：</strong></p>
+<ul>
+<li><a href="https://developer.aliyun.com/article/304876" target="_blank" rel="noopener">一张图看懂开源许可</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/87855729" target="_blank" rel="noopener">开源协议</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/350966700" target="_blank" rel="noopener">开源协议专题</a></li>
+</ul>
+<h1 id="二、各发行版系统安装"><a href="#二、各发行版系统安装" class="headerlink" title="二、各发行版系统安装"></a>二、各发行版系统安装</h1><h2 id="（一）、centos7-9安装"><a href="#（一）、centos7-9安装" class="headerlink" title="（一）、centos7.9安装"></a>（一）、centos7.9安装</h2><blockquote>
+<p>下载地址：<a href="https://mirrors.tuna.tsinghua.edu.cn/centos/" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/centos/</a></p>
+</blockquote>
+<p>首先需要在自己的电脑上安装Vmware Worstation pro(windows)或者VMware Fusion（MAC）。</p>
+<h3 id="1-虚拟机配置部分"><a href="#1-虚拟机配置部分" class="headerlink" title="1.虚拟机配置部分"></a>1.虚拟机配置部分</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301711012.png" alt="1.打开VMware软件，按照图中标注点击创建新的虚拟机"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301706100.png" alt="2.选择典型，进行下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301713080.png" alt="3.选择稍后安装操作系统，下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301742529.png" alt="4.选择虚拟机操作系统"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301743622.png" alt="5.设置虚拟机名称以及存放位置"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301718652.png" alt="6.指定虚拟机的磁盘大小，这个大小是之后安装的Linux系统而磁盘大小，不是真正而占用自己电脑的大小，所以不用担心自己硬盘大小不够的情况"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301745237.png" alt="7.点击自定义硬件"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301721807.png" alt="8.首先选择内存，将内存分配2G，这个要根据自己电脑内存的大小来确定，不要设置的太大"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301722950.png" alt="9.选择处理器的数量"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301723946.png" alt="10.指定Linux系统镜像文件所在的位置。然后点击关闭"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301724856.png" alt="11.点击完成"></p>
+<p>到此就已经完成了虚拟机的配置工作，接下来就是启动虚拟机来安装Linux系统了。</p>
+<h3 id="2-系统安装"><a href="#2-系统安装" class="headerlink" title="2. 系统安装"></a>2. 系统安装</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301814145.png" alt="1.点击开启此虚拟机"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746072.png" alt="2.默认光标是在检测镜像文件及安装上，可以按键盘上键来选择直接安装，选择后按Enter键"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746073.png" alt="3.正在检查镜像文件，等待Checking达到100%"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746076.png" alt="4.选择系统的语言"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746077.png" alt="5.设置时区，进去后选择Shanghai"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746078.png" alt="6.安装系统类型"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746083.png" alt="7.选择命令行模式，最小安装，Sever with GUI是窗口界面模式，就像windows一样，但是该模式占用内存比较大"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746412.png" alt="8.安装磁盘"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746415.png" alt="9.选择磁盘"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301801911.png" alt="10.连接网络"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746416.png" alt="11.打开网络开关，可以修改下下方的Hostname以便后期方便辨别"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746420.png" alt="12.配置好上面步骤就可以开始安装了"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746767.png" alt="13.在安装界面有账户设置点进去，设置root账户的密码"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746768.png" alt="14.设置完root账户密码后,退到安装界面设置一个用户账户，输入用户名以及密码"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746771.png" alt="15.进度条显示安装完成，点击Finish configuration"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301746772.png" alt="16.重启"></p>
+<p>至此系统已经全部安装完成。下面就可以启动使用了(☆_☆)/~~</p>
+<h2 id="（二）Rocky8-Linux安装"><a href="#（二）Rocky8-Linux安装" class="headerlink" title="（二）Rocky8 Linux安装"></a>（二）Rocky8 Linux安装</h2><h3 id="1-虚拟机配置部分-1"><a href="#1-虚拟机配置部分-1" class="headerlink" title="1. 虚拟机配置部分"></a>1. 虚拟机配置部分</h3><p>此部分方法同centos7.9安装的虚拟机配置部分</p>
+<h3 id="2-系统安装-1"><a href="#2-系统安装-1" class="headerlink" title="2. 系统安装"></a>2. 系统安装</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301818843.png" alt="1.选择直接安装"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301819477.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301820988.png" alt="2.选择语言"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301821339.png" alt="3.选择安装的系统模式"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301822036.png" alt="选择安装命令行模式"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301823494.png" alt="4.选择磁盘"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301825809.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301825629.png" alt="5.开启网络配置"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301827037.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301827891.png" alt="6.设置root密码"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301829564.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301828520.png" alt="7.添加用户"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301831048.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301832251.png" alt="8.配置完成开始安装"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301832924.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301840366.png" alt="9.安装完成，重启"></p>
+<p>至此Rocky8安装完成，重启就可以使用啦O(∩_∩)O</p>
+<h2 id="（三）、Ubuntu20-04安装"><a href="#（三）、Ubuntu20-04安装" class="headerlink" title="（三）、Ubuntu20.04安装"></a>（三）、Ubuntu20.04安装</h2><h3 id="1-虚拟机配置部分-2"><a href="#1-虚拟机配置部分-2" class="headerlink" title="1. 虚拟机配置部分"></a>1. 虚拟机配置部分</h3><p>配置方法可按照centos7.9虚拟机配置部分来操作。</p>
+<h3 id="2-系统安装-2"><a href="#2-系统安装-2" class="headerlink" title="2. 系统安装"></a>2. 系统安装</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301845425.png" alt="1.开启虚拟机"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301845259.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301846177.png" alt="2.按空格键选定English语言"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301848033.png" alt="3.空格键选定继续不更新"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301849200.png" alt="4.默认就好，按空格键下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301850664.png" alt="5.分配ip地址，等到ip地址显示了，按空格键下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301852125.png" alt="6.默认，按空格键下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301854124.png" alt="7.按Tab键，将光标切换到Mirror address一栏，输入阿里云镜像源，然后按Tab键到Done,按空格键下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301858445.png" alt="8.默认，按Tab键跳到Done，按空格键下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301859498.png" alt="9.默认"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301900288.png" alt="选择Continue"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301924338.png" alt="10.设置用户名及密码"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301925397.png" alt="11.默认"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301926356.png" alt="12.按空格键选中标注位置，一定要选择，然后下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301928481.png" alt="13.默认，下一步"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301928083.png" alt="14.安装，等待完毕"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207301933891.png" alt=""></p>
+<p>至此Ubuntu安装完毕，重启。Ubuntu默认不开启root账号，所以需要用刚才安装时创建的用户账号登录，然后输入<code>sudo -i</code>，根据提示输入用户密码，就可以切换到 root用户了，然后<code>vim /etc/ssh/sshd_config</code>，在<code>/etc/ssh/sshd_config</code>文件中找到<code>#PermitRootlogin prohibit-passqword</code>，将其改成<code>PermitRootlogin yes</code>，然后保存退出。最后利用<code>systemctl restart sshd</code>，重启ssh服务就可以以root账户登录了。</p>
+<h1 id="三、man命令总结"><a href="#三、man命令总结" class="headerlink" title="三、man命令总结"></a>三、man命令总结</h1><h2 id="（一）、通过一个简短的关键字，来获取相关命令，例如awk"><a href="#（一）、通过一个简短的关键字，来获取相关命令，例如awk" class="headerlink" title="（一）、通过一个简短的关键字，来获取相关命令，例如awk"></a>（一）、通过一个简短的关键字，来获取相关命令，例如awk</h2><ul>
+<li>在<code>man</code>命令行中有两个参数可以从系统说明文件中，将包含查找关键字（例如<code>awk</code>）的全部列出来。</li>
+<li>第一个参数就是<code>-k</code>，用法<code>man -k 关键字</code>。该参数就是利用关键字在说明文件中<strong>模糊查找</strong>关键字。这个命令参数相当于<code>apropos</code>命令。</li>
+<li>第二个参数就是<code>-f</code>，用法<code>man -f 关键字</code>。该参数是在说明文件中查找以<strong>关键字开头</strong>的索引信息。相当于<code>whatis</code>命令。</li>
+<li><code>apropos</code>和<code>whatis</code>命令都依靠<code>whatis</code>数据库，没有建立的系统需要利用root用户身份执行<code>mandb</code>命令来创建这个数据库。</li>
+</ul>
+<h2 id="（二）、通过命令的描述，选择一个命令，获取命令的man文档"><a href="#（二）、通过命令的描述，选择一个命令，获取命令的man文档" class="headerlink" title="（二）、通过命令的描述，选择一个命令，获取命令的man文档"></a>（二）、通过命令的描述，选择一个命令，获取命令的man文档</h2><ul>
+<li>通过<code>man -k awk</code>后</li>
+</ul>
+<pre class="line-numbers language-bansh"><code class="language-bansh">[10:35:56 root@centos7 ~]$ man -k awk
+a2p (1)              - Awk to Perl translator
+awk (1)              - pattern scanning and processing language
+dgawk (1)            - pattern scanning and processing language
+English (3pm)        - use nice English (or awk) names for ugly punctuation variables
+gawk (1)             - pattern scanning and processing language
+igawk (1)            - gawk with include files
+pgawk (1)            - pattern scanning and processing language<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>-</code>后面就是对命令的描述信息，根据这些信息选择<code>awk（1）</code>，利用<code>man awk</code>就可以查看该命令的man文档。</li>
+</ul>
+<h2 id="（三）、解读man文档，man分几个部分？man每个部分的解释，特别是语法部分。"><a href="#（三）、解读man文档，man分几个部分？man每个部分的解释，特别是语法部分。" class="headerlink" title="（三）、解读man文档，man分几个部分？man每个部分的解释，特别是语法部分。"></a>（三）、解读man文档，man分几个部分？man每个部分的解释，特别是语法部分。</h2><pre class="line-numbers language-SHELL"><code class="language-SHELL">[11:02:18 root@centos7 ~]$ man mkdir
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220731111259829.png" alt="man文档内容"></p>
+<p>man手册的目录结构</p>
+<table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">NAME</td>
+<td align="center">名称</td>
+</tr>
+<tr>
+<td align="center">SYNOPSIS</td>
+<td align="center">命令语法（摘要）</td>
+</tr>
+<tr>
+<td align="center">DESCRIPTION</td>
+<td align="center">命令完整描述</td>
+</tr>
+<tr>
+<td align="center">AYTHOR</td>
+<td align="center">作者</td>
+</tr>
+<tr>
+<td align="center">REPORTION BUGS</td>
+<td align="center">报告的错误</td>
+</tr>
+<tr>
+<td align="center">COPYRIGHT</td>
+<td align="center">版权</td>
+</tr>
+<tr>
+<td align="center">SEE ALSO</td>
+<td align="center">查看相关信息</td>
+</tr>
+</tbody></table>
+<ul>
+<li>进入文档后第一行看到的就是MKDIR(1)，那么(1)是什么意思呢？man手册有9个section，每个section对应的含义：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">section序号</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">可执行文件或者shell命令</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">系统调用（内核提供的函数）</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">库函数</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">特别的文件（通常在/dev）</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">文件格式，例/etc/passwd</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">游戏</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">杂项（包括宏包）</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">系统管理员命令（通常为root用户使用）</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">内核例程（非标准例程）</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>NAME</strong>：解释命令的名称含义</li>
+<li><strong>SYNOPSIS</strong>：命令语法</li>
+</ul>
+<p><code>mkdir [option]... DIRECTORY..,</code>表示的是这个命令的用法。其中<code>[]</code>表示的是这个参数<strong>不是必须</strong>的，<strong>可选的</strong>。<code>...</code>表示这些参数可以<strong>重复出现多次</strong>。有的命令的语法格式中可能还包括<code>&lt;&gt;</code>，这表示<strong>必须提供</strong>的参数。<code>a|b</code>表示<strong>二选一</strong>，或多选一。</p>
+<p>例：ls操作</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>11:56:41 root@centos7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> --help
+Usage: <span class="token function">ls</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. <span class="token punctuation">[</span>FILE<span class="token punctuation">]</span><span class="token punctuation">..</span>.
+List information about the FILEs <span class="token punctuation">(</span>the current directory by default<span class="token punctuation">)</span>.
+Sort entries alphabetically <span class="token keyword">if</span> none of -cftuvSUX nor --sort is specified.
+
+Mandatory arguments to long options are mandatory <span class="token keyword">for</span> short options too.
+  -a, --all                  <span class="token keyword">do</span> not ignore entries starting with <span class="token keyword">.</span>
+  -A, --almost-all           <span class="token keyword">do</span> not list implied <span class="token keyword">.</span> and <span class="token punctuation">..</span>
+      --author               with -l, print the author of each <span class="token function">file</span>
+  -b, --escape               print C-style escapes <span class="token keyword">for</span> nongraphic characters
+      --block-size<span class="token operator">=</span>SIZE      scale sizes by SIZE before printing them<span class="token punctuation">;</span> e.g.,
+                               <span class="token string">'--block-size=M'</span> prints sizes <span class="token keyword">in</span> <span class="token function">units</span> of
+                               1,048,576 bytes<span class="token punctuation">;</span> see SIZE <span class="token function">format</span> below
+  -B, --ignore-backups       <span class="token keyword">do</span> not list implied entries ending with ~
+  <span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>省略好多选项
+
+<span class="token comment" spellcheck="true"># 从ls的帮助文档可以得知ls的用法。</span>
+<span class="token punctuation">[</span>11:56:41 root@centos7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> -l a/ 
+total 0
+-rw-r--r-- 1 root root 0 Jul 31 12:02 a1.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:02 a2.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:02 a3.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:02 a4.txt
+
+<span class="token punctuation">[</span>12:03:57 root@centos7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> -l b/
+total 0
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b1.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b2.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b3.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b4.txt
+
+<span class="token punctuation">[</span>12:03:57 root@centos7 ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> -l -h a/ b/ <span class="token comment" spellcheck="true">#ls的[option]...表示可以写多个参数，-l -h就是两个参数。[FILE]...表示可以写多个文件，后面我跟了两个目录a b。</span>
+a:
+total 4.0K
+-rw-r--r-- 1 root root 175 Jul 31 12:05 a1.txt
+-rw-r--r-- 1 root root   0 Jul 31 12:02 a2.txt
+-rw-r--r-- 1 root root   0 Jul 31 12:02 a3.txt
+-rw-r--r-- 1 root root   0 Jul 31 12:02 a4.txt
+
+b:
+total 0
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b1.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b2.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b3.txt
+-rw-r--r-- 1 root root 0 Jul 31 12:03 b4.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><strong>DESCRIPTION</strong>：命令描述</li>
+</ul>
+<p>该部分会具体的描述该命令的作用，以及可选的参数有哪些以及对应的参数含义是什么</p>
+<ul>
+<li><strong>AUTHOR</strong>：展示命令的作者</li>
+<li><strong>REPORTING BUGS</strong>：描述报告出BUG信息</li>
+<li><strong>COPYRIGHT</strong>：版权信息</li>
+<li><strong>SEE ALSO</strong>：查看相关信息的位置</li>
+</ul>
+<h1 id="四、fstab文件的详细信息"><a href="#四、fstab文件的详细信息" class="headerlink" title="四、fstab文件的详细信息"></a>四、fstab文件的详细信息</h1><blockquote>
+<p>/etc/fstab文件存放了系统的存储设备以及文件系统的信息。它是个文本文件，启动时的配置文件，只有root用户才能编辑它。它决定了一个硬盘（分区）被怎样使用或者说整合到整个系统中的文件。也就是说：用fstab可以自动挂载各种文件系统格式的硬盘、分区、可以动设备等，磁盘手动挂载之后必须把挂载信息写入该文件中，否则下次开机启动时仍然需要重新挂载。实际上挂载记录到/etc/mtab和/proc/mounts文件中。</p>
+</blockquote>
+<h2 id="etc-fstab文件中的参数详解"><a href="#etc-fstab文件中的参数详解" class="headerlink" title="/etc/fstab文件中的参数详解"></a>/etc/fstab文件中的参数详解</h2><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>01:22:50 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># cat /etc/fstab #查看fstab文件内容</span>
+
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># /etc/fstab</span>
+<span class="token comment" spellcheck="true"># Created by anaconda on Sat Jul 30 10:32:24 2022</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># Accessible filesystems, by reference, are maintained under '/dev/disk/'.</span>
+<span class="token comment" spellcheck="true"># See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># After editing this file, run 'systemctl daemon-reload' to update systemd</span>
+<span class="token comment" spellcheck="true"># units generated from this file.</span>
+<span class="token comment" spellcheck="true"># </span>
+/dev/mapper/rl-root     /                       xfs     defaults        0   0
+UUID<span class="token operator">=</span>393f8543-de0e-40ff-a95e-7797b7fb448d /boot                   xfs     defaults        0   0 
+/dev/mapper/rl-home     /home                   xfs     defaults        0      0
+/dev/mapper/rl-swap     none                    swap    defaults        0      0
+<span class="token comment" spellcheck="true"># &lt;file systems>        &lt;mountpoint>            &lt;type>    &lt;options>        &lt;dump> &lt;pass></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>以第一行<code>/dev/mapper/rl-root  /  xfs  defaults  0  0</code>为例来讲解：</p>
+<ul>
+<li><p><code>&lt;file systems&gt;</code>：挂载设备，展示设备（分区）的名字。例如<code>/dev/mapper/rl-root</code></p>
+</li>
+<li><p><code>&lt;mountpoint&gt;</code>：挂载点，告知分区挂载到哪里。例如挂载到<code>/</code>目录。</p>
+</li>
+<li><p><code>&lt;type&gt;</code>：文件系统的类型，Linux支持很多文件系统：ext2、ext3、xfs、jfs、ntfs、swap和auto等。<code>auto</code>不是一个文件系统，而是让mount命令自动判断文件类型，特别是对于可以动设备、软盘、DVD驱动器，因为可能每次挂载的文件类型不一致。例如<code>xfs</code></p>
+</li>
+<li><p><code>&lt;options&gt;</code>：文件系统参数，这是最有用的设置。使所挂载的设备在开机时<strong>自动加载</strong>、使中文<strong>不显示乱码</strong>、<strong>限制</strong>对挂载分区<strong>读写权限</strong>。例如<code>default</code>。常用参数：</p>
+<ul>
+<li>defaults：使用默认设置，等同于rw、suid、dev、exec、auto、nouser、async。</li>
+<li>auto：启动时或<code>mount -a</code> 时自动挂载。</li>
+<li>exec：允许执行此分区的二进制文件。</li>
+<li>ro：以只读模式挂载文件系统。</li>
+<li>rw：以读写模式挂载文件系统。</li>
+<li>user：允许任意用户挂载文件系统。</li>
+<li>users：允许所有users组中的用户挂载系统</li>
+<li>nouser：只允许root挂载</li>
+<li>ower：允许设备所有者挂载</li>
+<li>sync：I/O同步进行</li>
+<li>async：I/O异步进行</li>
+<li>dev：解析文件系统上的块特殊设备</li>
+<li>suid：允许suid操作和设定sgid位。通常用于一些特殊任务，使一般用户运行程序时临时提升权限。</li>
+</ul>
+</li>
+<li><p><code>&lt;dump&gt;</code>：备份命令，用数字来决定是否对这个文件系统进行备份。允许的数字是0和1，0表示忽略；1表示进行备份。本例为0。</p>
+</li>
+<li><p><code>&lt;pass&gt;</code>：这个数值决定需要检查的文件系统的检查顺序。允许的数字是0,1,2。根目录应当获得最高的优先权1，其它所有需要被检查的设备设置2，0表示设备不被fsck检查。</p>
+</li>
+</ul>
+<h1 id="五、FHS结构"><a href="#五、FHS结构" class="headerlink" title="五、FHS结构"></a>五、FHS结构</h1><blockquote>
+<p>FHS（Filesystem Hierarchy Standard, 文件系统层次结构标准），FHS定义了系统中每个区域的用途、所需要的最小构成的文件和目录。定义了两层规范，第一层是<code>/</code>下面的各个目录应该要放什么文件数据。第二层则是针对<code>/usr</code>及<code>/var</code>这两个目录的子目录来定义。</p>
+</blockquote>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220731151547035.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220731151824532.png" alt=""></p>
+<h1 id="六、文件管理，用户管理，组用户，权限管理"><a href="#六、文件管理，用户管理，组用户，权限管理" class="headerlink" title="六、文件管理，用户管理，组用户，权限管理"></a>六、文件管理，用户管理，组用户，权限管理</h1><h2 id="（一）、文件管理"><a href="#（一）、文件管理" class="headerlink" title="（一）、文件管理"></a>（一）、文件管理</h2><h3 id="1-目录操作命令"><a href="#1-目录操作命令" class="headerlink" title="1. 目录操作命令"></a>1. 目录操作命令</h3><ul>
+<li><p><code>cd</code>：切换目录，用法<code>cd 目录名</code>。一些特殊目录格式：</p>
+<ul>
+<li><code>cd /</code>：切换到根目录</li>
+<li><code>cd ~</code>：切换到当前用户的家目录</li>
+<li><code>cd ..</code>：切换到上一级目录</li>
+<li><code>cd -</code>：切换到之前访问的目录</li>
+</ul>
+</li>
+<li><p><code>ls</code>和<code>pwd</code>：查看目录。</p>
+<ul>
+<li><code>ls 目录名</code>：列出目录下的文件。<code>ls -l 目录名</code>以列表形式显示文件；<code>ls -a 目录名</code>将隐藏文件也列出来。</li>
+<li><code>pwd</code>查看当前目录的绝对路径</li>
+</ul>
+</li>
+<li><p><code>mkdir</code>：创建目录</p>
+<p>用法：<code>mkdir [OPTION]... DIRECTORY...</code></p>
+<ul>
+<li>-p：递归创建目录</li>
+<li>例：<code>mkdir -p a/b</code>会在当前目录下创建a目录，然后在a目录下创建b目录。</li>
+</ul>
+</li>
+<li><p><code>rm</code>：删除目录或文件</p>
+<p>用法：<code>rm [OPTION]... [FILE]...</code></p>
+<ul>
+<li>option:<ul>
+<li>-f：强制删除</li>
+<li>-i：删除之前会询问是否要删除</li>
+<li>-r：删除目录</li>
+</ul>
+</li>
+<li><strong>Tips：不要轻易使用<code>rm</code>，防止误删</strong></li>
+</ul>
+</li>
+<li><p><code>rmdir</code>：删除目录</p>
+<p>用法：<code>rmdir 目录名</code>只能删除空目录。</p>
+</li>
+<li><p><code>mv</code>：移动或者修改目录名</p>
+<ul>
+<li><code>mv a b</code>：将目录名a改为b</li>
+<li><code>mv a ../</code>：将a目录移动到上一级目录中</li>
+</ul>
+</li>
+<li><p><code>cp</code>：拷贝目录或文件</p>
+<p>用法：<code>cp [OPTION]... SOURCE... DIRECTORY</code></p>
+<ul>
+<li>option:<ul>
+<li>-f：强制</li>
+<li>-i：当目标档存在是，覆盖前会询问</li>
+<li>-p：文件的属性一起复制过去，备份常用</li>
+<li>-r：递归复制，复制目录时用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>find</code>：搜索查找目录或文件</p>
+<p>用法：<code>find path [option] 搜索内容</code></p>
+<ul>
+<li>option：<ul>
+<li>按照文件名搜索<ul>
+<li>-name：按文件名搜索</li>
+<li>-iname：不区分大小写</li>
+</ul>
+</li>
+<li>按文件大小<ul>
+<li>-size [+/-]文件大小：搜索指定大小文件或大于/小于该大小的文件</li>
+</ul>
+</li>
+<li>按修改时间<ul>
+<li>-atime [+/-]时间：访问时间搜索</li>
+<li>-mtime [+/-]时间：修改时间</li>
+<li>-ctime [+/-]时间：属性修改时间</li>
+<li>以-mtime为例：-5表示五天内修改的文件，5表示5~6天那一天修改的；+5表示6天前修改的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-文件操作命令"><a href="#2-文件操作命令" class="headerlink" title="2. 文件操作命令"></a>2. 文件操作命令</h3><ul>
+<li><p><code>touch</code>：创建文件</p>
+<p>用法：<code>touch 文件名</code></p>
+<p><strong>Tips</strong>：<code>vi 文件名</code>也可以创建文件，另外还可以编辑文件</p>
+</li>
+<li><p><code>rm</code>：删除文件，用法目录操作</p>
+</li>
+<li><p><code>mv</code>：移动或重命名，用法同目录操作</p>
+</li>
+<li><p><code>cp</code>：拷贝，用法同目录操作</p>
+</li>
+<li><p><code>cat</code>：查看文件内容</p>
+<p>用法：<code>cat [OPTION]... [FILE]...</code></p>
+<ul>
+<li>option：<ul>
+<li>-b：显示行号，只显示有文字的行，空行不标注行号</li>
+<li>-n：显示行号，是显示全部的行。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>tac</code>：与<code>cat</code>相反，从最后一行开始显示</p>
+</li>
+<li><p><code>more</code>：一页页显示文件</p>
+<ul>
+<li>空格键：向下翻页</li>
+<li>Enter：向下一行</li>
+<li>/字符串: 向下搜索</li>
+<li>q：退出</li>
+</ul>
+</li>
+<li><p><code>less</code>：一页页翻动显示</p>
+<ul>
+<li><code>less -S 文件</code>某行显示不完时，不自动换行，这样看的更清晰更直观。</li>
+</ul>
+</li>
+<li><p><code>head</code>：默认显示前十行</p>
+<ul>
+<li>-n num：指定显示几行</li>
+</ul>
+</li>
+<li><p><code>tail</code>：从最后一行显示，与head相反</p>
+</li>
+</ul>
+<h2 id="（二）用户管理"><a href="#（二）用户管理" class="headerlink" title="（二）用户管理"></a>（二）用户管理</h2><blockquote>
+<p>UID：用户ID号，唯一标识号。</p>
+<p>所属用户组：一个用户必须有它的用户组，创建用户时不指定就会自动创建一个同名的而用户组</p>
+</blockquote>
+<h3 id="1-用户创建"><a href="#1-用户创建" class="headerlink" title="1. 用户创建"></a>1. 用户创建</h3><ul>
+<li><p><code>useradd</code>：用于创建新的用户</p>
+<p>用法：<code>useradd [option] 用户名</code></p>
+<p>option：</p>
+<ul>
+<li>-u：指定用户uid</li>
+<li>-g：指定用户所属的用户组</li>
+<li>-G：所属附加组</li>
+<li>-s：登录的shell解释器</li>
+<li>-m：创建加目录，用于系统用户</li>
+<li>-M：不创建加目录，用于非系统用户</li>
+</ul>
+</li>
+</ul>
+<p>​        例如：<code>useradd yanlinux</code>：添加新用户yanlinux</p>
+<p>​                    <code>useradd -g root -s /sbin/nologin yanlinux</code>：添加新用户并将其指定到root用户所属组，登录的shell类型是nologin</p>
+<h3 id="2-设置密码"><a href="#2-设置密码" class="headerlink" title="2. 设置密码"></a>2. 设置密码</h3><ul>
+<li><code>passwd</code>：设置用户的登录密码</li>
+</ul>
+<p>​        用法：<code>passwd [options] [username]</code>：<code>passwd</code>后面加username就是设定指定用户的密码，不加username的话就是设置当前用户的密码。</p>
+<ul>
+<li>options:<ul>
+<li>-d：删除密码</li>
+<li>-l：锁定用户</li>
+<li>-u：解锁用户</li>
+<li>-n：指定最短使用期限</li>
+<li>-x：指定最大使用期限</li>
+<li>–stdin：从标准输入接受用户密码。Ubuntu没有该选项</li>
+</ul>
+</li>
+</ul>
+<p>例：<code>passwd</code>：设置当前用户密码</p>
+<p>​        <code>passwd yanlinux</code>：设置yanlinux用户的密码</p>
+<p>​        <code>echo '123456'|passwd --stdin yanlinux</code>：非交互式修改用户密码 </p>
+<ul>
+<li><p><code>chage</code>：可以修改用户密码策略</p>
+<p>用法：<code>chage [option]... username</code></p>
+<p>option:</p>
+<ul>
+<li>-d：LAST_DAY 更改密码的时间</li>
+<li>-w：距离密码过期多少天之前提示</li>
+<li>-I：密码过期后的宽限期</li>
+<li>-E：用户的有效期</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-用户属性修改"><a href="#3-用户属性修改" class="headerlink" title="3. 用户属性修改"></a>3. 用户属性修改</h3><ul>
+<li><p><code>usermod</code></p>
+<p>用法：<code>usermod [option] 用户名</code></p>
+<p>option：</p>
+<ul>
+<li>-u：修改用户uid</li>
+<li>-g：修改所属用户组</li>
+<li>-G：修改附加组</li>
+<li>-s：shell类型</li>
+<li>-e YYYY-MM-DD：指定用户帐号过期日期</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-删除用户"><a href="#4-删除用户" class="headerlink" title="4. 删除用户"></a>4. 删除用户</h3><ul>
+<li><p><code>userdel</code></p>
+<p>用法<code>userdel [option] 用户名</code>：</p>
+<p>option：</p>
+<ul>
+<li>-f：强制</li>
+<li>-r：删除用户家目录和邮箱</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-查看用户ID信息"><a href="#5-查看用户ID信息" class="headerlink" title="5. 查看用户ID信息"></a>5. 查看用户ID信息</h3><ul>
+<li><p><code>id</code>：可以查看用户的UID、GID等信息</p>
+<p>用法：<code>id [option]... [USER]</code></p>
+<p>option：</p>
+<ul>
+<li>-u：</li>
+<li>-g</li>
+<li>-G</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-切换用户或以其他用户身份执行命令"><a href="#6-切换用户或以其他用户身份执行命令" class="headerlink" title="6. 切换用户或以其他用户身份执行命令"></a>6. 切换用户或以其他用户身份执行命令</h3><ul>
+<li><p><code>SU</code>: switch user</p>
+<p><code>su username</code>非登录式切换，不会读取目标用户的配置信息，不改变工作目录。</p>
+<p><code>su - username</code>登录式切换，切换至自己的家目录。</p>
+<p>切换后用<code>exit</code>切换回原来用户。</p>
+<p><code>su - yanlinux -c 'touch test.txt'</code>表示切换为yanlinux用户后立马执行新建test.txt文件。</p>
+</li>
+</ul>
+<h2 id="（三）组管理"><a href="#（三）组管理" class="headerlink" title="（三）组管理"></a>（三）组管理</h2><h3 id="1-添加组"><a href="#1-添加组" class="headerlink" title="1. 添加组"></a>1. 添加组</h3><ul>
+<li><p><code>groupadd</code></p>
+<p>用法：<code>groupadd [option]... groupname</code></p>
+<p>option：</p>
+<ul>
+<li>-g: GID</li>
+<li>-r：创建系统组，ID&lt;1000。</li>
+</ul>
+<p>例：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">groupadd</span> -g 48 -r apache<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="2-修改组"><a href="#2-修改组" class="headerlink" title="2. 修改组"></a>2. 修改组</h3><ul>
+<li><p><code>groupmod</code>：修改组属性</p>
+<p>用法：<code>groupmod [option]... group</code></p>
+<p>option：</p>
+<ul>
+<li>-n groupName：修改新名字</li>
+<li>-g GID：新的GID</li>
+</ul>
+<p>例：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span>$ <span class="token function">groupmod</span> testgroup userg <span class="token comment" spellcheck="true">#修改用户组userg的组名为testgroup</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="3-删除组"><a href="#3-删除组" class="headerlink" title="3. 删除组"></a>3. 删除组</h3><ul>
+<li><p><code>groupdel</code></p>
+<p>用法：<code>groupdel [option] GROUP</code></p>
+<p>option：</p>
+<ul>
+<li>-f：强制</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupdel test</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="4-更改组成员和密码"><a href="#4-更改组成员和密码" class="headerlink" title="4. 更改组成员和密码"></a>4. 更改组成员和密码</h3><ul>
+<li><p><code>gpasswd</code>：更改组密码，也可修改附加组成员关系</p>
+<p>用法：<code>gpasswd [option] group</code></p>
+<ul>
+<li>-a user：将user添加到指定组</li>
+<li>-d user：从指定附加组移除用户</li>
+<li>-A user1,user2,…：设置有管理权限的用户列表</li>
+</ul>
+<p>例：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>05:59:02 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupadd admins</span>
+<span class="token punctuation">[</span>09:47:11 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># id yanlinux</span>
+uid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> gid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> groups<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>09:47:16 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># gpasswd -a yanlinux admins</span>
+Adding user yanlinux to group admins
+<span class="token punctuation">[</span>09:47:38 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># id yanlinux </span>
+uid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> gid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> groups<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span>,1001<span class="token punctuation">(</span>admins<span class="token punctuation">)</span>
+
+<span class="token punctuation">[</span>09:47:45 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># gpasswd -d yanlinux admins</span>
+Removing user yanlinux from group admins
+<span class="token punctuation">[</span>09:48:51 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># id yanlinux </span>
+uid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> gid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> groups<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="5-更改和查看组成员"><a href="#5-更改和查看组成员" class="headerlink" title="5. 更改和查看组成员"></a>5. 更改和查看组成员</h3><ul>
+<li><p><code>groupmems</code>：管理附加组的成员关系</p>
+<p>用法：<code>groupmems [option] [action]</code></p>
+<p>option：</p>
+<ul>
+<li>-g，–group groupName：更改为指定组，只能是root</li>
+<li>-a，–add userName：指定用户加入组</li>
+<li>-d，–delete userName：删除用户</li>
+<li>-p，–purge：清楚所有成员</li>
+<li>-l：显示组成员列表</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>09:55:31 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupmems -a yanlinux -g admins</span>
+<span class="token punctuation">[</span>09:55:59 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupmems -l -g admins</span>
+yanlinux 
+<span class="token punctuation">[</span>09:56:01 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># id yanlinux </span>
+uid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> gid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> groups<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span>,1001<span class="token punctuation">(</span>admins<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>09:56:48 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupmems -d yanlinux -g admins</span>
+<span class="token punctuation">[</span>09:57:10 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># groupmems -l -g admins</span>
+<span class="token punctuation">[</span>09:57:13 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># id yanlinux </span>
+uid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> gid<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span> groups<span class="token operator">=</span>1000<span class="token punctuation">(</span>yanlinux<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p><code>groups</code>：查看用户组关系</p>
+<p>用法：<code>groups [option]. [username]...</code></p>
+</li>
+</ul>
+<h2 id="（四）权限管理"><a href="#（四）权限管理" class="headerlink" title="（四）权限管理"></a>（四）权限管理</h2><h3 id="1-文件所有者和属组属性操作"><a href="#1-文件所有者和属组属性操作" class="headerlink" title="1. 文件所有者和属组属性操作"></a>1. 文件所有者和属组属性操作</h3><ul>
+<li><p><code>chown</code>：修改文件的属主，也可以修改文件属组。</p>
+<p>用法：<code>chown [option]... [owner][:[group]] file...</code></p>
+<p>​            <code>chown [option]... --reference=RFILE file...</code></p>
+<pre class="line-numbers language-bash"><code class="language-bash">owner：只修改所有者
+owner:group：同时修改所有者和属组
+:group 只修改属组，冒号可用.替换
+--reference<span class="token operator">=</span>RFILE  参考指定的文件属性修改
+-R： 递归，慎用！！！<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>例：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>10:16:20 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll</span>
+total 8
+-rw-------. 1 root root 1266 Jul 30 06:37 anaconda-ks.cfg
+-rw-r--r--. 1 root root  655 Jul 31 10:16 a.txt
+
+<span class="token punctuation">[</span>10:16:41 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># chown yanlinux a.txt </span>
+<span class="token punctuation">[</span>10:17:46 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll</span>
+total 8
+-rw-------. 1 root     root 1266 Jul 30 06:37 anaconda-ks.cfg
+-rw-r--r--. 1 yanlinux root  655 Jul 31 10:16 a.txt
+<span class="token punctuation">[</span>10:17:49 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># chown :admins a.txt </span>
+<span class="token punctuation">[</span>10:18:27 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll</span>
+total 8
+-rw-------. 1 root     root   1266 Jul 30 06:37 anaconda-ks.cfg
+-rw-r--r--. 1 yanlinux admins  655 Jul 31 10:16 a.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><code>chgrp</code>：修改文件的属组</p>
+<p>用法：<code>chgrp [OPTION]... GROUP FILE...</code></p>
+<p>​            <code>chgrp [OPTION]... --reference=RFILE FILE...</code></p>
+<p>例:</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>10:18:29 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll</span>
+total 8
+-rw-------. 1 root     root   1266 Jul 30 06:37 anaconda-ks.cfg
+-rw-r--r--. 1 yanlinux admins  655 Jul 31 10:16 a.txt
+<span class="token punctuation">[</span>10:21:24 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># chgrp root a.txt </span>
+<span class="token punctuation">[</span>10:21:50 root@rocky8 ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll</span>
+total 8
+-rw-------. 1 root     root 1266 Jul 30 06:37 anaconda-ks.cfg
+-rw-r--r--. 1 yanlinux root  655 Jul 31 10:16 a.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="2-文件的权限"><a href="#2-文件的权限" class="headerlink" title="2. 文件的权限"></a>2. 文件的权限</h3><blockquote>
+<p>linux文件的管理者分为：</p>
+<ul>
+<li>所有者：文件的创建者。owner 属主, u</li>
+<li>所属组：创建文件后，该用户所在的组就是文件的默认组。group 属组, g</li>
+<li>其他组：other 其他, o</li>
+</ul>
+<p>用户的最终权限，是从左向右顺序匹配。</p>
+</blockquote>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220731223314759.png" alt="文件信息"></p>
+<p>①表示文件类型，<code>-</code>表示普通文件，<code>d</code>表示目录，<code>l</code>表示软连接，<code>c</code>字符设备，<code>b</code>块文件</p>
+<p>②三个一组，分别是所有者，所属组，其他组。</p>
+<ul>
+<li><code>r</code>：数字表示法用<code>4</code>代表。对文件表示可查看；对于目录表示可查看文件夹中的文件列表。</li>
+<li><code>w</code>：数字法表示用<code>2</code>代表。对文件表示可以修改文件内容。对于目录表示可以在这个目录中创建和删除文件。</li>
+<li><code>x</code>：数字表示法用<code>1</code>表示。对文件表示可以执行此文件；对于目录可以<code>cd</code>进入，可以用<code>ls -l</code>查看目录中文件的元数据。对于知道文件名的文件也可查看文件内容。    </li>
+</ul>
+<p>③目录就是目录个数，文件就是软连接个数</p>
+<p>④文件所有者</p>
+<p>⑤文件所属组</p>
+<p>⑥文件大小</p>
+<p>⑦文件创建时间</p>
+<p>⑧文件名称</p>
+<ul>
+<li><p><code>chmod</code>：修改文件权限</p>
+<p>用法：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">chmod</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. MODE<span class="token punctuation">[</span>,MODE<span class="token punctuation">]</span><span class="token punctuation">..</span>. FILE<span class="token punctuation">..</span>.
+<span class="token function">chmod</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. OCTAL-MODE FILE<span class="token punctuation">..</span>.
+<span class="token comment" spellcheck="true">#参考RFILE文件的权限，将FILE的修改为同RFILE</span>
+<span class="token function">chmod</span> <span class="token punctuation">[</span>OPTION<span class="token punctuation">]</span><span class="token punctuation">..</span>. --reference<span class="token operator">=</span>RFILE FILE<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true"># 修改文件的权限</span>
+<span class="token comment" spellcheck="true"># 1.模式法</span>
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># chmod who opt per file</span>
+who:u<span class="token punctuation">;</span>g<span class="token punctuation">;</span>o<span class="token punctuation">;</span>a
+opt:+<span class="token punctuation">;</span>-<span class="token punctuation">;</span><span class="token operator">=</span>
+per:r<span class="token punctuation">;</span>w<span class="token punctuation">;</span>x
+
+<span class="token comment" spellcheck="true"># 例如:给属组添加写的权限</span>
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># chmod g+w a.txt </span>
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ll a.txt</span>
+-rw-rw-r--. 1 lgq root 292 Jul  9 17:16 a.txt
+
+<span class="token comment" spellcheck="true"># 2.数字法</span>
+r--：100<span class="token operator">==</span>4
+-w-：010<span class="token operator">==</span>2
+--x：001<span class="token operator">==</span>1
+
+<span class="token comment" spellcheck="true"># 例如：修改权限为：rwxrw---- a.txt</span>
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span> <span class="token comment" spellcheck="true"># chmod 760 a.txt</span>
+-rwxrw----. 1 lgq root 292 Jul  9 17:16 a.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="3-新建文件和目录的默认权限"><a href="#3-新建文件和目录的默认权限" class="headerlink" title="3. 新建文件和目录的默认权限"></a>3. 新建文件和目录的默认权限</h3><ul>
+<li><p>umask的值用来保留在创建文件权限</p>
+<ul>
+<li><p>新建文件的默认权限是666减去umask值，若所得结果某位存在奇数，则将其权限加1，偶数不变</p>
+</li>
+<li><p>新建目录的默认权限是777减去umask值</p>
+</li>
+<li><p>普通用户umask默认是002</p>
+</li>
+<li><p>root用户是022</p>
+</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">umask</span> 123 <span class="token comment" spellcheck="true">#修改默认umask为123</span>
+<span class="token comment" spellcheck="true"># 文件的默认权限</span>
+<span class="token comment" spellcheck="true"># 系统的默认umask是0022，文件的权限是666-022=644，如果利用umask修改为123，则文件的权限就改为了666-123=543，但是为了不赋予执行权限，所以所得的奇数都加1，所以他的权限为644。目录的权限为777-123=654。</span>
+<span class="token comment" spellcheck="true"># 只实现临时性的文件权限为 000</span>
+
+<span class="token comment" spellcheck="true"># 三种方法</span>
+
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">touch</span> a.txt<span class="token punctuation">;</span><span class="token function">chmod</span> 000 a.txt
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">umask</span> 777<span class="token punctuation">;</span><span class="token function">touch</span> a.txt<span class="token punctuation">;</span><span class="token function">umask</span> 022
+<span class="token punctuation">[</span>root@rocky ~<span class="token punctuation">]</span>$ <span class="token punctuation">(</span>umask 777<span class="token punctuation">;</span><span class="token function">touch</span> a.txt<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#小括号内的umask可以一次性有效 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力!</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291304818.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207292224344.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+            
+            
+            <div class="reprint1">
+                <p>
+                    <span class="reprint1-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://www.yanlinux.cn" class="b-link-green">焱黎的博客</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/cl8i9ucza00082gakxi5pi86x/" class="b-link-green">第一周作业总结</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81Njg5OC8zMzM2Mg==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/cl8i9ucze000c2gakp8m69u0a/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202208061353199.png" class="responsive-img" alt="第二周作业">
+                        
+                        <span class="card-title">第二周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            shell脚本小小实践！
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2022-08-06
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Linux基本操作/" target="_blank">
+                        <span class="chip bg-color">Linux基本操作</span>
+                    </a>
+                    
+                    <a href="/tags/shell/" target="_blank">
+                        <span class="chip bg-color">shell</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/cl8i9uczc000a2gak9xk92tqh/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/example.png" class="responsive-img" alt="测试篇">
+                        
+                        <span class="card-title">测试篇</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            这是一篇测试文档
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-07-29
+                            </span>
+                        <span class="publish-author">
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('100')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'pre') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 焱黎的博客<br />'
+            + '作者: 焱黎<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+        <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&copy; 2022 焱黎. 
+
+            <br>
+            <span id="sitetime"></span><span class="my-face">ღゝ◡╹)ノ♡</span>
+            <br>
+
+            
+
+            
+                    
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        总访问量: <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    
+        
+                    
+                        <span id="busuanzi_container_site_uv" style='display:none'></span>
+                        人次&nbsp; | &nbsp;访客人数: <span id="busuanzi_value_site_uv" class="white-color"></span> 人
+                    
+    
+            
+
+            
+                &nbsp; | &nbsp;字数统计:&nbsp;
+                <span class="white-color">207.7k</span> 字
+            
+
+            
+            <br>
+
+        </div>
+
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/yanlinux" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+ 
+    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=lgq6579@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=1499214187&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的QQ空间" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+        var t1 = Date.UTC(2022, 07, 25, 00, 00, 00); //北京时间2022-7-25 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+            minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已勉强运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours +
+            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒" ;
+    } /*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+
+
+
+
+
+        <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+        <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+        <script src="https://cdn.bootcss.com/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
+        <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+        <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
+        <script src="https://cdn.bootcss.com/lightgallery/1.6.12/js/lightgallery-all.min.js"></script>
+        <script src="/js/matery.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+        
+            <script src="/libs/others/clicklove.js"></script>
+        
+
+        
+            <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+
+        <!-- 洪卫 shw2018 add 2019.08.28 -->
+        <script type="text/javascript">
+            var OriginTitile = document.title,
+                st;
+            document.addEventListener("visibilitychange", function () {
+                document.hidden ? (document.title = "看不见我🙈~看不见我🙈~", clearTimeout(st)) : (document.title =
+                    "(๑•̀ㅂ•́) ✧被发现了～", st = setTimeout(function () {
+                        document.title = OriginTitile
+                    }, 3e3))
+            })
+        </script>
+
+        <!-- 鼠标点击烟花爆炸效果  洪卫 shw2018 add 2019.09.09 -->
+        
+
+        <!-- 背景雪花飘落特效洪卫 shw2018 add 2019.09.10 -->
+        
+            <script type="text/javascript">
+            //只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 鼠标点击文字特效 洪卫 shw2018 add 2019.09.10-->
+        
+            <script src="/js/wenzi.js" type="text/javascript"></script>
+        
+
+        <!-- 背景雪花飘落特效 洪卫 shw2018 add 2019.09.10 -->
+        
+
+        <!-- 在线聊天工具  洪卫 shw2018 add 2019.09.11 -->
+        
+
+        <!-- 背景 canvas-nest  洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" color="0,0,255" pointColor="0,0,255" opacity= "0.8" zIndex="--1" count="150"src="/libs/background/canvas-nest.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 背景静止彩带  洪卫 shw 2018  add 2019.09.15-->
+        
+
+        <!-- 背景动态彩带 洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" src="/libs/background/ribbon-dynamic.js"><\/script>');
+            }
+            </script>
+        
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":200},"mobile":{"show":false},"react":{"opacity":0.7}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+</html>
