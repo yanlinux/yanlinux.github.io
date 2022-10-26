@@ -24,22 +24,15 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
     <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/lightgallery/1.6.12/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/css/lightgallery.min.css">
     <link rel="stylesheet" type="text/css" href="/css/matery.css">
     <link rel="stylesheet" type="text/css" href="/css/my.css">
     
     <style type="text/css">
         
-            
-            code[class*="language-"],
-            pre[class*="language-"] {
-                white-space: pre !important;
-            }
-
-        
     </style>
 
-    <script src="https://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
     
     <script>
@@ -646,20 +639,29 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             <div class="tag-chips">
                 
                 
-                <a href="/tags/zabbix/" title="zabbix: 1">
+                <a href="/tags/k8s/" title="k8s: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="zabbix" style="background-color: #F9EBEA;">zabbix
+                            data-tagname="k8s" style="background-color: #F9EBEA;">k8s
                         <span class="tag-length">1</span>
                     </span>
                 </a>
                 
                 
-                <a href="/tags/redis/" title="redis: 1">
+                <a href="/tags/zabbix/" title="zabbix: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="redis" style="background-color: #F5EEF8;">redis
+                            data-tagname="zabbix" style="background-color: #F5EEF8;">zabbix
                         <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/redis/" title="redis: 2">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="redis" style="background-color: #D5F5E3;">redis
+                        <span class="tag-length">2</span>
                     </span>
                 </a>
                 
@@ -667,7 +669,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/mysql/" title="mysql: 2">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="mysql" style="background-color: #D5F5E3;">mysql
+                            data-tagname="mysql" style="background-color: #E8F8F5;">mysql
                         <span class="tag-length">2</span>
                     </span>
                 </a>
@@ -676,7 +678,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/内存利用/" title="内存利用: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="内存利用" style="background-color: #E8F8F5;">内存利用
+                            data-tagname="内存利用" style="background-color: #FEF9E7;">内存利用
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -685,7 +687,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/日志/" title="日志: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="日志" style="background-color: #FEF9E7;">日志
+                            data-tagname="日志" style="background-color: #F8F9F9;">日志
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -694,7 +696,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/文件IO分配/" title="文件IO分配: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="文件IO分配" style="background-color: #F8F9F9;">文件IO分配
+                            data-tagname="文件IO分配" style="background-color: #82E0AA;">文件IO分配
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -703,7 +705,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/Linux基本操作/" title="Linux基本操作: 2">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="Linux基本操作" style="background-color: #82E0AA;">Linux基本操作
+                            data-tagname="Linux基本操作" style="background-color: #D7BDE2;">Linux基本操作
                         <span class="tag-length">2</span>
                     </span>
                 </a>
@@ -712,7 +714,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/系统安装/" title="系统安装: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="系统安装" style="background-color: #D7BDE2;">系统安装
+                            data-tagname="系统安装" style="background-color: #A3E4D7;">系统安装
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -721,17 +723,8 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 <a href="/tags/开源许可证/" title="开源许可证: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="开源许可证" style="background-color: #A3E4D7;">开源许可证
+                            data-tagname="开源许可证" style="background-color: #85C1E9;">开源许可证
                         <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/shell/" title="shell: 2">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="shell" style="background-color: #85C1E9;">shell
-                        <span class="tag-length">2</span>
                     </span>
                 </a>
                 
@@ -745,10 +738,19 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 
                 
+                <a href="/tags/shell/" title="shell: 2">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="shell" style="background-color: #F9E79F;">shell
+                        <span class="tag-length">2</span>
+                    </span>
+                </a>
+                
+                
                 <a href="/tags/expect/" title="expect: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="expect" style="background-color: #F9E79F;">expect
+                            data-tagname="expect" style="background-color: #82E0AA;">expect
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -772,64 +774,19 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                 </a>
                 
                 
-                <a href="/tags/sudo/" title="sudo: 1">
+                <a href="/tags/Postgresql/" title="Postgresql: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="sudo" style="background-color: #F8C471;">sudo
+                            data-tagname="Postgresql" style="background-color: #85C1E9;">Postgresql
                         <span class="tag-length">1</span>
                     </span>
                 </a>
                 
                 
-                <a href="/tags/pam/" title="pam: 1">
+                <a href="/tags/高可用LAMP搭建/" title="高可用LAMP搭建: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            data-tagname="pam" style="background-color: #F5EEF8;">pam
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/DNS解析/" title="DNS解析: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="DNS解析" style="background-color: #F8C471;">DNS解析
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/ntp/" title="ntp: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="ntp" style="background-color: #F8C471;">ntp
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/iptables/" title="iptables: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="iptables" style="background-color: #F8C471;">iptables
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/firewall/" title="firewall: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="firewall" style="background-color: #F5EEF8;">firewall
-                        <span class="tag-length">1</span>
-                    </span>
-                </a>
-                
-                
-                <a href="/tags/nft/" title="nft: 1">
-                    <span class="chip center-align waves-effect waves-light
-                             chip-default "
-                            data-tagname="nft" style="background-color: #85C1E9;">nft
+                            data-tagname="高可用LAMP搭建" style="background-color: #F5EEF8;">高可用LAMP搭建
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -893,6 +850,69 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
                             data-tagname="openvpn" style="background-color: #D5F5E3;">openvpn
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/sudo/" title="sudo: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="sudo" style="background-color: #F8C471;">sudo
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/pam/" title="pam: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="pam" style="background-color: #F5EEF8;">pam
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/DNS解析/" title="DNS解析: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="DNS解析" style="background-color: #F8C471;">DNS解析
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/ntp/" title="ntp: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="ntp" style="background-color: #F8C471;">ntp
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/iptables/" title="iptables: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="iptables" style="background-color: #F8C471;">iptables
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/firewall/" title="firewall: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="firewall" style="background-color: #F5EEF8;">firewall
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/nft/" title="nft: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="nft" style="background-color: #85C1E9;">nft
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -975,7 +995,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 <script type="text/javascript">
     
 
-    $('#tag-wordcloud').jQCloud([{"text":"zabbix","weight":1,"link":"/tags/zabbix/"},{"text":"redis","weight":1,"link":"/tags/redis/"},{"text":"mysql","weight":2,"link":"/tags/mysql/"},{"text":"内存利用","weight":1,"link":"/tags/内存利用/"},{"text":"日志","weight":1,"link":"/tags/日志/"},{"text":"文件IO分配","weight":1,"link":"/tags/文件IO分配/"},{"text":"Linux基本操作","weight":2,"link":"/tags/Linux基本操作/"},{"text":"系统安装","weight":1,"link":"/tags/系统安装/"},{"text":"开源许可证","weight":1,"link":"/tags/开源许可证/"},{"text":"shell","weight":2,"link":"/tags/shell/"},{"text":"yum仓库","weight":1,"link":"/tags/yum仓库/"},{"text":"expect","weight":1,"link":"/tags/expect/"},{"text":"TCP/IP协议","weight":1,"link":"/tags/TCP-IP协议/"},{"text":"网卡IP","weight":1,"link":"/tags/网卡IP/"},{"text":"sudo","weight":1,"link":"/tags/sudo/"},{"text":"pam","weight":1,"link":"/tags/pam/"},{"text":"DNS解析","weight":1,"link":"/tags/DNS解析/"},{"text":"ntp","weight":1,"link":"/tags/ntp/"},{"text":"iptables","weight":1,"link":"/tags/iptables/"},{"text":"firewall","weight":1,"link":"/tags/firewall/"},{"text":"nft","weight":1,"link":"/tags/nft/"},{"text":"SQL","weight":1,"link":"/tags/SQL/"},{"text":"xtrabackup备份","weight":1,"link":"/tags/xtrabackup备份/"},{"text":"mysql主从复制","weight":1,"link":"/tags/mysql主从复制/"},{"text":"mysql主主复制","weight":1,"link":"/tags/mysql主主复制/"},{"text":"mysql半同步复制","weight":1,"link":"/tags/mysql半同步复制/"},{"text":"mycat","weight":1,"link":"/tags/mycat/"},{"text":"openvpn","weight":1,"link":"/tags/openvpn/"},{"text":"crontab","weight":1,"link":"/tags/crontab/"},{"text":"进程","weight":1,"link":"/tags/进程/"},{"text":"启动流程","weight":1,"link":"/tags/启动流程/"},{"text":"systemd","weight":1,"link":"/tags/systemd/"},{"text":"Linux内核编译安装","weight":1,"link":"/tags/Linux内核编译安装/"},{"text":"awk","weight":1,"link":"/tags/awk/"}], {
+    $('#tag-wordcloud').jQCloud([{"text":"k8s","weight":1,"link":"/tags/k8s/"},{"text":"zabbix","weight":1,"link":"/tags/zabbix/"},{"text":"redis","weight":2,"link":"/tags/redis/"},{"text":"mysql","weight":2,"link":"/tags/mysql/"},{"text":"内存利用","weight":1,"link":"/tags/内存利用/"},{"text":"日志","weight":1,"link":"/tags/日志/"},{"text":"文件IO分配","weight":1,"link":"/tags/文件IO分配/"},{"text":"Linux基本操作","weight":2,"link":"/tags/Linux基本操作/"},{"text":"系统安装","weight":1,"link":"/tags/系统安装/"},{"text":"开源许可证","weight":1,"link":"/tags/开源许可证/"},{"text":"yum仓库","weight":1,"link":"/tags/yum仓库/"},{"text":"shell","weight":2,"link":"/tags/shell/"},{"text":"expect","weight":1,"link":"/tags/expect/"},{"text":"TCP/IP协议","weight":1,"link":"/tags/TCP-IP协议/"},{"text":"网卡IP","weight":1,"link":"/tags/网卡IP/"},{"text":"Postgresql","weight":1,"link":"/tags/Postgresql/"},{"text":"高可用LAMP搭建","weight":1,"link":"/tags/高可用LAMP搭建/"},{"text":"SQL","weight":1,"link":"/tags/SQL/"},{"text":"xtrabackup备份","weight":1,"link":"/tags/xtrabackup备份/"},{"text":"mysql主从复制","weight":1,"link":"/tags/mysql主从复制/"},{"text":"mysql主主复制","weight":1,"link":"/tags/mysql主主复制/"},{"text":"mysql半同步复制","weight":1,"link":"/tags/mysql半同步复制/"},{"text":"mycat","weight":1,"link":"/tags/mycat/"},{"text":"openvpn","weight":1,"link":"/tags/openvpn/"},{"text":"sudo","weight":1,"link":"/tags/sudo/"},{"text":"pam","weight":1,"link":"/tags/pam/"},{"text":"DNS解析","weight":1,"link":"/tags/DNS解析/"},{"text":"ntp","weight":1,"link":"/tags/ntp/"},{"text":"iptables","weight":1,"link":"/tags/iptables/"},{"text":"firewall","weight":1,"link":"/tags/firewall/"},{"text":"nft","weight":1,"link":"/tags/nft/"},{"text":"crontab","weight":1,"link":"/tags/crontab/"},{"text":"进程","weight":1,"link":"/tags/进程/"},{"text":"启动流程","weight":1,"link":"/tags/启动流程/"},{"text":"systemd","weight":1,"link":"/tags/systemd/"},{"text":"Linux内核编译安装","weight":1,"link":"/tags/Linux内核编译安装/"},{"text":"awk","weight":1,"link":"/tags/awk/"}], {
         autoResize: true
     });
 </script>
@@ -1009,7 +1029,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
 
             
                 &nbsp; | &nbsp;字数统计:&nbsp;
-                <span class="white-color">207.7k</span> 字
+                <span class="white-color">220.5k</span> 字
             
 
             
@@ -1126,7 +1146,7 @@ $(function () {
         <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
         <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
         <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
-        <script src="https://cdn.bootcss.com/lightgallery/1.6.12/js/lightgallery-all.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/js/lightgallery-all.min.js"></script>
         <script src="/js/matery.js"></script>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
