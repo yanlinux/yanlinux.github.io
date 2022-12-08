@@ -1,0 +1,2836 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <!-- shw2018 洪卫  modify 2019.08.15-->
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="keywords" content="第六周作业, Linux SRE Python R">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="KeoTn_OFy4ndJwXNmm2gMeQfPhd7alqE9vQDwI32KCY">
+    <meta name="description" content="第六周作业 SQL语句、xtrabackup备份、OpenVPN1、简述DDL,DML,DCL,DQL，并且说明mysql各个关键字查询时候的先后顺序1.1 DDL数据定义语句（Data Definition Language)主要负责数据">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>第六周作业 | 焱黎的博客</title>
+    <link rel="icon" type="image/jpeg" href="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image_20220801100631.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <style type="text/css">
+        
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    <body>
+
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">焱黎的博客</span>
+                </a>
+            </div>
+            
+
+
+<!-- <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/AV" class="waves-effect waves-light">
+            
+            <i class="fa fa-music"></i>
+            
+            <span>视听</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/galleries" class="waves-effect waves-light">
+            
+            <i class="fa fa-photo"></i>
+            
+            <span>相册</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-envelope"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul> -->
+
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right nav-menu">
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/" class="waves-effect waves-light">
+              
+                <i class="fa fa-home"></i>
+              
+              <span>首页</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/tags" class="waves-effect waves-light">
+              
+                <i class="fa fa-tags"></i>
+              
+              <span>标签</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/categories" class="waves-effect waves-light">
+              
+                <i class="fa fa-bookmark"></i>
+              
+              <span>分类</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/archives" class="waves-effect waves-light">
+              
+                <i class="fa fa-archive"></i>
+              
+              <span>归档</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/AV" class="waves-effect waves-light">
+              
+                <i class="fa fa-music"></i>
+              
+              <span>视听</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/galleries" class="waves-effect waves-light">
+              
+                <i class="fa fa-photo"></i>
+              
+              <span>相册</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/about" class="waves-effect waves-light">
+              
+                <i class="fa fa-user-circle-o"></i>
+              
+              <span>关于我</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/contact" class="waves-effect waves-light">
+              
+                <i class="fa fa-envelope"></i>
+              
+              <span>留言板</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/friends" class="waves-effect waves-light">
+              
+                <i class="fa fa-address-book"></i>
+              
+              <span>友情链接</span>
+            </a>
+
+            
+      </li>
+    
+
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">焱黎的博客</div>
+        <div class="logo-desc">
+            
+            Linux | SRE | Python
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/AV" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-music"></i>
+                
+                视听
+            </a>
+        </li>
+        
+        <li>
+            <a href="/galleries" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-photo"></i>
+                
+                相册
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envelope"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+   
+   
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<!-- <ul class="menu-list mobile-menu-list">
+    
+        <li class="m-nav-item">
+                
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-home"></i>
+                        
+                        首页
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/tags" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-tags"></i>
+                        
+                        标签
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/categories" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-bookmark"></i>
+                        
+                        分类
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/archives" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-archive"></i>
+                        
+                        归档
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/AV" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-music"></i>
+                        
+                        视听
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/galleries" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-photo"></i>
+                        
+                        相册
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/about" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-user-circle-o"></i>
+                        
+                        关于我
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/contact" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-envelope"></i>
+                        
+                        留言板
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/friends" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-address-book"></i>
+                        
+                        友情链接
+                    </a>
+              
+            </li>
+        
+
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul> -->
+
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/yanlinux/yanlinux.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+        
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/5.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        第六周作业
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- shw2018 洪卫  modify 2019.08.15-->
+<!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/SQL/" target="_blank">
+                                <span class="chip bg-color">SQL</span>
+                            </a>
+                        
+                            <a href="/tags/xtrabackup备份/" target="_blank">
+                                <span class="chip bg-color">xtrabackup备份</span>
+                            </a>
+                        
+                            <a href="/tags/mysql主从复制/" target="_blank">
+                                <span class="chip bg-color">mysql主从复制</span>
+                            </a>
+                        
+                            <a href="/tags/mysql主主复制/" target="_blank">
+                                <span class="chip bg-color">mysql主主复制</span>
+                            </a>
+                        
+                            <a href="/tags/mysql半同步复制/" target="_blank">
+                                <span class="chip bg-color">mysql半同步复制</span>
+                            </a>
+                        
+                            <a href="/tags/mycat/" target="_blank">
+                                <span class="chip bg-color">mycat</span>
+                            </a>
+                        
+                            <a href="/tags/openvpn/" target="_blank">
+                                <span class="chip bg-color">openvpn</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                作业
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-09-26
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                        焱黎
+                    
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        7.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        40 分
+                    </div>
+                    
+                
+                
+                
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv" ></span>
+    
+                
+
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="第六周作业-SQL语句、xtrabackup备份、OpenVPN"><a href="#第六周作业-SQL语句、xtrabackup备份、OpenVPN" class="headerlink" title="第六周作业 SQL语句、xtrabackup备份、OpenVPN"></a>第六周作业 SQL语句、xtrabackup备份、OpenVPN</h1><h2 id="1、简述DDL-DML-DCL-DQL，并且说明mysql各个关键字查询时候的先后顺序"><a href="#1、简述DDL-DML-DCL-DQL，并且说明mysql各个关键字查询时候的先后顺序" class="headerlink" title="1、简述DDL,DML,DCL,DQL，并且说明mysql各个关键字查询时候的先后顺序"></a>1、简述DDL,DML,DCL,DQL，并且说明mysql各个关键字查询时候的先后顺序</h2><h3 id="1-1-DDL数据定义语句（Data-Definition-Language"><a href="#1-1-DDL数据定义语句（Data-Definition-Language" class="headerlink" title="1.1 DDL数据定义语句（Data Definition Language)"></a>1.1 DDL数据定义语句（Data Definition Language)</h3><p>主要负责<strong>数据结构定义与数据库对象定义</strong>的语句，由<strong><code>create</code>，<code>alter</code>，<code>drop</code></strong>三个语法组成。DDL操作时<strong>隐形提交</strong>的，不能rollback。</p>
+<h3 id="1-2-DML数据操纵语言-Data-Manipulation-Language"><a href="#1-2-DML数据操纵语言-Data-Manipulation-Language" class="headerlink" title="1.2 DML数据操纵语言(Data Manipulation Language)"></a>1.2 DML数据操纵语言(Data Manipulation Language)</h3><p>负责对<strong>数据库对象运行数据访问工作</strong>的指令集，以<strong><code>insert</code>，<code>update</code>，<code>delete</code></strong>三种指令为核心，分别代表<strong>插入</strong>、<strong>更新</strong>与<strong>删除</strong>。</p>
+<h3 id="1-3-DQL数据查询语句-Data-Query-Language"><a href="#1-3-DQL数据查询语句-Data-Query-Language" class="headerlink" title="1.3 DQL数据查询语句(Data Query Language)"></a>1.3 DQL数据查询语句(Data Query Language)</h3><p>负责进行<strong>数据查询</strong>而不会对数据本身进行修改的语句，这是最基本的SQL语句。<strong><code>select</code></strong>是DQL用的最多的。其他还有<strong><code>from</code>，<code>where</code>，<code>group by</code>，<code>having</code>和<code>order by</code></strong>。这些DQL保留字常与其他类型的SQL语句一起使用。</p>
+<h3 id="1-4-DCL数据控制语句-Data-Control-Language"><a href="#1-4-DCL数据控制语句-Data-Control-Language" class="headerlink" title="1.4 DCL数据控制语句(Data Control Language)"></a>1.4 DCL数据控制语句(Data Control Language)</h3><p>对<strong>数据访问权进行控制</strong>的指令，它可以控制特定用户账号对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权，并控制<strong>数据库操纵事务发生的时间及效果</strong>，对数据库实行监视等。由<strong><code>grant</code>和<code>revoke</code></strong>两个指令组成。DCL以控制用户的访问权限为主，<code>grant</code>为授权语句，对应的<code>revoke</code>是撤销授权语句。</p>
+<h3 id="1-5-mysql各个关键字查询时候的先后顺序"><a href="#1-5-mysql各个关键字查询时候的先后顺序" class="headerlink" title="1.5 mysql各个关键字查询时候的先后顺序"></a>1.5 mysql各个关键字查询时候的先后顺序</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220926103110234.png" alt=""></p>
+<h2 id="2、自行设计10个sql查询语句，需要用到关键字-GROUP-BY-HAVING-ORDER-BY-LIMIT-，至少同时用到两个。"><a href="#2、自行设计10个sql查询语句，需要用到关键字-GROUP-BY-HAVING-ORDER-BY-LIMIT-，至少同时用到两个。" class="headerlink" title="2、自行设计10个sql查询语句，需要用到关键字[GROUP BY/HAVING/ORDER BY/LIMIT]，至少同时用到两个。"></a>2、自行设计10个sql查询语句，需要用到关键字[GROUP BY/HAVING/ORDER BY/LIMIT]，至少同时用到两个。</h2><pre class="line-numbers language-mysql"><code class="language-mysql">#1 分组后取出男生的平均年龄
+(root@localhost) [hellodb]> select gender,avg(age) from students group by gender having gender = 'M';
++--------+----------+
+| gender | avg(age) |
++--------+----------+
+| M      |  33.0000 |
++--------+----------+
+1 row in set (0.01 sec)
+
+#2 或者这样处理
+(root@localhost) [hellodb]> select gender,avg(age) from students where gender='M' group by gender;
++--------+----------+
+| gender | avg(age) |
++--------+----------+
+| M      |  33.0000 |
++--------+----------+
+1 row in set (0.00 sec)
+
+#3 多组分组统计
+(root@localhost) [hellodb]> select classid,gender,avg(age) from students where classid is not null group by classid,gender order by classid;
++---------+--------+----------+
+| classid | gender | avg(age) |
++---------+--------+----------+
+|       1 | F      |  19.5000 |
+|       1 | M      |  21.5000 |
+|       2 | M      |  36.0000 |
+|       3 | F      |  18.3333 |
+|       3 | M      |  26.0000 |
+|       4 | M      |  24.7500 |
+|       5 | M      |  46.0000 |
+|       6 | F      |  20.0000 |
+|       6 | M      |  23.0000 |
+|       7 | F      |  18.0000 |
+|       7 | M      |  23.0000 |
++---------+--------+----------+
+11 rows in set (0.00 sec)
+
+#4 以ClassID为分组依据，显示平均年龄大于30的分组及平均年龄
+mysql> select classid,avg(age) as 平均年龄 from students where classid is not null group by classid having 平均年龄>30;
++---------+--------------+
+| classid | 平均年龄     |
++---------+--------------+
+|       2 |      36.0000 |
+|       5 |      46.0000 |
++---------+--------------+
+2 rows in set (0.00 sec)
+
+#5 以年龄排序后，显示年龄最大的前10位同学的信息
+mysql> select * from students order by age limit 10;
++-------+--------------+-----+--------+---------+-----------+
+| StuID | Name         | Age | Gender | ClassID | TeacherID |
++-------+--------------+-----+--------+---------+-----------+
+|    14 | Lu Wushuang  |  17 | F      |       3 |      NULL |
+|     8 | Lin Daiyu    |  17 | F      |       7 |      NULL |
+|    19 | Xue Baochai  |  18 | F      |       6 |      NULL |
+|    20 | Diao Chan    |  19 | F      |       7 |      NULL |
+|    15 | Duan Yu      |  19 | M      |       4 |      NULL |
+|    12 | Wen Qingqing |  19 | F      |       1 |      NULL |
+|     7 | Xi Ren       |  19 | F      |       3 |      NULL |
+|    10 | Yue Lingshan |  19 | F      |       3 |      NULL |
+|    22 | Xiao Qiao    |  20 | F      |       1 |      NULL |
+|     9 | Ren Yingying |  20 | F      |       6 |      NULL |
++-------+--------------+-----+--------+---------+-----------+
+10 rows in set (0.00 sec)
+
+#6 以ClassID分组，显示每班的同学的人数
+mysql> select classid,count(stuid) from students where classid is not null group by classid order by classid;
++---------+--------------+
+| classid | count(stuid) |
++---------+--------------+
+|       1 |            4 |
+|       2 |            3 |
+|       3 |            4 |
+|       4 |            4 |
+|       5 |            1 |
+|       6 |            4 |
+|       7 |            3 |
++---------+--------------+
+7 rows in set (0.00 sec)
+
+#7 以ClassID分组，显示其平均年龄大于25的班级
+mysql> select classid,avg(age) 平均年龄 from students where classid is not null group by classid having  平均年龄>25;
++---------+--------------+
+| classid | 平均年龄     |
++---------+--------------+
+|       2 |      36.0000 |
+|       5 |      46.0000 |
++---------+--------------+
+2 rows in set (0.00 sec)
+
+#8 以Gender分组，显示各组中年龄大于25的学员的年龄之和
+mysql> select classid,gender,sum(age) from students where classid is not null and age > 25 group by classid,gender order by classid,gender;
++---------+--------+----------+
+| classid | gender | sum(age) |
++---------+--------+----------+
+|       2 | M      |       86 |
+|       3 | M      |       26 |
+|       4 | M      |       32 |
+|       5 | M      |       46 |
++---------+--------+----------+
+4 rows in set (0.00 sec)
+
+#9 查看学生中年龄前三名
+mysql> select * from students order by age desc limit 3;
++-------+-------------+-----+--------+---------+-----------+
+| StuID | Name        | Age | Gender | ClassID | TeacherID |
++-------+-------------+-----+--------+---------+-----------+
+|    25 | Sun Dasheng | 100 | M      |    NULL |      NULL |
+|     3 | Xie Yanke   |  53 | M      |       2 |        16 |
+|     6 | Shi Qing    |  46 | M      |       5 |      NULL |
++-------+-------------+-----+--------+---------+-----------+
+3 rows in set (0.00 sec)
+
+#10 查看前三个班级中的学生总人数
+mysql> select classid,count(*) 数量 from students where classid is not null group by classid order by classid limit 3;
++---------+--------+
+| classid | 数量   |
++---------+--------+
+|       1 |      4 |
+|       2 |      3 |
+|       3 |      4 |
++---------+--------+
+3 rows in set (0.00 sec)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3、xtrabackup备份和还原数据库练习"><a href="#3、xtrabackup备份和还原数据库练习" class="headerlink" title="3、xtrabackup备份和还原数据库练习"></a>3、xtrabackup备份和还原数据库练习</h2><p><strong>利用xtrabackup完全，增量备份及还原</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 备份过程</span>
+<span class="token comment" spellcheck="true">#1.1 在原来主机上做完全备份到/backup</span>
+<span class="token punctuation">[</span>16:18:45 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /backup
+<span class="token punctuation">[</span>16:21:07 root@rocky ~<span class="token punctuation">]</span>$ xtrabackup -uroot -plgq123456** --backup --target-dir<span class="token operator">=</span>/backup/base
+
+<span class="token comment" spellcheck="true">##1.2 第一次修改数据</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> insert students <span class="token punctuation">(</span>name,age,gender<span class="token punctuation">)</span>values<span class="token punctuation">(</span><span class="token string">'rose'</span>,20,<span class="token string">'F'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##1.3 第一次增量备份</span>
+<span class="token punctuation">[</span>17:37:23 root@rocky ~<span class="token punctuation">]</span>$ xtrabackup -uroot -p<span class="token string">'lgq123456**'</span> --backup --target-dir<span class="token operator">=</span>/backup/inc1 --incremental-basedir<span class="token operator">=</span>/backup/base
+
+<span class="token comment" spellcheck="true">##1.4 第二次修改数据</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> insert students <span class="token punctuation">(</span>name,age,gender<span class="token punctuation">)</span>values<span class="token punctuation">(</span><span class="token string">'jack'</span>,22,<span class="token string">'M'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##1.5 第二次增量备份</span>
+<span class="token punctuation">[</span>17:38:30 root@rocky ~<span class="token punctuation">]</span>$ xtrabackup -uroot -p<span class="token string">'lgq123456**'</span> --backup --target-dir<span class="token operator">=</span>/backup/inc2 --incremental-basedir<span class="token operator">=</span>/backup/inc1
+
+<span class="token comment" spellcheck="true">##1.6 拷贝三次备份数据到测试服务器</span>
+<span class="token punctuation">[</span>18:57:42 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> -r /backup/ 10.0.0.9:/
+
+
+<span class="token comment" spellcheck="true">#2 还原过程</span>
+<span class="token comment" spellcheck="true">##2.1 预准备完成备份，此次不需要回滚未完成事务</span>
+<span class="token punctuation">[</span>19:02:59 root@rocky8 /<span class="token punctuation">]</span>$ xtrabackup --prepare --apply-log-only --target-dir<span class="token operator">=</span>/backup/base
+
+<span class="token comment" spellcheck="true">##2.2 合并第一次增量备份到完全备份</span>
+<span class="token punctuation">[</span>19:04:30 root@rocky8 /<span class="token punctuation">]</span>$ xtrabackup --prepare --apply-log-only --target-dir<span class="token operator">=</span>/backup/base --incremental-dir<span class="token operator">=</span>/backup/inc1
+
+<span class="token comment" spellcheck="true">##2.3 合并第二次增量备份，最后一次还原所以不需要加--apply-log-only</span>
+<span class="token punctuation">[</span>19:07:54 root@rocky8 /<span class="token punctuation">]</span>$ xtrabackup --prepare --target-dir<span class="token operator">=</span>/backup/base --incremental-dir<span class="token operator">=</span>/backup/inc2
+
+<span class="token comment" spellcheck="true">##2.4 复制到数据库目录，确保/var/lib/mysql目录为空，MySQL服务为停止状态</span>
+<span class="token punctuation">[</span>19:09:40 root@rocky8 /<span class="token punctuation">]</span>$ xtrabackup --copy-back --target-dir<span class="token operator">=</span>/backup/base
+
+<span class="token comment" spellcheck="true">##2.5还原属性</span>
+<span class="token punctuation">[</span>19:11:19 root@rocky8 /<span class="token punctuation">]</span>$ <span class="token function">chown</span> -R mysql:mysql /var/lib/mysql/
+
+<span class="token comment" spellcheck="true">##2.6 启动服务登录数据库查看修改的数据时候还原回来了</span>
+<span class="token punctuation">[</span>19:11:42 root@rocky8 /<span class="token punctuation">]</span>$ systemctl start mysqld.service 
+<span class="token punctuation">[</span>19:12:34 root@rocky8 /<span class="token punctuation">]</span>$ mysql -uroot -p 
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with <span class="token punctuation">;</span> or \g.
+Your MySQL connection <span class="token function">id</span> is 8
+Server version: 8.0.26 Source distribution
+
+Copyright <span class="token punctuation">(</span>c<span class="token punctuation">)</span> 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type <span class="token string">'help;'</span> or <span class="token string">'\h'</span> <span class="token keyword">for</span> help. Type <span class="token string">'\c'</span> to <span class="token function">clear</span> the current input statement.
+
+mysql<span class="token operator">></span> use hellodb
+Reading table information <span class="token keyword">for</span> completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from students<span class="token punctuation">;</span>
++-------+---------------+-----+--------+---------+-----------+
+<span class="token operator">|</span> StuID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span> ClassID <span class="token operator">|</span> TeacherID <span class="token operator">|</span>
++-------+---------------+-----+--------+---------+-----------+
+<span class="token operator">|</span>     1 <span class="token operator">|</span> Shi Zhongyu   <span class="token operator">|</span>  22 <span class="token operator">|</span> M      <span class="token operator">|</span>       2 <span class="token operator">|</span>         3 <span class="token operator">|</span>
+<span class="token operator">|</span>     2 <span class="token operator">|</span> Shi Potian    <span class="token operator">|</span>  22 <span class="token operator">|</span> M      <span class="token operator">|</span>       1 <span class="token operator">|</span>         7 <span class="token operator">|</span>
+<span class="token operator">|</span>     3 <span class="token operator">|</span> Xie Yanke     <span class="token operator">|</span>  53 <span class="token operator">|</span> M      <span class="token operator">|</span>       2 <span class="token operator">|</span>        16 <span class="token operator">|</span>
+<span class="token operator">|</span>     4 <span class="token operator">|</span> Ding Dian     <span class="token operator">|</span>  32 <span class="token operator">|</span> M      <span class="token operator">|</span>       4 <span class="token operator">|</span>         4 <span class="token operator">|</span>
+<span class="token operator">|</span>     5 <span class="token operator">|</span> Yu Yutong     <span class="token operator">|</span>  26 <span class="token operator">|</span> M      <span class="token operator">|</span>       3 <span class="token operator">|</span>         1 <span class="token operator">|</span>
+<span class="token operator">|</span>     6 <span class="token operator">|</span> Shi Qing      <span class="token operator">|</span>  46 <span class="token operator">|</span> M      <span class="token operator">|</span>       5 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>     7 <span class="token operator">|</span> Xi Ren        <span class="token operator">|</span>  19 <span class="token operator">|</span> F      <span class="token operator">|</span>       3 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>     8 <span class="token operator">|</span> Lin Daiyu     <span class="token operator">|</span>  17 <span class="token operator">|</span> F      <span class="token operator">|</span>       7 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>     9 <span class="token operator">|</span> Ren Yingying  <span class="token operator">|</span>  20 <span class="token operator">|</span> F      <span class="token operator">|</span>       6 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    10 <span class="token operator">|</span> Yue Lingshan  <span class="token operator">|</span>  19 <span class="token operator">|</span> F      <span class="token operator">|</span>       3 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    11 <span class="token operator">|</span> Yuan Chengzhi <span class="token operator">|</span>  23 <span class="token operator">|</span> M      <span class="token operator">|</span>       6 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    12 <span class="token operator">|</span> Wen Qingqing  <span class="token operator">|</span>  19 <span class="token operator">|</span> F      <span class="token operator">|</span>       1 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    13 <span class="token operator">|</span> Tian Boguang  <span class="token operator">|</span>  33 <span class="token operator">|</span> M      <span class="token operator">|</span>       2 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    14 <span class="token operator">|</span> Lu Wushuang   <span class="token operator">|</span>  17 <span class="token operator">|</span> F      <span class="token operator">|</span>       3 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    15 <span class="token operator">|</span> Duan Yu       <span class="token operator">|</span>  19 <span class="token operator">|</span> M      <span class="token operator">|</span>       4 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    16 <span class="token operator">|</span> Xu Zhu        <span class="token operator">|</span>  21 <span class="token operator">|</span> M      <span class="token operator">|</span>       1 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    17 <span class="token operator">|</span> Lin Chong     <span class="token operator">|</span>  25 <span class="token operator">|</span> M      <span class="token operator">|</span>       4 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    18 <span class="token operator">|</span> Hua Rong      <span class="token operator">|</span>  23 <span class="token operator">|</span> M      <span class="token operator">|</span>       7 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    19 <span class="token operator">|</span> Xue Baochai   <span class="token operator">|</span>  18 <span class="token operator">|</span> F      <span class="token operator">|</span>       6 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    20 <span class="token operator">|</span> Diao Chan     <span class="token operator">|</span>  19 <span class="token operator">|</span> F      <span class="token operator">|</span>       7 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    21 <span class="token operator">|</span> Huang Yueying <span class="token operator">|</span>  22 <span class="token operator">|</span> F      <span class="token operator">|</span>       6 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    22 <span class="token operator">|</span> Xiao Qiao     <span class="token operator">|</span>  20 <span class="token operator">|</span> F      <span class="token operator">|</span>       1 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    23 <span class="token operator">|</span> Ma Chao       <span class="token operator">|</span>  23 <span class="token operator">|</span> M      <span class="token operator">|</span>       4 <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    24 <span class="token operator">|</span> Xu Xian       <span class="token operator">|</span>  27 <span class="token operator">|</span> M      <span class="token operator">|</span>    NULL <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    25 <span class="token operator">|</span> Sun Dasheng   <span class="token operator">|</span> 100 <span class="token operator">|</span> M      <span class="token operator">|</span>    NULL <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    26 <span class="token operator">|</span> rose          <span class="token operator">|</span>  20 <span class="token operator">|</span> F      <span class="token operator">|</span>    NULL <span class="token operator">|</span>      NULL <span class="token operator">|</span>
+<span class="token operator">|</span>    27 <span class="token operator">|</span> jack          <span class="token operator">|</span>  22 <span class="token operator">|</span> M      <span class="token operator">|</span>    NULL <span class="token operator">|</span>      NULL <span class="token operator">|</span>
++-------+---------------+-----+--------+---------+-----------+
+27 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="4、实现mysql主从复制，主主复制和半同步复制"><a href="#4、实现mysql主从复制，主主复制和半同步复制" class="headerlink" title="4、实现mysql主从复制，主主复制和半同步复制"></a>4、实现mysql主从复制，主主复制和半同步复制</h2><h3 id="4-1-mysql主从复制"><a href="#4-1-mysql主从复制" class="headerlink" title="4.1 mysql主从复制"></a>4.1 mysql主从复制</h3><blockquote>
+<p>实验环境：</p>
+<ul>
+<li>主节点：10.0.0.3</li>
+<li>从节点：10.0.0.9</li>
+</ul>
+</blockquote>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 主节点设置</span>
+<span class="token comment" spellcheck="true">##1.1 设置配置文件，并重启服务</span>
+<span class="token punctuation">[</span>10:07:35 root@master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>3
+log_bin<span class="token operator">=</span>/data/binlog/mysql-bin
+<span class="token punctuation">[</span>10:27:19 root@master ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+
+<span class="token comment" spellcheck="true">##1.2 登录mysql，创建复制用户以及授权</span>
+<span class="token punctuation">[</span>10:43:17 root@master ~<span class="token punctuation">]</span>$ mysql -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with <span class="token punctuation">;</span> or \g.
+Your MySQL connection <span class="token function">id</span> is 9
+Server version: 8.0.26 Source distribution
+
+Copyright <span class="token punctuation">(</span>c<span class="token punctuation">)</span> 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type <span class="token string">'help;'</span> or <span class="token string">'\h'</span> <span class="token keyword">for</span> help. Type <span class="token string">'\c'</span> to <span class="token function">clear</span> the current input statement.
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> create user <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> grant replication slave on *.* to <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##1.3 进行完全备份</span>
+<span class="token punctuation">[</span>10:50:47 root@master ~<span class="token punctuation">]</span>$ mysqldump -uroot -p<span class="token string">'lgq123456**'</span> -A -F --single-transaction --master-data<span class="token operator">=</span>1 <span class="token operator">></span> /backup/full_<span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +%F_%T<span class="token variable">`</span></span>.sql
+mysqldump: <span class="token punctuation">[</span>Warning<span class="token punctuation">]</span> Using a password on the <span class="token function">command</span> line interface can be insecure.
+<span class="token punctuation">[</span>10:50:50 root@master ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /backup/
+full_2022-09-19_10:50:50.sql
+
+<span class="token comment" spellcheck="true">##1.4 拷贝备份数据库到10.0.0.9</span>
+<span class="token punctuation">[</span>10:50:54 root@master ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> /backup/* 10.0.0.9:/backup
+root@10.0.0.9<span class="token string">'s password: 
+full_2022-09-19_10:50:50.sql                                         100% 1597KB  96.0MB/s   00:00
+
+
+#2 从节点
+##2.1 修改配置文件，并重启
+[10:55:39 root@slave1 ~]$ vi /etc/my.cnf
+[mysqld]
+server-id=9
+read-only
+[10:57:19 root@slave1 ~]$ systemctl start mysqld.service
+
+##2.2 修改备份文件，在change master to中添加主节点信息
+[10:58:25 root@slave1 ~]$ vi /backup/full_2022-09-19_10.sql
+...省略
+CHANGE MASTER TO
+  MASTER_HOST='</span>10.0.0.3<span class="token string">',  #主节点IP地址 
+  MASTER_USER='</span>repluser<span class="token string">',  #在主节点上创建的账号
+  MASTER_PASSWORD='</span>lgq123456<span class="token string">', #密码
+  MASTER_PORT=3306, #端口号
+  MASTER_LOG_FILE='</span>mysql-bin.000002<span class="token string">', 
+  MASTER_LOG_POS=156;
+...省略
+
+##2.3 还原备份
+###暂时关闭二进制日志
+mysql> set sql_log_bin=0;
+###还原
+mysql> source /backup/full_2022-09-19.sql;
+##2.4 开启主从节点的链接线程
+mysql> start slave;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for source to send event
+                  Master_Host: 10.0.0.3
+                  Master_User: repluser
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 156
+               Relay_Log_File: slave1-relay-bin.000002
+                Relay_Log_Pos: 324
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 156
+              Relay_Log_Space: 534
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 3
+                  Master_UUID: 4c7960e2-2dec-11ed-b13a-000c29b92bb4
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row in set, 1 warning (0.00 sec)
+
+#3 测试主从是否同步
+##3.1 主节点上更新数据
+(root@localhost) [hellodb]> insert teachers (name,age,gender) values('</span>zhang<span class="token string">',28,'</span>F'<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+5 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##3.2 从节点查看数据是否同步</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+5 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-2-主主复制"><a href="#4-2-主主复制" class="headerlink" title="4.2 主主复制"></a>4.2 主主复制</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 在第一个master节点上实现</span>
+<span class="token comment" spellcheck="true">##1.1 修改配置信息重启服务</span>
+<span class="token punctuation">[</span>15:00:10 root@master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>3
+log_bin<span class="token operator">=</span>/data/binlog/mysql-bin
+auto_increment_offset<span class="token operator">=</span>1
+auto_increment_increment<span class="token operator">=</span>2
+<span class="token punctuation">[</span>15:01:28 root@master ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+
+<span class="token comment" spellcheck="true">##1.2 创建并授权账号</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> create user <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> grant replication slave on *.* to <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">#2 在第二个master上实现</span>
+<span class="token comment" spellcheck="true">##2.1 修改配置文件</span>
+<span class="token punctuation">[</span>15:24:16 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>9
+auto_increment_offset<span class="token operator">=</span>2
+auto_increment_increment<span class="token operator">=</span>2
+<span class="token punctuation">[</span>15:25:21 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl start mysqld.service
+mysql<span class="token operator">></span> CHANGE MASTER TO
+    -<span class="token operator">></span>   MASTER_HOST<span class="token operator">=</span><span class="token string">'10.0.0.3'</span>,                                   
+    -<span class="token operator">></span>   MASTER_USER<span class="token operator">=</span><span class="token string">'repluser'</span>,
+    -<span class="token operator">></span>   MASTER_PASSWORD<span class="token operator">=</span><span class="token string">'lgq123456'</span>,
+    -<span class="token operator">></span>   MASTER_PORT<span class="token operator">=</span>3306,
+    -<span class="token operator">></span>   MASTER_LOG_FILE<span class="token operator">=</span><span class="token string">'mysql-bin.000003'</span>,
+    -<span class="token operator">></span>   MASTER_LOG_POS<span class="token operator">=</span>156<span class="token punctuation">;</span>
+mysql<span class="token operator">></span> start slave<span class="token punctuation">;</span>
+mysql<span class="token operator">></span> show master logs<span class="token punctuation">;</span>
++---------------+-----------+-----------+
+<span class="token operator">|</span> Log_name      <span class="token operator">|</span> File_size <span class="token operator">|</span> Encrypted <span class="token operator">|</span>
++---------------+-----------+-----------+
+<span class="token operator">|</span> binlog.000001 <span class="token operator">|</span>   3185009 <span class="token operator">|</span> No        <span class="token operator">|</span>
+<span class="token operator">|</span> binlog.000002 <span class="token operator">|</span>       156 <span class="token operator">|</span> No        <span class="token operator">|</span>
++---------------+-----------+-----------+
+2 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#3 在第一个节点上实现</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> CHANGE MASTER TO
+    -<span class="token operator">></span>   MASTER_HOST<span class="token operator">=</span><span class="token string">'10.0.0.9'</span>,
+    -<span class="token operator">></span>   MASTER_USER<span class="token operator">=</span><span class="token string">'repluser'</span>,
+    -<span class="token operator">></span>   MASTER_PASSWORD<span class="token operator">=</span><span class="token string">'lgq123456'</span>,
+    -<span class="token operator">></span>   MASTER_PORT<span class="token operator">=</span>3306,
+    -<span class="token operator">></span>   MASTER_LOG_FILE<span class="token operator">=</span><span class="token string">'binlog.000002'</span>,
+    -<span class="token operator">></span>   MASTER_LOG_POS<span class="token operator">=</span>156<span class="token punctuation">;</span>
+Query OK, 0 rows affected, 9 warnings <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> start slave<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-3-半同步复制"><a href="#4-3-半同步复制" class="headerlink" title="4.3 半同步复制"></a>4.3 半同步复制</h3><blockquote>
+<p>实验环境：</p>
+<ul>
+<li>master：10.0.0.3</li>
+<li>slave1：10.0.0.9</li>
+<li>slave2：10.0.0.10</li>
+</ul>
+</blockquote>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 master节点实现</span>
+<span class="token comment" spellcheck="true">##1.1 安装插件</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token function">install</span> plugin rpl_semi_sync_master SONAME <span class="token string">'semisync_master.so'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##1.2 修改配置文件，重启服务</span>
+<span class="token punctuation">[</span>16:41:10 root@master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>3
+log_bin<span class="token operator">=</span>/data/binlog/mysql-bin
+rpl_semi_sync_master_enabled<span class="token operator">=</span>ON
+rpl_semi_sync_master_timeout<span class="token operator">=</span>3000 <span class="token comment" spellcheck="true">#设置3s内无法同步，也将返回成功信息给客户端</span>
+<span class="token punctuation">[</span>16:42:43 root@master ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+<span class="token comment" spellcheck="true">##1.3 创建并授权账号</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> create user <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> grant replication slave on *.* to <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##1.4 备份数据库</span>
+<span class="token punctuation">[</span>16:49:11 root@master ~<span class="token punctuation">]</span>$ mysqldump -uroot -p<span class="token string">'lgq123456**'</span> -A -F --single-transaction --master-data <span class="token operator">></span> /backup/all.sql
+
+<span class="token punctuation">[</span>16:50:12 root@master ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> /backup/all.sql 10.0.0.9:/backup
+
+<span class="token punctuation">[</span>16:51:10 root@master ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> /backup/all.sql 10.0.0.10:/backup
+
+<span class="token comment" spellcheck="true">#2 在slave1上实现</span>
+<span class="token comment" spellcheck="true">##2.1 安装插件</span>
+<span class="token punctuation">[</span>16:54:16 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl start mysqld.service 
+<span class="token punctuation">[</span>16:54:29 root@rocky8 ~<span class="token punctuation">]</span>$ mysql
+mysql<span class="token operator">></span> <span class="token function">install</span> plugin rpl_semi_sync_slave SONAME <span class="token string">'semisync_slave.so'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##2.2 修改配置文件</span>
+<span class="token punctuation">[</span>16:55:56 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>9
+rpl_semi_sync_slave_enabled<span class="token operator">=</span>ON
+<span class="token punctuation">[</span>16:57:51 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+<span class="token comment" spellcheck="true">##2.3 修改备份数据文件，在change master to语句改为以下信息</span>
+<span class="token punctuation">[</span>16:59:02 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /backup/all.sql
+CHANGE MASTER TO 
+  MASTER_HOST<span class="token operator">=</span><span class="token string">'10.0.0.3'</span>,       
+  MASTER_USER<span class="token operator">=</span><span class="token string">'repluser'</span>,
+  MASTER_PASSWORD<span class="token operator">=</span><span class="token string">'lgq123456'</span>,
+  MASTER_PORT<span class="token operator">=</span>3306,
+  MASTER_LOG_FILE<span class="token operator">=</span><span class="token string">'mysql-bin.000007'</span>, MASTER_LOG_POS<span class="token operator">=</span>156<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##2.4 同步备份数据库</span>
+<span class="token punctuation">[</span>17:00:27 root@rocky8 ~<span class="token punctuation">]</span>$ mysql <span class="token operator">&lt;</span> /backup/all.sql
+
+<span class="token comment" spellcheck="true">##2.5 登录数据库，开启slave</span>
+mysql<span class="token operator">></span> start slave<span class="token punctuation">;</span>
+
+
+<span class="token comment" spellcheck="true">#3 在slave1上实现</span>
+<span class="token comment" spellcheck="true">##3.1 安装插件</span>
+<span class="token punctuation">[</span>17:02:16 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl start mysqld.service 
+<span class="token punctuation">[</span>17:02:29 root@rocky8 ~<span class="token punctuation">]</span>$ mysql
+mysql<span class="token operator">></span> <span class="token function">install</span> plugin rpl_semi_sync_slave SONAME <span class="token string">'semisync_slave.so'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##3.2 修改配置文件</span>
+<span class="token punctuation">[</span>17:04:56 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>10
+rpl_semi_sync_slave_enabled<span class="token operator">=</span>ON
+<span class="token punctuation">[</span>17:05:51 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+<span class="token comment" spellcheck="true">##3.3 修改备份数据文件，在change master to语句改为以下信息</span>
+<span class="token punctuation">[</span>17:06:02 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /backup/all.sql
+CHANGE MASTER TO 
+  MASTER_HOST<span class="token operator">=</span><span class="token string">'10.0.0.3'</span>,       
+  MASTER_USER<span class="token operator">=</span><span class="token string">'repluser'</span>,
+  MASTER_PASSWORD<span class="token operator">=</span><span class="token string">'lgq123456'</span>,
+  MASTER_PORT<span class="token operator">=</span>3306,
+  MASTER_LOG_FILE<span class="token operator">=</span><span class="token string">'mysql-bin.000007'</span>, MASTER_LOG_POS<span class="token operator">=</span>156<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##3.4 同步备份数据库</span>
+<span class="token punctuation">[</span>17:07:27 root@rocky8 ~<span class="token punctuation">]</span>$ mysql <span class="token operator">&lt;</span> /backup/all.sql
+
+<span class="token comment" spellcheck="true">##2.5 登录数据库，开启slave</span>
+mysql<span class="token operator">></span> start slave<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">#观察半同步功能是否开启</span>
+mysql<span class="token operator">></span> SHOW GLOBAL VARIABLES LIKE <span class="token string">'%semi%'</span><span class="token punctuation">;</span>
++---------------------------------+-------+
+<span class="token operator">|</span> Variable_name                   <span class="token operator">|</span> Value <span class="token operator">|</span>
++---------------------------------+-------+
+<span class="token operator">|</span> rpl_semi_sync_slave_enabled     <span class="token operator">|</span> ON    <span class="token operator">|</span>
+<span class="token operator">|</span> rpl_semi_sync_slave_trace_level <span class="token operator">|</span> 32    <span class="token operator">|</span>
++---------------------------------+-------+
+<span class="token comment" spellcheck="true">#在主节点上查看半同步状态变量</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> show status LIKE <span class="token string">'%semi%'</span><span class="token punctuation">;</span>
++--------------------------------------------+-------+
+<span class="token operator">|</span> Variable_name                              <span class="token operator">|</span> Value <span class="token operator">|</span>
++--------------------------------------------+-------+
+<span class="token operator">|</span> Rpl_semi_sync_master_clients               <span class="token operator">|</span> 2     <span class="token operator">|</span><span class="token comment" spellcheck="true">#有两个从节点</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_net_avg_wait_time     <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_net_wait_time         <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_net_waits             <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_no_times              <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_no_tx                 <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_status                <span class="token operator">|</span> ON    <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_timefunc_failures     <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_tx_avg_wait_time      <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_tx_wait_time          <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_tx_waits              <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_wait_pos_backtraverse <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_wait_sessions         <span class="token operator">|</span> 0     <span class="token operator">|</span>
+<span class="token operator">|</span> Rpl_semi_sync_master_yes_tx                <span class="token operator">|</span> 0     <span class="token operator">|</span>
++--------------------------------------------+-------+
+
+<span class="token comment" spellcheck="true">#测试是否可以同步</span>
+<span class="token comment" spellcheck="true">##在主节点插入数据</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> insert teachers <span class="token punctuation">(</span>name,age,gender<span class="token punctuation">)</span>values<span class="token punctuation">(</span><span class="token string">'c'</span>,35,<span class="token string">'M'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   6 <span class="token operator">|</span> sun           <span class="token operator">|</span>  24 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   7 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   8 <span class="token operator">|</span> b             <span class="token operator">|</span>  34 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   9 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>  10 <span class="token operator">|</span> c             <span class="token operator">|</span>  35 <span class="token operator">|</span> M      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+10 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##slave1测试</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   6 <span class="token operator">|</span> sun           <span class="token operator">|</span>  24 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   7 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   8 <span class="token operator">|</span> b             <span class="token operator">|</span>  34 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   9 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>  10 <span class="token operator">|</span> c             <span class="token operator">|</span>  35 <span class="token operator">|</span> M      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+10 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##slave2测试</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   6 <span class="token operator">|</span> sun           <span class="token operator">|</span>  24 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   7 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   8 <span class="token operator">|</span> b             <span class="token operator">|</span>  34 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   9 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>  10 <span class="token operator">|</span> c             <span class="token operator">|</span>  35 <span class="token operator">|</span> M      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+10 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#半同步复制测试</span>
+<span class="token comment" spellcheck="true">##暂停slave1从节点复制</span>
+mysql<span class="token operator">></span> stop slave<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">##主节点插入数据</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> insert teachers <span class="token punctuation">(</span>name,age,gender<span class="token punctuation">)</span>values<span class="token punctuation">(</span><span class="token string">'d'</span>,32,<span class="token string">'F'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span><span class="token comment" spellcheck="true">##同步很快</span>
+<span class="token comment" spellcheck="true">##slave2也可以获得同步数据</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   6 <span class="token operator">|</span> sun           <span class="token operator">|</span>  24 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   7 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   8 <span class="token operator">|</span> b             <span class="token operator">|</span>  34 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   9 <span class="token operator">|</span> a             <span class="token operator">|</span>  42 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>  10 <span class="token operator">|</span> c             <span class="token operator">|</span>  35 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>  11 <span class="token operator">|</span> d             <span class="token operator">|</span>  32 <span class="token operator">|</span> F      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+11 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">##再次暂停slave2的从节点复制</span>
+mysql<span class="token operator">></span> stop slave<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">##再次在主节点插入数据</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> insert teachers <span class="token punctuation">(</span>name,age,gender<span class="token punctuation">)</span>values<span class="token punctuation">(</span><span class="token string">'e'</span>,19,<span class="token string">'M'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>3.00 sec<span class="token punctuation">)</span><span class="token comment" spellcheck="true">#发现运行时间变成了3秒，因为前面在配置文件中设置了3s内无法同步，也将返回成功信息给客户端</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="5、用mycat实现mysql的读写分离"><a href="#5、用mycat实现mysql的读写分离" class="headerlink" title="5、用mycat实现mysql的读写分离"></a>5、用mycat实现mysql的读写分离</h2><blockquote>
+<p>实验环境：</p>
+<ul>
+<li>clinet：10.0.0.5</li>
+<li>mycat：10.0.0.4</li>
+<li>master: 10.0.0.3</li>
+<li>slave：10.0.0.9</li>
+</ul>
+</blockquote>
+<p>1、mysql主从节点搭建实现</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 主节点设置</span>
+<span class="token comment" spellcheck="true">##1.1 设置配置文件，并重启服务</span>
+<span class="token punctuation">[</span>10:07:35 root@master ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>3
+log_bin<span class="token operator">=</span>/data/binlog/mysql-bin
+<span class="token punctuation">[</span>10:27:19 root@master ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service
+
+<span class="token comment" spellcheck="true">##1.2 登录mysql，创建复制用户以及授权</span>
+<span class="token punctuation">[</span>10:43:17 root@master ~<span class="token punctuation">]</span>$ mysql -uroot -p
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> create user <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> grant replication slave on *.* to <span class="token string">'repluser'</span>@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##1.3 进行完全备份</span>
+<span class="token punctuation">[</span>10:50:47 root@master ~<span class="token punctuation">]</span>$ mysqldump -uroot -p<span class="token string">'lgq123456**'</span> -A -F --single-transaction --master-data<span class="token operator">=</span>1 <span class="token operator">></span> /backup/full_<span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +%F_%T<span class="token variable">`</span></span>.sql
+mysqldump: <span class="token punctuation">[</span>Warning<span class="token punctuation">]</span> Using a password on the <span class="token function">command</span> line interface can be insecure.
+<span class="token punctuation">[</span>10:50:50 root@master ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /backup/
+full_2022-09-19_10:50:50.sql
+
+<span class="token comment" spellcheck="true">##1.4 拷贝备份数据库到10.0.0.9</span>
+<span class="token punctuation">[</span>10:50:54 root@master ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> /backup/* 10.0.0.9:/backup
+root@10.0.0.9<span class="token string">'s password: 
+full_2022-09-19_10:50:50.sql                              100% 1597KB  96.0MB/s   00:00
+
+
+#2 从节点
+##2.1 修改配置文件，并重启
+[10:55:39 root@slave1 ~]$ vi /etc/my.cnf
+[mysqld]
+server-id=9
+read-only
+[10:57:19 root@slave1 ~]$ systemctl start mysqld.service
+
+##2.2 修改备份文件，在change master to中添加主节点信息
+[10:58:25 root@slave1 ~]$ vi /backup/full_2022-09-19_10.sql
+...省略
+CHANGE MASTER TO
+  MASTER_HOST='</span>10.0.0.3<span class="token string">',  #主节点IP地址 
+  MASTER_USER='</span>repluser<span class="token string">',  #在主节点上创建的账号
+  MASTER_PASSWORD='</span>lgq123456<span class="token string">', #密码
+  MASTER_PORT=3306, #端口号
+  MASTER_LOG_FILE='</span>mysql-bin.000002<span class="token string">', 
+  MASTER_LOG_POS=156;
+...省略
+
+##2.3 还原备份
+###暂时关闭二进制日志
+mysql> set sql_log_bin=0;
+###还原
+mysql> source /backup/full_2022-09-19.sql;
+##2.4 开启主从节点的链接线程
+mysql> start slave;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for source to send event
+                  Master_Host: 10.0.0.3
+                  Master_User: repluser
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 156
+               Relay_Log_File: slave1-relay-bin.000002
+                Relay_Log_Pos: 324
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 156
+              Relay_Log_Space: 534
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 3
+                  Master_UUID: 4c7960e2-2dec-11ed-b13a-000c29b92bb4
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row in set, 1 warning (0.00 sec)
+
+#3 测试主从是否同步
+##3.1 主节点上更新数据
+(root@localhost) [hellodb]> insert teachers (name,age,gender) values('</span>zhang<span class="token string">',28,'</span>F'<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK, 1 row affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span>hellodb<span class="token punctuation">]</span><span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+5 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##3.2 从节点查看数据是否同步</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> * from teachers<span class="token punctuation">;</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span> TID <span class="token operator">|</span> Name          <span class="token operator">|</span> Age <span class="token operator">|</span> Gender <span class="token operator">|</span>
++-----+---------------+-----+--------+
+<span class="token operator">|</span>   1 <span class="token operator">|</span> Song Jiang    <span class="token operator">|</span>  45 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   2 <span class="token operator">|</span> Zhang Sanfeng <span class="token operator">|</span>  94 <span class="token operator">|</span> M      <span class="token operator">|</span>
+<span class="token operator">|</span>   3 <span class="token operator">|</span> Miejue Shitai <span class="token operator">|</span>  77 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   4 <span class="token operator">|</span> Lin Chaoying  <span class="token operator">|</span>  93 <span class="token operator">|</span> F      <span class="token operator">|</span>
+<span class="token operator">|</span>   5 <span class="token operator">|</span> zhang         <span class="token operator">|</span>  28 <span class="token operator">|</span> F      <span class="token operator">|</span>
++-----+---------------+-----+--------+
+5 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>2、在MySQL代理服务器10.0.0.4安装mycat并启动</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#下载</span>
+<span class="token punctuation">[</span>11:14:25 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">wget</span> http://dl.mycat.org.cn/1.6.7.6/20210303094759/Mycat-server-
+1.6.7.6-release-20210303094759-linux.tar.gz
+
+<span class="token comment" spellcheck="true">#解压到/apps下</span>
+<span class="token punctuation">[</span>11:27:47 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /apps/<span class="token punctuation">;</span> <span class="token function">tar</span> xf Mycat-server-1.6.7.4-release-20200105164103-linux.tar.gz -C /apps/
+<span class="token punctuation">[</span>11:28:33 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /apps/
+mycat
+
+<span class="token comment" spellcheck="true">#添加到环境变量</span>
+<span class="token punctuation">[</span>11:29:17 root@mycat ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> <span class="token string">'PATH=/apps/mycat/bin:<span class="token variable">$PATH</span>'</span> <span class="token operator">></span> /etc/profile.d/mycat.sh
+<span class="token punctuation">[</span>11:31:19 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">source</span> /etc/profile.d/mycat.sh
+
+<span class="token comment" spellcheck="true">#安装java，要求内存尽量大点，本实验使用的是3G</span>
+<span class="token punctuation">[</span>11:33:59 root@mycat ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> java
+
+<span class="token comment" spellcheck="true">#启动mycat</span>
+<span class="token punctuation">[</span>11:35:34 root@mycat ~<span class="token punctuation">]</span>$ mycat start
+Starting Mycat-server<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>11:36:04 root@mycat ~<span class="token punctuation">]</span>$ ss -nlt
+State      Recv-Q     Send-Q          Local Address:Port            Peer Address:Port     Process     
+LISTEN     0          1                   127.0.0.1:32000                0.0.0.0:*                    
+LISTEN     0          128                   0.0.0.0:22                   0.0.0.0:*                    
+LISTEN     0          50                          *:46681                      *:*                    
+LISTEN     0          50                          *:1984                       *:*                    
+LISTEN     0          100                         *:8066   <span class="token comment" spellcheck="true">#监听端口                    *:*                    </span>
+LISTEN     0          100                         *:9066                      *:*                    
+LISTEN     0          50                          *:37615                      *:*                    
+LISTEN     0          128                         *:80                         *:*                    
+LISTEN     0          128                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:22                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:*
+
+<span class="token comment" spellcheck="true">#客户端测试连接，默认密码123456</span>
+<span class="token punctuation">[</span>11:40:26 root@client ~<span class="token punctuation">]</span>$ mysql -uroot -p123456 -h 10.0.0.4 -P8066
+MySQL <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> show databases<span class="token punctuation">;</span>
++----------+
+<span class="token operator">|</span> DATABASE <span class="token operator">|</span>
++----------+
+<span class="token operator">|</span> TESTDB   <span class="token operator">|</span>
++----------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3、在MyCat服务器上修改<code>server.xml</code>文件配置MyCat的链接信息</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#在主节点服务器中创建连接mycat的账号</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> create user admin@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456**'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>root@localhost<span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> grant all on hellodb.* to admin@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+<span class="token punctuation">[</span>11:37:35 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /apps/mycat/conf/server.xml
+<span class="token comment" spellcheck="true">#修改部分参看下面图片</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/1.png" alt="修改端口号"></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#修改/apps/mycat/conf/schema.xml配置信息</span>
+<span class="token punctuation">[</span>11:51:49 root@mycat ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /apps/mycat/conf/schema.xml
+<span class="token operator">&lt;</span>?xml version<span class="token operator">=</span><span class="token string">"1.0"</span>?<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">!</span>DOCTYPE mycat:schema SYSTEM <span class="token string">"schema.dtd"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>mycat:schema xmlns:mycat<span class="token operator">=</span><span class="token string">"http://io.mycat/"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>schema name<span class="token operator">=</span><span class="token string">"TESTDB"</span> checkSQLschema<span class="token operator">=</span><span class="token string">"false"</span> sqlMaxLimit<span class="token operator">=</span><span class="token string">"100"</span> dataNode<span class="token operator">=</span><span class="token string">"dn1"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>/schema<span class="token operator">></span>
+    <span class="token operator">&lt;</span>dataNode name<span class="token operator">=</span><span class="token string">"dn1"</span> dataHost<span class="token operator">=</span><span class="token string">"localhost1"</span> database<span class="token operator">=</span><span class="token string">"hellodb"</span> /<span class="token operator">></span> <span class="token comment" spellcheck="true">#此处的database需要修改成自己想要利用mycat实现监控的数据库名字</span>
+    <span class="token operator">&lt;</span>dataHost name<span class="token operator">=</span><span class="token string">"localhost1"</span> maxCon<span class="token operator">=</span><span class="token string">"1000"</span> minCon<span class="token operator">=</span><span class="token string">"10"</span> balance<span class="token operator">=</span><span class="token string">"1"</span>
+              writeType<span class="token operator">=</span><span class="token string">"0"</span> dbType<span class="token operator">=</span><span class="token string">"mysql"</span> dbDriver<span class="token operator">=</span><span class="token string">"native"</span> switchType<span class="token operator">=</span><span class="token string">"1"</span>  slaveThreshold<span class="token operator">=</span><span class="token string">"100"</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>heartbeat<span class="token operator">></span>select user<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&lt;</span>/heartbeat<span class="token operator">></span>
+        <span class="token operator">&lt;</span>writeHost host<span class="token operator">=</span><span class="token string">"host1"</span> url<span class="token operator">=</span><span class="token string">"10.0.0.3:3306"</span> user<span class="token operator">=</span><span class="token string">"admin"</span>
+                   password<span class="token operator">=</span><span class="token string">"lgq123456**"</span><span class="token operator">></span> <span class="token comment" spellcheck="true">#需要执行写操作的节点ip以及账号密码信息，是指之前在mysql主节点上创建的账户信息</span>
+         <span class="token operator">&lt;</span>readHost host<span class="token operator">=</span><span class="token string">"host2"</span> url<span class="token operator">=</span><span class="token string">"10.0.0.9:3306"</span> user<span class="token operator">=</span><span class="token string">"admin"</span> password<span class="token operator">=</span><span class="token string">"lgq123456**"</span> /<span class="token operator">></span> <span class="token comment" spellcheck="true">#从节点信息，若是多个从节点可以多加几条</span>
+        <span class="token operator">&lt;</span>/writeHost<span class="token operator">></span>
+    <span class="token operator">&lt;</span>/dataHost<span class="token operator">></span>
+<span class="token operator">&lt;</span>/mycat:schema<span class="token operator">></span>
+
+<span class="token comment" spellcheck="true">#重启mycat</span>
+<span class="token punctuation">[</span>12:04:01 root@mycat ~<span class="token punctuation">]</span>$ mycat restart<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上面配置中，<code>balance</code>改为<code>1</code>，表示读写分离。以上配置达到的效果就是<code>10.0.0.3</code>为主库，<code>10.0.0.9</code>为从库<br>注意：要保证能使用<code>admin/lgq123456**</code>权限成功登录<code>10.0.0.3</code>和<code>10.0.0.9</code>机器上面的mysql数据库。同时，也一定要授权<code>mycat</code>机器能使用<code>admin/lgq123456**</code>权限成功登录这两台机器的mysql数据库！！这很重要，否则会导致登录mycat后，对库和表操作失败！</p>
+<p>4、在客户端连接测试</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>11:41:47 root@client ~<span class="token punctuation">]</span>$ mysql -uroot -p123456 -h 10.0.0.4
+MySQL <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> show databases<span class="token punctuation">;</span>
++----------+
+<span class="token operator">|</span> DATABASE <span class="token operator">|</span>
++----------+
+<span class="token operator">|</span> TESTDB   <span class="token operator">|</span>
++----------+
+1 row <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+MySQL <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> use TESTDB
+Database changed
+MySQL <span class="token punctuation">[</span>TESTDB<span class="token punctuation">]</span><span class="token operator">></span> show tables<span class="token punctuation">;</span>
++-------------------+
+<span class="token operator">|</span> Tables_in_hellodb <span class="token operator">|</span>
++-------------------+
+<span class="token operator">|</span> classes           <span class="token operator">|</span>
+<span class="token operator">|</span> coc               <span class="token operator">|</span>
+<span class="token operator">|</span> courses           <span class="token operator">|</span>
+<span class="token operator">|</span> scores            <span class="token operator">|</span>
+<span class="token operator">|</span> students          <span class="token operator">|</span>
+<span class="token operator">|</span> teachers          <span class="token operator">|</span>
+<span class="token operator">|</span> toc               <span class="token operator">|</span>
++-------------------+
+7 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>5、通过通用日志确认实现读写分离</p>
+<pre class="line-numbers language-mysql"><code class="language-mysql">#在主节点上开启通用日志
+(root@localhost) [(none)]> set global general_log=ON;
+Query OK, 0 rows affected (0.01 sec)
+(root@localhost) [(none)]> show variables like 'general_log';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| general_log   | ON    |
++---------------+-------+
+#开启后会在/var/lib/mysql/目录下生成`hostname`.log文件，其中十秒钟会产生select user()，这是在进行存活性健康性检测，mycat检测数据库存活性。
+#从节点开启
+mysql> set global general_log=ON;
+Query OK, 0 rows affected (0.01 sec)
+mysql> show variables like 'general_log';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| general_log   | ON    |
++---------------+-------+
+
+#客户端更新数据来查看读写分离的实现
+MySQL [TESTDB]> insert teachers(name,age,gender)values('f',27,'M');
+#查看主从节点服务器中的通用日志文件
+##主节点
+[12:19:52 root@master ~]$ tail -f /var/lib/mysql/master.log
+2022-09-20T04:22:34.040744Z       24 Query    SET names utf8;
+2022-09-20T04:22:34.041030Z       24 Query    insert teachers(name,age,gender)values('f',27,'M') #主节点进行写
+2022-09-20T04:22:40.574552Z       24 Query    select user()
+##从节点
+[12:20:04 root@slave ~]$ tail -f /var/lib/mysql/slave.log
+2022-09-20T04:22:34.048808Z       10 Query    BEGIN
+2022-09-20T04:22:34.049447Z       10 Query    COMMIT /* implicit, from Xid_log_event */
+2022-09-20T04:22:37.232799Z       14 Query    select * from teachers #从节点进行读操作<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>6、从节点坏了，MyCat自动调整读请求至主节点</p>
+<pre class="line-numbers language-mysql"><code class="language-mysql">#停掉从节点
+[16:28:32 root@slave ~]$ systemctl stop mysqld.service
+
+#服务端查看读操作是哪个节点
+MySQL [TESTDB]> select @@server_id;
++-------------+
+| @@server_id |
++-------------+
+|           3 |
++-------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="6、实现openvpn部署，并且测试通过，输出博客或者自己的文档存档。"><a href="#6、实现openvpn部署，并且测试通过，输出博客或者自己的文档存档。" class="headerlink" title="6、实现openvpn部署，并且测试通过，输出博客或者自己的文档存档。"></a>6、实现openvpn部署，并且测试通过，输出博客或者自己的文档存档。</h2><h3 id="阿里云-OpenVPN-实战环境"><a href="#阿里云-OpenVPN-实战环境" class="headerlink" title="阿里云 OpenVPN 实战环境"></a>阿里云 OpenVPN 实战环境</h3><p>准备阿里云网络实验环境</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220926115941486.png" alt=""></p>
+<pre class="line-numbers language-bash"><code class="language-bash">1 阿里云创建专有网络
+指定城市和可用区:华北3张家口可用区A区
+网段名VPC1和地址段172.16.0.0/12,默认资源组
+交换机名switch-test 可用区A IPv4的地址段 172.30.0.0/24
+安全组开放22端口
+
+2 创建OpenVPN服务器有公网IP的实例1个
+指定城市和可用区:华北3张家口可用区A区
+计算型c6 2vCPU 4G
+网络:VPC1 交换机:switch-test
+公网IP 按量收费 100M
+默认安全组 默认配置 22,3389,icmp
+centos8.5
+系统盘 存储默认高效云盘40G
+
+3 创建局域网的服务器无公网IP的实例2个
+按量付费
+指定城市和可用区:华北3张家口可用区A区
+共享型 2vCPU2G
+centos8.5
+系统盘 存储默认高效云盘40G
+网络:VPC1 switch-test
+无公网IP
+默认安全组
+主网卡sw1
+
+4 重设所有实例密码
+
+5 修改安全组打开 1194/TCP/UDP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="1、购买第一台有公网IP的ECS"><a href="#1、购买第一台有公网IP的ECS" class="headerlink" title="1、购买第一台有公网IP的ECS"></a>1、购买第一台有公网IP的ECS</h3><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a1.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a2.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a3.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a4.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a5.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/a6.png" alt=""></p>
+<h3 id="2、-再购买两台内网无公网的ECS"><a href="#2、-再购买两台内网无公网的ECS" class="headerlink" title="2、 再购买两台内网无公网的ECS"></a>2、 再购买两台内网无公网的ECS</h3><p>注意和第一台主机在同一个地域和可用区</p>
+<p>过程同上，唯一不同之处就是在配置私有IP时，配成<code>172.30.0.101</code>和<code>172.30.0.102</code>，不需要公网IP。</p>
+<h3 id="3、-修改网络防火墙规则"><a href="#3、-修改网络防火墙规则" class="headerlink" title="3、 修改网络防火墙规则"></a>3、 修改网络防火墙规则</h3><p>默认VPN的端口无法访问,修改网络防火墙规则,添加1规则实现<code>1194/TCP/UDP</code>端口允许通过</p>
+<h3 id="4、自动安装OpenVPN以及配置客户端用户脚本"><a href="#4、自动安装OpenVPN以及配置客户端用户脚本" class="headerlink" title="4、自动安装OpenVPN以及配置客户端用户脚本"></a>4、自动安装OpenVPN以及配置客户端用户脚本</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true">#***********************************************************</span>
+<span class="token comment" spellcheck="true">#Author:            yanli</span>
+<span class="token comment" spellcheck="true">#Date:              2022-09-22</span>
+<span class="token comment" spellcheck="true">#FileName:          openvpn.sh</span>
+<span class="token comment" spellcheck="true">#Description:       自动安装OpenVPN及配置服务器和客户端配置文件 </span>
+<span class="token comment" spellcheck="true">#***********************************************************</span>
+
+<span class="token keyword">.</span> /etc/init.d/functions
+COLOR<span class="token operator">=</span><span class="token string">'echo -e \E[36m'</span>
+END<span class="token operator">=</span><span class="token string">'\E[0m'</span>
+OPENVPN_SERVER<span class="token operator">=</span><span class="token string">'openvpn.yanlinux.cn'</span>
+NET<span class="token operator">=</span><span class="token string">'10.8.0.0/24'</span>
+GATEWAY<span class="token operator">=</span><span class="token string">'172.30.0.1'</span>
+
+<span class="token comment" spellcheck="true">#安装OpenVPN以及证书管理工具easy-sra</span>
+install<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    rpm -qi openvpn <span class="token operator">&amp;</span><span class="token operator">></span> /dev/null
+    <span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$?</span> -eq 0 <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token variable">$COLOR</span> <span class="token string">"\nopenvpn is installed\n"</span><span class="token variable">$END</span>
+    <span class="token keyword">else</span>
+        yum -y <span class="token function">install</span> openvpn <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\nopenvpn has been installed\n"</span><span class="token variable">$END</span>
+    <span class="token keyword">fi</span>
+    rpm -qi easy-rsa <span class="token operator">&amp;</span><span class="token operator">></span> /dev/null
+    <span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$?</span> -eq 0 <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token variable">$COLOR</span> <span class="token string">"\neasy-rsa is installed\n"</span><span class="token variable">$END</span>
+    <span class="token keyword">else</span>
+        yum -y <span class="token function">install</span> easy-rsa <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\neasy-rsa has been installed\n"</span><span class="token variable">$END</span>
+    <span class="token keyword">fi</span>                          
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#准备相关配置文件</span>
+setfiles<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">#准备证书颁发文件</span>
+    <span class="token function">mkdir</span> -p /data/easy-rsa<span class="token punctuation">;</span> <span class="token function">cp</span> -r /usr/share/easy-rsa/3/* /data/easy-rsa
+    <span class="token comment" spellcheck="true">#准备颁发证书相关变量的配置文件</span>
+    <span class="token function">cp</span> /usr/share/doc/easy-rsa/vars.example /data/easy-rsa/vars
+    <span class="token comment" spellcheck="true">#修改证书有效期</span>
+    <span class="token keyword">echo</span> -e <span class="token string">'set_var EASYRSA_CA_EXPIRE 36500\nset_var EASYRSA_CERT_EXPIRE 3650'</span> <span class="token operator">>></span> /data/easy-rsa/vars
+    <span class="token comment" spellcheck="true">#初始化PKI生成PKI相关目录和文件</span>
+    <span class="token function">cd</span> /data/easy-rsa
+    /data/easy-rsa/easyrsa init-pki <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n相关配置文件以及PKI初始化已完成\n"</span><span class="token variable">$END</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#搭建CA机构环境</span>
+set_CA<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">cd</span> /data/easy-rsa
+    /data/easy-rsa/easyrsa build-ca nopass <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+
+EOF
+    [ -e /data/easy-rsa/pki/ca.crt ] &amp;&amp; <span class="token variable">$COLOR</span> "\nCA搭建完成,自签名文件已生成\n"<span class="token variable">$END</span> || <span class="token variable">$COLOR</span> "\nCA搭>建失败！！！\n"<span class="token variable">$END</span>
+}
+
+#服务端证书颁发,并将CA和服务器证书相关文件复制到服务器相应的目录
+server_cert(){
+    cd /data/easy-rsa
+    #创建服务器证书申请文件，其中server是文件前缀
+    /data/easy-rsa/easyrsa gen-req server nopass &lt;&lt;EOF
+openvpn
+EOF</span>
+    <span class="token comment" spellcheck="true">#颁发服务端证书</span>
+    /data/easy-rsa/easyrsa sign server server <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+yes
+EOF</span>
+    <span class="token punctuation">[</span> -e /data/easy-rsa/pki/issued/server.crt <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n服务器证书颁发完毕\n"</span><span class="token variable">$END</span> <span class="token operator">||</span> <span class="token variable">$COLOR</span> <span class="token string">"\n>服
+务器证书颁发失败！！！\n"</span><span class="token variable">$END</span>
+
+    <span class="token comment" spellcheck="true">#创建 Diffie-Hellman 密钥</span>
+    /data/easy-rsa/easyrsa gen-dh <span class="token operator">&amp;</span><span class="token operator">></span> /dev/null
+    <span class="token punctuation">[</span> -e /data/easy-rsa/pki/dh.pem <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n密钥创建成功\n"</span><span class="token variable">$END</span> <span class="token operator">||</span> <span class="token variable">$COLOR</span> <span class="token string">"\n>密钥创建失败！！！\n"</span><span class="token variable">$END</span>
+    <span class="token comment" spellcheck="true">#在openvpn软件目录中创建证书存放目录</span>
+    <span class="token function">mkdir</span> /etc/openvpn/certs
+    <span class="token comment" spellcheck="true">#拷贝CA和服务器证书文件</span>
+    <span class="token function">cp</span> /data/easy-rsa/pki/ca.crt /data/easy-rsa/pki/issued/server.crt /data/easy-rsa/pki/dh.pem /data/easy-rsa/pki/private/server.key /etc/openvpn/certs/
+    <span class="token comment" spellcheck="true">#启用防止DoS攻击的安全增强配置                               </span>
+    openvpn --genkey --secret /etc/openvpn/certs/ta.key
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#创建服务器配置文件并启动OpenVPN服务</span>
+server_conf_start<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">cat</span> <span class="token operator">></span> /etc/openvpn/server.conf <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+port 1194
+proto tcp
+dev tun
+ca /etc/openvpn/certs/ca.crt
+cert /etc/openvpn/certs/server.crt
+key /etc/openvpn/certs/server.key # This file should be kept secret
+dh /etc/openvpn/certs/dh.pem
+server 10.8.0.0 255.255.255.0
+push "route 172.30.0.0 255.255.255.0"
+keepalive 10 120
+cipher AES-256-CBC
+compress lz4-v2
+push "compress lz4-v2"
+max-clients 2048
+user openvpn
+group openvpn
+status /var/log/openvpn/openvpn-status.log
+log-append /var/log/openvpn/openvpn.log
+verb 3
+mute 20
+tls-auth /etc/openvpn/certs/ta.key 0
+EOF</span>
+    <span class="token comment" spellcheck="true">#准备日志相关目录</span>
+    <span class="token function">mkdir</span> /var/log/openvpn/
+    <span class="token function">chown</span> openvpn. /var/log/openvpn/
+
+    <span class="token comment" spellcheck="true">#启动服务</span>
+    <span class="token comment" spellcheck="true">##centos8缺失了unit文件，需要手动创建</span>
+    <span class="token function">cat</span> <span class="token operator">></span> /usr/lib/systemd/system/openvpn@.service <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+[Unit]
+Description=OpenVPN Robust And Highly Flexible Tunneling Application On %I
+After=network.target
+
+[Service]
+Type=notify
+PrivateTmp=true
+ExecStart=/usr/sbin/openvpn --cd /etc/openvpn/ --config %i.conf
+
+[Install]
+WantedBy=multi-user.target
+EOF</span>
+    systemctl daemon-reload
+    systemctl <span class="token function">enable</span> --now openvpn@server
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#客户端证书创建，并将用户私钥与证书相关文件复制到服务器相关的目录</span>
+client_user_cert<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">read</span> -p <span class="token string">"请输入用户的姓名拼音(如:yanli): "</span> NAME
+    <span class="token function">read</span> -p <span class="token string">"请输入用户的密码："</span> PASSWD
+    <span class="token comment" spellcheck="true">#生成客户端用户的证书申请</span>
+    <span class="token function">cd</span> /data/easy-rsa
+    <span class="token function">expect</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+spawn /data/easy-rsa/easyrsa gen-req <span class="token variable">${NAME}</span>
+expect {
+    "Enter PEM pass phrase:" { send "<span class="token variable">$PASSWD</span>\n";exp_continue }
+    "Verifying - Enter PEM pass phrase:" { send "<span class="token variable">$PASSWD</span>\n";exp_continue }
+    "Common Name" { send "\n" }
+}
+expect eof
+EOF</span>
+    <span class="token comment" spellcheck="true">#修改给用户颁发的证书有效期</span>
+    <span class="token function">sed</span> -i <span class="token string">'s/set_var EASYRSA_CERT_EXPIRE 3650/set_var EASYRSA_CERT_EXPIRE 180/g'</span> /data/easy-rsa/vars
+    /data/easy-rsa/easyrsa sign client <span class="token variable">${NAME}</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+yes
+EOF</span>
+    <span class="token punctuation">[</span> -e /data/easy-rsa/pki/issued/<span class="token variable">${NAME}</span>.crt <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n<span class="token variable">${NAME}</span>用户证书创建成功\n"</span><span class="token variable">$END</span> <span class="token operator">||</span> <span class="token variable">$COLOR</span> <span class="token string">"\n>创建失败！！！\n"</span><span class="token variable">$END</span>
+
+    <span class="token comment" spellcheck="true">#在/etc/openvpn/client/目录中创建用户的对应的目录</span>
+    <span class="token function">mkdir</span> /etc/openvpn/client/<span class="token variable">${NAME}</span>
+    <span class="token comment" spellcheck="true">##拷贝CA文件和用户自己对应的证书文件</span>
+    <span class="token function">cp</span> /etc/openvpn/certs/<span class="token punctuation">{</span>ca.crt,ta.key<span class="token punctuation">}</span> /data/easy-rsa/pki/issued/<span class="token variable">${NAME}</span>.crt /data/easy-rsa/pki/private/<span class="token variable">${NAME}</span>.key /etc/openvpn/client/<span class="token variable">${NAME}</span>
+
+    <span class="token comment" spellcheck="true">#生成用户客户端配置文件</span>
+    <span class="token function">cat</span> <span class="token operator">></span>/etc/openvpn/client/<span class="token variable">${NAME}</span>/client.ovpn <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+client
+dev tun
+proto tcp
+remote <span class="token variable">${OPENVPN_SERVER}</span> 1194
+resolv-retry infinite
+nobind
+#persist-key
+#persist-tun
+ca ca.crt
+cert <span class="token variable">${NAME}</span>.crt
+key <span class="token variable">${NAME}</span>.key
+remote-cert-tls server
+tls-auth ta.key 1
+cipher AES-256-CBC
+verb 3
+compress lz4-v2
+EOF</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#实现访问VPN服务器的内网主机</span>
+set_ip_forward<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">#在服务器开启ip_forward转发功能</span>
+    <span class="token keyword">echo</span> net.ipv4.ip_forward <span class="token operator">=</span> 1 <span class="token operator">>></span> /etc/sysctl.conf
+    sysctl -p
+
+    <span class="token comment" spellcheck="true">#配置实现内网服务器回应外网的请求的路由</span>
+    <span class="token comment" spellcheck="true">##在内网每个主机上添加路由,由于使用的是阿里云服务器测试，不支持修改路由，所以下面命令不可用，在生产</span>
+中最好使用下面添加路由
+    <span class="token comment" spellcheck="true">#route add -net ${NET} gw ${GATEWAY}</span>
+    <span class="token comment" spellcheck="true">##在OpenVPN服务器配置iptables规则实现</span>
+    iptables -t nat -A POSTROUTING -s <span class="token variable">${NET}</span> <span class="token operator">!</span> -d <span class="token variable">${NET}</span> -j SNAT --to <span class="token variable">${GATEWAY}</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n路由规则>创建完毕，可以访问内网中的主机\n"</span><span class="token variable">$END</span> <span class="token operator">||</span> <span class="token variable">$COLOR</span> <span class="token string">"\n>路由创建失败！！！\n"</span><span class="token variable">$END</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">#离职员工证书注销</span>
+revoke_cert<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">cd</span> /data/easy-rsa/
+    <span class="token function">read</span> -p <span class="token string">"请输入离职用户的姓名拼音(如:yanli): "</span> NAME
+    /data/easy-rsa/easyrsa revoke <span class="token variable">${NAME}</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+yes
+EOF</span>
+    <span class="token comment" spellcheck="true">#每次吊销证书后都需要更新证书吊销列表文件,并且需要重启OpenVPN服务</span>
+    /data/easy-rsa/easyrsa gen-crl
+    <span class="token punctuation">[</span> -e /data/easy-rsa/pki/crl.pem <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$COLOR</span> <span class="token string">"\n吊销列表创建成功\n"</span><span class="token variable">$END</span> <span class="token operator">||</span> <span class="token variable">$COLOR</span> <span class="token string">"\n>创建失败！！！
+\n"</span><span class="token variable">$END</span>
+    <span class="token function">cat</span> <span class="token operator">>></span> /etc/openvpn/server.conf <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+crl-verify /data/easy-rsa/pki/crl.pem
+EOF</span>
+    systemctl restart openvpn@server.service
+<span class="token punctuation">}</span>
+
+<span class="token keyword">while</span> <span class="token keyword">:</span><span class="token punctuation">;</span><span class="token keyword">do</span>
+<span class="token variable">${COLOR}</span><span class="token string">"1.搭建OpenVPN服务                  "</span><span class="token variable">${END}</span>
+<span class="token variable">${COLOR}</span><span class="token string">"2.创建用户客户端信息               "</span><span class="token variable">${END}</span>
+<span class="token variable">${COLOR}</span><span class="token string">"3.吊销离职用户的信息               "</span><span class="token variable">${END}</span>
+<span class="token variable">${COLOR}</span><span class="token string">"4.退出                             "</span><span class="token variable">${END}</span>
+<span class="token function">read</span> -p <span class="token string">"<span class="token variable"><span class="token variable">$(</span>$<span class="token punctuation">{</span>COLOR<span class="token punctuation">}</span>'请输入你的选项:'$<span class="token punctuation">{</span>END<span class="token punctuation">}</span><span class="token variable">)</span></span>"</span> option
+<span class="token keyword">case</span> <span class="token variable">$option</span> <span class="token keyword">in</span>
+1<span class="token punctuation">)</span>
+  <span class="token function">install</span>
+  setfiles
+  set_CA
+  server_cert
+  server_conf_start
+  set_ip_forward
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+2<span class="token punctuation">)</span>
+  client_user_cert
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+3<span class="token punctuation">)</span>
+  revoke_cert
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+4<span class="token punctuation">)</span>
+  <span class="token keyword">break</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+*<span class="token punctuation">)</span>
+  <span class="token variable">${COLOR}</span><span class="token string">"输入错误！"</span><span class="token variable">${END}</span>
+esac
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5、脚本运行结果"><a href="#5、脚本运行结果" class="headerlink" title="5、脚本运行结果"></a>5、脚本运行结果</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>root@openvpn-server ~<span class="token punctuation">]</span>$ sh openvpn.sh
+
+<span class="token comment" spellcheck="true">#目录信息</span>
+<span class="token punctuation">[</span>root@openvpn-server easy-rsa<span class="token punctuation">]</span>$ tree /etc/openvpn/
+/etc/openvpn/
+├── certs
+│   ├── ca.crt
+│   ├── dh.pem
+│   ├── server.crt
+│   ├── server.key
+│   └── ta.key
+├── client
+│   └── yanlinux
+│       ├── ca.crt
+│       ├── client.ovpn
+│       ├── ta.key
+│       ├── yanlinux.crt
+│       └── yanlinux.key
+├── server
+└── server.conf
+
+4 directories, 11 files
+
+<span class="token punctuation">[</span>root@openvpn-server easy-rsa<span class="token punctuation">]</span>$ tree /data/easy-rsa/
+/data/easy-rsa/
+├── easyrsa
+├── openssl-easyrsa.cnf
+├── pki
+│   ├── ca.crt
+│   ├── certs_by_serial
+│   │   └── BACE212EFB3C76F5AFA234B4A622A1F8.pem
+│   ├── crl.pem
+│   ├── dh.pem
+│   ├── index.txt
+│   ├── index.txt.attr
+│   ├── index.txt.attr.old
+│   ├── index.txt.old
+│   ├── issued
+│   │   ├── server.crt
+│   │   └── yanlinux.crt
+│   ├── openssl-easyrsa.cnf
+│   ├── private
+│   │   ├── ca.key
+│   │   ├── server.key
+│   │   └── yanlinux.key
+│   ├── renewed
+│   │   ├── certs_by_serial
+│   │   ├── private_by_serial
+│   │   └── reqs_by_serial
+│   ├── reqs
+│   │   ├── server.req
+│   │   └── yanlinux.req
+│   ├── revoked
+│   │   ├── certs_by_serial
+│   │   │   ├── 3E5EBDD04A5CB95EFC0C5C8DB8D3C567.crt
+│   │   │   └── ED29EE34D64D23A8D11E06533324A27E.crt
+│   │   ├── private_by_serial
+│   │   │   ├── 3E5EBDD04A5CB95EFC0C5C8DB8D3C567.key
+│   │   │   └── ED29EE34D64D23A8D11E06533324A27E.key
+│   │   └── reqs_by_serial
+│   │       ├── 3E5EBDD04A5CB95EFC0C5C8DB8D3C567.req
+│   │       └── ED29EE34D64D23A8D11E06533324A27E.req
+│   ├── safessl-easyrsa.cnf
+│   ├── serial
+│   └── serial.old
+├── vars
+└── x509-types
+    ├── ca
+    ├── client
+    ├── code-signing
+    ├── COMMON
+    ├── email
+    ├── kdc
+    ├── server
+    └── serverClient
+
+14 directories, 36 files<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="6-Windows-配置部署-OpenVPN-客户端"><a href="#6-Windows-配置部署-OpenVPN-客户端" class="headerlink" title="6 Windows 配置部署 OpenVPN 客户端"></a>6 Windows 配置部署 OpenVPN 客户端</h3><h4 id="6-1-Windows-安装-OpenVPN-客户端"><a href="#6-1-Windows-安装-OpenVPN-客户端" class="headerlink" title="6.1 Windows 安装 OpenVPN 客户端"></a>6.1 Windows 安装 OpenVPN 客户端</h4><p>官方客户端下载地址：<br><a href="https://openvpn.net/community-downloads/" target="_blank" rel="noopener">https://openvpn.net/community-downloads/</a></p>
+<h4 id="6-2-Windows-客户端配置准备"><a href="#6-2-Windows-客户端配置准备" class="headerlink" title="6.2 Windows 客户端配置准备"></a>6.2 Windows 客户端配置准备</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#在服务器打包证书并下载到windows客户端</span>
+<span class="token punctuation">[</span>root@openvpn-server openvpn<span class="token punctuation">]</span>$ <span class="token function">zip</span> /root/yanli.zip ./client/yanli/*
+<span class="token punctuation">[</span>root@openvpn-server openvpn<span class="token punctuation">]</span>$ sz /root/yanli.zip
+<span class="token comment" spellcheck="true">##将其放到C:\Program Files\OpenVPN\config文件夹下</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="6-3-Windows-客户端建立OpenVPN连接"><a href="#6-3-Windows-客户端建立OpenVPN连接" class="headerlink" title="6.3 Windows 客户端建立OpenVPN连接"></a>6.3 Windows 客户端建立OpenVPN连接</h4><p>点击桌面的OpenVPN GUI软件，然后点击连接，成功连接到服务端</p>
+<h4 id="6-4-Windows-客户端验证通信"><a href="#6-4-Windows-客户端验证通信" class="headerlink" title="6.4 Windows 客户端验证通信"></a>6.4 Windows 客户端验证通信</h4><h5 id="6-4-1-在Windows-客户端测试访问OpenVPN后端服务器"><a href="#6-4-1-在Windows-客户端测试访问OpenVPN后端服务器" class="headerlink" title="6.4.1 在Windows 客户端测试访问OpenVPN后端服务器"></a>6.4.1 在Windows 客户端测试访问OpenVPN后端服务器</h5><p>后端服务器显示是来自于OpenVPN服务器的连接</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220922131057411.png" alt=""></p>
+<h5 id="6-4-2-验证OpenVPN服务器连接状态"><a href="#6-4-2-验证OpenVPN服务器连接状态" class="headerlink" title="6.4.2 验证OpenVPN服务器连接状态"></a>6.4.2 验证OpenVPN服务器连接状态</h5><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>root@openvpn-server easy-rsa<span class="token punctuation">]</span>$ ss -nt
+State     Recv-Q     Send-Q         Local Address:Port              Peer Address:Port      Process     
+ESTAB     0          0                 172.30.0.1:1194            180.111.117.59:55052                 
+ESTAB     0          0                 172.30.0.1:38686            100.100.30.26:80                    
+ESTAB     0          36                172.30.0.1:22              180.111.117.59:50503 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="6-4-3-验证-Windows-客户端的-IP地址"><a href="#6-4-3-验证-Windows-客户端的-IP地址" class="headerlink" title="6.4.3 验证 Windows 客户端的 IP地址"></a>6.4.3 验证 Windows 客户端的 IP地址</h5><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220922131659060.png" alt=""></p>
+<h5 id="6-4-4-Windows客户端验证OpenVPN内网中其他机器的网络是否通畅"><a href="#6-4-4-Windows客户端验证OpenVPN内网中其他机器的网络是否通畅" class="headerlink" title="6.4.4 Windows客户端验证OpenVPN内网中其他机器的网络是否通畅"></a>6.4.4 Windows客户端验证OpenVPN内网中其他机器的网络是否通畅</h5><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220922133010863.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220922133343773.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220922133404432.png" alt=""></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力!</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291304818.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207292224344.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+            
+            
+            <div class="reprint1">
+                <p>
+                    <span class="reprint1-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://www.yanlinux.cn" class="b-link-green">焱黎的博客</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/clbeydtmn000ve0aktn68q3pd/" class="b-link-green">第六周作业</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81Njg5OC8zMzM2Mg==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/clbeydtm10004e0akhssn2sqn/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/6.jpg" class="responsive-img" alt="今日小技巧3">
+                        
+                        <span class="card-title">今日小技巧3</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            集群网络架构是 K8s 中比较复杂的，最让用户头痛的方面之一。K8s 拥有众多的 CNI 插件网络插件 性能 隔离策略 开发者kube-router 最高 支持calico 2支持canal 3 支持flannel 3 无 CoreOSro
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2022-09-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/知识点/" class="post-category" target="_blank">
+                                    知识点
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/k8s/" target="_blank">
+                        <span class="chip bg-color">k8s</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/clbeydtml000qe0akwwiyklti/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/wallhaven-q27kjq.png" class="responsive-img" alt="第五周作业">
+                        
+                        <span class="card-title">第五周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            加油！
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-09-17
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/mysql/" target="_blank">
+                        <span class="chip bg-color">mysql</span>
+                    </a>
+                    
+                    <a href="/tags/sudo/" target="_blank">
+                        <span class="chip bg-color">sudo</span>
+                    </a>
+                    
+                    <a href="/tags/pam/" target="_blank">
+                        <span class="chip bg-color">pam</span>
+                    </a>
+                    
+                    <a href="/tags/DNS解析/" target="_blank">
+                        <span class="chip bg-color">DNS解析</span>
+                    </a>
+                    
+                    <a href="/tags/ntp/" target="_blank">
+                        <span class="chip bg-color">ntp</span>
+                    </a>
+                    
+                    <a href="/tags/iptables/" target="_blank">
+                        <span class="chip bg-color">iptables</span>
+                    </a>
+                    
+                    <a href="/tags/firewall/" target="_blank">
+                        <span class="chip bg-color">firewall</span>
+                    </a>
+                    
+                    <a href="/tags/nft/" target="_blank">
+                        <span class="chip bg-color">nft</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('30')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'pre') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 焱黎的博客<br />'
+            + '作者: 焱黎<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+        <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&copy; 2022 焱黎. 
+
+            <br>
+            <span id="sitetime"></span><span class="my-face">ღゝ◡╹)ノ♡</span>
+            <br>
+
+            
+
+            
+                    
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        总访问量: <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    
+        
+                    
+                        <span id="busuanzi_container_site_uv" style='display:none'></span>
+                        人次&nbsp; | &nbsp;访客人数: <span id="busuanzi_value_site_uv" class="white-color"></span> 人
+                    
+    
+            
+
+            
+                &nbsp; | &nbsp;字数统计:&nbsp;
+                <span class="white-color">255.3k</span> 字
+            
+
+            
+            <br>
+
+        </div>
+
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/yanlinux" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+ 
+    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=lgq6579@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=1499214187&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的QQ空间" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+        var t1 = Date.UTC(2022, 07, 25, 00, 00, 00); //北京时间2022-7-25 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+            minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已勉强运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours +
+            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒" ;
+    } /*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+
+
+
+
+
+        <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+        <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+        <script src="https://cdn.bootcss.com/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
+        <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+        <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/js/lightgallery-all.min.js"></script>
+        <script src="/js/matery.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+        
+            <script src="/libs/others/clicklove.js"></script>
+        
+
+        
+            <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+
+        <!-- 洪卫 shw2018 add 2019.08.28 -->
+        <script type="text/javascript">
+            var OriginTitile = document.title,
+                st;
+            document.addEventListener("visibilitychange", function () {
+                document.hidden ? (document.title = "看不见我🙈~看不见我🙈~", clearTimeout(st)) : (document.title =
+                    "(๑•̀ㅂ•́) ✧被发现了～", st = setTimeout(function () {
+                        document.title = OriginTitile
+                    }, 3e3))
+            })
+        </script>
+
+        <!-- 鼠标点击烟花爆炸效果  洪卫 shw2018 add 2019.09.09 -->
+        
+
+        <!-- 背景雪花飘落特效洪卫 shw2018 add 2019.09.10 -->
+        
+            <script type="text/javascript">
+            //只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 鼠标点击文字特效 洪卫 shw2018 add 2019.09.10-->
+        
+            <script src="/js/wenzi.js" type="text/javascript"></script>
+        
+
+        <!-- 背景雪花飘落特效 洪卫 shw2018 add 2019.09.10 -->
+        
+
+        <!-- 在线聊天工具  洪卫 shw2018 add 2019.09.11 -->
+        
+
+        <!-- 背景 canvas-nest  洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" color="0,0,255" pointColor="0,0,255" opacity= "0.8" zIndex="--1" count="150"src="/libs/background/canvas-nest.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 背景静止彩带  洪卫 shw 2018  add 2019.09.15-->
+        
+
+        <!-- 背景动态彩带 洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" src="/libs/background/ribbon-dynamic.js"><\/script>');
+            }
+            </script>
+        
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":200},"mobile":{"show":false},"react":{"opacity":0.7}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+</html>

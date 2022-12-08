@@ -1,0 +1,2235 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <!-- shw2018 洪卫  modify 2019.08.15-->
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="keywords" content="第十周作业, Linux SRE Python R">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="KeoTn_OFy4ndJwXNmm2gMeQfPhd7alqE9vQDwI32KCY">
+    <meta name="description" content="第十周作业1 zabbix 架构原理，及常用组件及用途分析。
+1.1zabbix监控原理Agentd安装在被监控的主机上，Agentd负责定期收集客户端本地各项数据，并发送至zabbix server端，zabbix server收到数据，">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>第十周作业 | 焱黎的博客</title>
+    <link rel="icon" type="image/jpeg" href="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image_20220801100631.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <style type="text/css">
+        
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    <body>
+
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">焱黎的博客</span>
+                </a>
+            </div>
+            
+
+
+<!-- <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/AV" class="waves-effect waves-light">
+            
+            <i class="fa fa-music"></i>
+            
+            <span>视听</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/galleries" class="waves-effect waves-light">
+            
+            <i class="fa fa-photo"></i>
+            
+            <span>相册</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-envelope"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul> -->
+
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right nav-menu">
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/" class="waves-effect waves-light">
+              
+                <i class="fa fa-home"></i>
+              
+              <span>首页</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/tags" class="waves-effect waves-light">
+              
+                <i class="fa fa-tags"></i>
+              
+              <span>标签</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/categories" class="waves-effect waves-light">
+              
+                <i class="fa fa-bookmark"></i>
+              
+              <span>分类</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/archives" class="waves-effect waves-light">
+              
+                <i class="fa fa-archive"></i>
+              
+              <span>归档</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/AV" class="waves-effect waves-light">
+              
+                <i class="fa fa-music"></i>
+              
+              <span>视听</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/galleries" class="waves-effect waves-light">
+              
+                <i class="fa fa-photo"></i>
+              
+              <span>相册</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/about" class="waves-effect waves-light">
+              
+                <i class="fa fa-user-circle-o"></i>
+              
+              <span>关于我</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/contact" class="waves-effect waves-light">
+              
+                <i class="fa fa-envelope"></i>
+              
+              <span>留言板</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/friends" class="waves-effect waves-light">
+              
+                <i class="fa fa-address-book"></i>
+              
+              <span>友情链接</span>
+            </a>
+
+            
+      </li>
+    
+
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">焱黎的博客</div>
+        <div class="logo-desc">
+            
+            Linux | SRE | Python
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/AV" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-music"></i>
+                
+                视听
+            </a>
+        </li>
+        
+        <li>
+            <a href="/galleries" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-photo"></i>
+                
+                相册
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envelope"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+   
+   
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<!-- <ul class="menu-list mobile-menu-list">
+    
+        <li class="m-nav-item">
+                
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-home"></i>
+                        
+                        首页
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/tags" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-tags"></i>
+                        
+                        标签
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/categories" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-bookmark"></i>
+                        
+                        分类
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/archives" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-archive"></i>
+                        
+                        归档
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/AV" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-music"></i>
+                        
+                        视听
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/galleries" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-photo"></i>
+                        
+                        相册
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/about" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-user-circle-o"></i>
+                        
+                        关于我
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/contact" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-envelope"></i>
+                        
+                        留言板
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/friends" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-address-book"></i>
+                        
+                        友情链接
+                    </a>
+              
+            </li>
+        
+
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul> -->
+
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/yanlinux/yanlinux.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+        
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/img8.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        第十周作业
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- shw2018 洪卫  modify 2019.08.15-->
+<!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/zabbix/" target="_blank">
+                                <span class="chip bg-color">zabbix</span>
+                            </a>
+                        
+                            <a href="/tags/zabbix自动发现/" target="_blank">
+                                <span class="chip bg-color">zabbix自动发现</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                作业
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-12-08
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                        焱黎
+                    
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        5.6k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        26 分
+                    </div>
+                    
+                
+                
+                
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv" ></span>
+    
+                
+
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="第十周作业"><a href="#第十周作业" class="headerlink" title="第十周作业"></a>第十周作业</h1><h2 id="1-zabbix-架构原理，及常用组件及用途分析。"><a href="#1-zabbix-架构原理，及常用组件及用途分析。" class="headerlink" title="1 zabbix 架构原理，及常用组件及用途分析。"></a>1 zabbix 架构原理，及常用组件及用途分析。</h2><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126192107872.png" alt="Zabbix监控系统具体监控流程："></p>
+<h3 id="1-1zabbix监控原理"><a href="#1-1zabbix监控原理" class="headerlink" title="1.1zabbix监控原理"></a>1.1<strong>zabbix监控原理</strong></h3><p><code>Agentd</code>安装在<strong>被监控的主机</strong>上，<code>Agentd</code>负责<strong>定期收集</strong>客户端本地各项数据，并发送至<code>zabbix server</code>端，<code>zabbix server</code>收到数据，将<strong>数据存储到数据库</strong>中，用户基于<code>zabbix WEB</code>可以看到数据在前端展现图像。当<code>zabbix</code>监控某个具体的项目，该项目会设置一个触发器阈值，当被监控的指标超过该触发器设定的阈值，会进行一些必要的动作，动作包括：发送信息（邮件、微信、短信）、发送命令（<code>shell</code>命令、<code>reboot</code>、<code>restart</code>、<code>install</code>等）</p>
+<h3 id="1-2-常用组件及用途"><a href="#1-2-常用组件及用途" class="headerlink" title="1.2 常用组件及用途"></a>1.2 常用组件及用途</h3><ul>
+<li><strong><code>zabbix server</code></strong>：zabbix服务端守护进程。既是保存所有配置、统计和操作数据的数据库，也是故障报警服务。</li>
+<li><strong>数据库</strong>：所有配置信息以及 Zabbix 采集到的数据都被存储在数据库中。可以支持MySQL,PostgreSQL,Oracle 等多种数据库</li>
+<li><strong><code>zabbix agentd</code></strong>：部署在被监控目标上，用于主动监控本地资源和应用程序，并将收集的数据发送给<code>Zabbix server</code>。从<code>Zabbix5.0</code>开始支技<code>Zabbix Agent2</code></li>
+<li><strong>WEB 界面</strong>: WEB 界面是 Zabbix server 的一部分，用于实现展示和配置的界面。通常（但不一定）和 Zabbix server 运行在同一台物理机器上。基于 <code>Apache(Nginx)+PHP</code>实现,早期只支持<code>LAMP</code>架构,从<code>Zabbix5.0</code>开始支持<code>LNMP</code></li>
+<li><strong>proxy</strong>：Zabbix proxy 可以代替 Zabbix server采集性能和可用性数据。Zabbix proxy在Zabbix的部署是可选部分；但是proxy的部署可以很好的分担单个Zabbix server的负载。</li>
+<li><strong>Java gateway</strong>：Zabbix 要监控 tomcat 服务器和其它JAVA程序，需要使用 <code>Java gateway</code> 做为代理,才能从JAVA程序中获取数据。它只能主动去获取数据，而不能被动获取数据。它的数据最终会给到server或者proxy。</li>
+</ul>
+<h2 id="2-监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟通知运维，30-60分钟短信通过总监。"><a href="#2-监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟通知运维，30-60分钟短信通过总监。" class="headerlink" title="2 监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟通知运维，30-60分钟短信通过总监。"></a>2 监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟通知运维，30-60分钟短信通过总监。</h2><h3 id="2-1-搭建LNMP并配置"><a href="#2-1-搭建LNMP并配置" class="headerlink" title="2.1 搭建LNMP并配置"></a>2.1 搭建LNMP并配置</h3><p>参照之前搭建在10.0.0.8上的LNMP架构，然后利用zabbix server进行监控</p>
+<p>搭建完的LNMP架构，进行以下配置</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>15:43:03 root@rocky8 conf.d<span class="token punctuation">]</span>$ <span class="token function">vi</span> /apps/nginx/conf/nginx.conf
+http<span class="token punctuation">{</span>
+     server <span class="token punctuation">{</span>
+     <span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+        location / <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        error_page 404 /404.html<span class="token punctuation">;</span>
+            location <span class="token operator">=</span> /40x.html <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        error_page 500 502 503 504 /50x.html<span class="token punctuation">;</span>
+            location <span class="token operator">=</span> /50x.html <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">#添加下面两个location，用于监控nginx和php</span>
+        location /status <span class="token punctuation">{</span>
+            stub_status<span class="token punctuation">;</span>
+            allow 127.0.0.1<span class="token punctuation">;</span>
+            allow 10.0.0.101<span class="token punctuation">;</span>
+            deny all<span class="token punctuation">;</span>                      
+        <span class="token punctuation">}</span>
+        location ~ ^/<span class="token punctuation">(</span>ping<span class="token operator">|</span>fpm_status<span class="token punctuation">)</span>$ <span class="token punctuation">{</span>
+            fastcgi_pass   127.0.0.1:9000<span class="token punctuation">;</span>
+            fastcgi_param  SCRIPT_FILENAME <span class="token variable">$document_root</span><span class="token variable">$fastcgi_script_name</span><span class="token punctuation">;</span>
+            include        fastcgi_params<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-2-配置监控项"><a href="#2-2-配置监控项" class="headerlink" title="2.2 配置监控项"></a>2.2 配置监控项</h3><h4 id="2-2-1-配置agent"><a href="#2-2-1-配置agent" class="headerlink" title="2.2.1 配置agent"></a>2.2.1 配置agent</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>16:20:03 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">sed</span> -i.bak <span class="token string">'/^Server=127.0.0.1/c Server=10.0.0.101'</span> /etc/zabbix/zabbix_agent2.conf   <span class="token comment" spellcheck="true">#指向zabbix server地址</span>
+
+<span class="token punctuation">[</span>16:20:46 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/zabbix/zabbix_agent2.conf
+AllowKey<span class="token operator">=</span>system.run<span class="token punctuation">[</span>*<span class="token punctuation">]</span>   <span class="token comment" spellcheck="true">#文件最后加上这一行</span>
+<span class="token punctuation">[</span>16:21:37 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/sudoers
+<span class="token comment" spellcheck="true">## Allow root to run any commands anywhere </span>
+root    ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   ALL
+<span class="token comment" spellcheck="true">#添加下面一行</span>
+zabbix  ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   NOPASSWD: ALL
+
+<span class="token comment" spellcheck="true">#检查语法</span>
+<span class="token punctuation">[</span>16:23:02 root@rocky8 ~<span class="token punctuation">]</span>$ visudo -c
+/etc/sudoers: parsed OK
+<span class="token punctuation">[</span>16:23:27 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart zabbix-agent2.service <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-2-2-自定义监控nginx"><a href="#2-2-2-自定义监控nginx" class="headerlink" title="2.2.2 自定义监控nginx"></a>2.2.2 自定义监控nginx</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>15:54:35 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ <span class="token function">cat</span> nginx_status.conf 
+UserParameter<span class="token operator">=</span>nginx.status<span class="token punctuation">[</span>*<span class="token punctuation">]</span>,/etc/zabbix/zabbix_agent2.d/nginx_status.sh <span class="token variable">$1</span>
+<span class="token punctuation">[</span>15:54:49 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ <span class="token function">cat</span> nginx_status.sh
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+HOST<span class="token operator">=</span>127.0.0.1
+PORT<span class="token operator">=</span><span class="token string">"80"</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> $<span class="token comment" spellcheck="true"># -eq "0" ];then</span>
+    <span class="token keyword">echo</span> <span class="token string">"Usage:<span class="token variable">$0</span>(active|reading|writing|waiting|accepts|handled|requests|ping)"</span> 
+<span class="token keyword">fi</span>
+
+<span class="token keyword">function</span> active <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Active'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$NF</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> reading <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Reading'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> writing <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Writing'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$4</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> waiting <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Waiting'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$6</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> accepts <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$1</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> handled <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> requests <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$3</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">ping</span> <span class="token punctuation">{</span>
+    /sbin/pidof nginx <span class="token operator">|</span> <span class="token function">wc</span> -l
+<span class="token punctuation">}</span>
+<span class="token variable">$1</span>
+
+<span class="token comment" spellcheck="true">#测试</span>
+<span class="token punctuation">[</span>16:11:53 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ zabbix_agent2 -t nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>
+nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>                          <span class="token punctuation">[</span>s<span class="token operator">|</span>1<span class="token punctuation">]</span>
+
+<span class="token punctuation">[</span>16:13:05 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ zabbix_agent2 -t nginx.status<span class="token punctuation">[</span>accepts<span class="token punctuation">]</span>
+nginx.status<span class="token punctuation">[</span>accepts<span class="token punctuation">]</span>                         <span class="token punctuation">[</span>s<span class="token operator">|</span>20<span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true">#zabbix server测试</span>
+<span class="token punctuation">[</span>15:40:46 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.8 -k nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>
+1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-2-3-自定义监控MySQL"><a href="#2-2-3-自定义监控MySQL" class="headerlink" title="2.2.3 自定义监控MySQL"></a>2.2.3 自定义监控MySQL</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>16:06:06 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ mysql -e <span class="token string">'create user zabbix@"localhost" identified by "lgq123456";'</span>
+<span class="token punctuation">[</span>16:08:08 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ <span class="token function">cat</span> mysql.conf 
+UserParameter<span class="token operator">=</span>mysql_version,mysql -V
+UserParameter<span class="token operator">=</span>mysql_status<span class="token punctuation">[</span>*<span class="token punctuation">]</span>,/etc/zabbix/zabbix_agent2.d/mysql.sh <span class="token variable">$1</span> 2<span class="token operator">></span>/dev/null
+UserParameter<span class="token operator">=</span>mysql_ping,mysqladmin -uzabbix -plgq123456 -P3306 -h127.0.0.1 <span class="token function">ping</span>
+UserParameter<span class="token operator">=</span>mysql_repl_status<span class="token punctuation">[</span>*<span class="token punctuation">]</span>,/etc/zabbix/zabbix_agent2.d/mysql_repl_status.sh <span class="token variable">$1</span>
+<span class="token punctuation">[</span>16:08:14 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ <span class="token function">cat</span> mysql_repl_status.sh
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+KEY<span class="token operator">=</span><span class="token variable">$1</span>
+PASS<span class="token operator">=</span><span class="token string">'lgq123456'</span>
+mysql -uroot -p<span class="token variable">$PASS</span> -e <span class="token string">"show slave status\G"</span><span class="token operator">|</span><span class="token function">grep</span> <span class="token string">"<span class="token variable">${KEY}</span>"</span><span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$NF</span>}'</span>
+<span class="token punctuation">[</span>16:08:27 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ <span class="token function">cat</span> mysql.sh
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+MYSQL_USER<span class="token operator">=</span><span class="token string">'zabbix'</span>
+MYSQL_PWD<span class="token operator">=</span><span class="token string">'lgq123456'</span>
+MYSQL_HOST<span class="token operator">=</span><span class="token string">'127.0.0.1'</span>
+MYSQL_PORT<span class="token operator">=</span><span class="token string">'3306'</span>
+MYSQL_CONN<span class="token operator">=</span><span class="token string">"/usr/bin/mysqladmin -u<span class="token variable">${MYSQL_USER}</span> -p<span class="token variable">${MYSQL_PWD}</span> -h<span class="token variable">${MYSQL_HOST}</span> -P<span class="token variable">${MYSQL_PORT}</span>"</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> $<span class="token comment" spellcheck="true"># -ne "1" ];then</span>
+    <span class="token keyword">echo</span> <span class="token string">"arg error!"</span>
+<span class="token keyword">fi</span>
+
+<span class="token keyword">case</span> <span class="token variable">$1</span> <span class="token keyword">in</span>
+Threads<span class="token punctuation">)</span>
+    result<span class="token operator">=</span>`<span class="token variable">${MYSQL_CONN}</span> status <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$4</span>}'</span><span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Uptime<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> status<span class="token operator">|</span><span class="token function">cut</span> -f2 -d<span class="token string">":"</span><span class="token operator">|</span><span class="token function">cut</span> -f1 -d<span class="token string">"T"</span><span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_update<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_update"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Slow_queries<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> status <span class="token operator">|</span><span class="token function">cut</span> -f5 -d<span class="token string">":"</span><span class="token operator">|</span><span class="token function">cut</span> -f1 -d<span class="token string">"O"</span><span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_select<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_select"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_rollback<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_rollback"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span>-f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Questions<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> status<span class="token operator">|</span><span class="token function">cut</span> -f4 -d<span class="token string">":"</span><span class="token operator">|</span><span class="token function">cut</span> -f1 -d<span class="token string">"S"</span><span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_insert<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_insert"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_delete<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_delete"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_commit<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_commit"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Bytes_sent<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Bytes_sent"</span> <span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Bytes_received<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Bytes_received"</span> <span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3<span class="token variable"><span class="token variable">`</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+Com_begin<span class="token punctuation">)</span>
+    result<span class="token operator">=</span><span class="token variable">`</span></span><span class="token variable">${MYSQL_CONN}</span> extended-status <span class="token operator">|</span><span class="token function">grep</span> -w <span class="token string">"Com_begin"</span><span class="token operator">|</span><span class="token function">cut</span> -d<span class="token string">"|"</span> -f3`
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+*<span class="token punctuation">)</span>
+    <span class="token keyword">echo</span> <span class="token string">"Usage:<span class="token variable">$0</span>(Threads|Uptime|Com_update|Slow_queries|Com_select|Com_rollback|Questions|Com_insert|Com_delete|Com_commit|Bytes_sent|Bytes_received|Com_begin)"</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+esac
+
+<span class="token keyword">echo</span> <span class="token variable">$result</span>
+
+<span class="token comment" spellcheck="true">#测试自定义监控项</span>
+<span class="token punctuation">[</span>16:14:03 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ zabbix_agent2 -t mysql_version
+mysql_version                                 <span class="token punctuation">[</span>s<span class="token operator">|</span>mysql  Ver 8.0.30 <span class="token keyword">for</span> Linux on x86_64 <span class="token punctuation">(</span>Source distribution<span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+<span class="token punctuation">[</span>16:14:26 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ zabbix_agent2 -t mysql_ping
+mysql_ping                                    <span class="token punctuation">[</span>s<span class="token operator">|</span>mysqladmin: <span class="token punctuation">[</span>Warning<span class="token punctuation">]</span> Using a password on the <span class="token function">command</span> line interface can be insecure.
+mysqld is alive<span class="token punctuation">]</span>
+
+<span class="token punctuation">[</span>16:15:16 root@rocky8 zabbix_agent2.d<span class="token punctuation">]</span>$ zabbix_agent2 -t mysql_status<span class="token punctuation">[</span>Threads<span class="token punctuation">]</span>
+mysql_status<span class="token punctuation">[</span>Threads<span class="token punctuation">]</span>                         <span class="token punctuation">[</span>s<span class="token operator">|</span>2<span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true">#zabbix server测试</span>
+<span class="token punctuation">[</span>16:22:17 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.8 -k mysql_ping
+mysqladmin: <span class="token punctuation">[</span>Warning<span class="token punctuation">]</span> Using a password on the <span class="token function">command</span> line interface can be insecure.
+mysqld is alive
+<span class="token punctuation">[</span>16:23:30 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.8 -k mysql_version
+mysql  Ver 8.0.30 <span class="token keyword">for</span> Linux on x86_64 <span class="token punctuation">(</span>Source distribution<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-2-4-在zabbix-server-web界面添加监控主机"><a href="#2-2-4-在zabbix-server-web界面添加监控主机" class="headerlink" title="2.2.4 在zabbix server web界面添加监控主机"></a>2.2.4 在zabbix server web界面添加监控主机</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208162745108.png" alt="添加被监控主机"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208162908559.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208162939781.png" alt=""></p>
+<h4 id="2-2-5-导入配置好的模板文件"><a href="#2-2-5-导入配置好的模板文件" class="headerlink" title="2.2.5 导入配置好的模板文件"></a>2.2.5 导入配置好的模板文件</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208163645672.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208163905596.png" alt="导入nginx监控模板"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208164120737.png" alt="nginx监控项"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208164218163.png" alt="MySQL监控项"></p>
+<h4 id="2-2-6-被监控主机关联模板"><a href="#2-2-6-被监控主机关联模板" class="headerlink" title="2.2.6 被监控主机关联模板"></a>2.2.6 被监控主机关联模板</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208170759122.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208170839311.png" alt=""></p>
+<h4 id="2-2-7-故障自愈实现"><a href="#2-2-7-故障自愈实现" class="headerlink" title="2.2.7 故障自愈实现"></a>2.2.7 故障自愈实现</h4><p>当zabbix服务监控到指定的监控项异常时，可以通过指定的操作使故障自动恢复</p>
+<p>配置远程命令的操作类似于发送消息，区别在于一个执行命令，一个发送消息</p>
+<p>远程命令可以直接在<code>ZabbixServer</code>,<code>ZabbixProxy</code>和<code>ZabbixAgent</code>上执行。</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208173725219.png" alt=""></p>
+<h4 id="2-2-8-分级告警"><a href="#2-2-8-分级告警" class="headerlink" title="2.2.8 分级告警"></a>2.2.8 分级告警</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208175218027.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208175430185.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208175720189.png" alt=""></p>
+<h4 id="2-2-9-用户配置报警媒介"><a href="#2-2-9-用户配置报警媒介" class="headerlink" title="2.2.9 用户配置报警媒介"></a>2.2.9 用户配置报警媒介</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124170724919.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171415540.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171706220.png" alt="添加发送信息模板"></p>
+<p>将报警媒介关联用户</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171951462.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172130359.png" alt=""></p>
+<h3 id="2-3-测试"><a href="#2-3-测试" class="headerlink" title="2.3 测试"></a>2.3 测试</h3><ul>
+<li>模拟nginx故障</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:08:03 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl stop nginx.service 
+<span class="token punctuation">[</span>18:08:08 root@rocky8 ~<span class="token punctuation">]</span>$ ss -ntl
+State      Recv-Q     Send-Q           Local Address:Port            Peer Address:Port     Process     
+LISTEN     0          128                  127.0.0.1:9000                 0.0.0.0:*                    
+LISTEN     0          128                    0.0.0.0:22                   0.0.0.0:*                    
+LISTEN     0          128                          *:10050                      *:*                    
+LISTEN     0          70                           *:33060                      *:*                    
+LISTEN     0          128                          *:3306                       *:*                    
+LISTEN     0          128                       <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:22                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:*
+
+<span class="token comment" spellcheck="true">#发现立马实现了自动重启</span>
+<span class="token punctuation">[</span>18:08:56 root@rocky8 ~<span class="token punctuation">]</span>$ ss -ntl <span class="token operator">|</span><span class="token function">grep</span> 80
+LISTEN 0      128          0.0.0.0:80         0.0.0.0:* <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>模拟php故障</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:10:01 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl stop php-fpm.service 
+<span class="token punctuation">[</span>18:10:09 root@rocky8 ~<span class="token punctuation">]</span>$ ss -ntl
+State      Recv-Q     Send-Q           Local Address:Port            Peer Address:Port     Process     
+LISTEN     0          128                    0.0.0.0:80                   0.0.0.0:*                    
+LISTEN     0          128                    0.0.0.0:22                   0.0.0.0:*                    
+LISTEN     0          128                          *:10050                      *:*                    
+LISTEN     0          70                           *:33060                      *:*                    
+LISTEN     0          128                          *:3306                       *:*                    
+LISTEN     0          128                       <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:22                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:*
+
+<span class="token comment" spellcheck="true">#一分钟后重启了</span>
+<span class="token punctuation">[</span>18:11:19 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl status php-fpm.service 
+● php-fpm.service - The PHP FastCGI Process Manager
+   Loaded: loaded <span class="token punctuation">(</span>/usr/lib/systemd/system/php-fpm.service<span class="token punctuation">;</span> enabled<span class="token punctuation">;</span> vendor preset: disabled<span class="token punctuation">)</span>
+   Active: active <span class="token punctuation">(</span>running<span class="token punctuation">)</span> since Thu 2022-12-08 18:18:02 CST<span class="token punctuation">;</span> 1min 27s ago
+ Main PID: 64860 <span class="token punctuation">(</span>php-fpm<span class="token punctuation">)</span>
+   Status: <span class="token string">"Processes active: 0, idle: 5, Requests: 1, slow: 0, Traffic: 0req/sec"</span>
+    Tasks: 6 <span class="token punctuation">(</span>limit: 11218<span class="token punctuation">)</span>
+   Memory: 9.7M
+   CGroup: /system.slice/php-fpm.service
+           ├─64860 php-fpm: master process <span class="token punctuation">(</span>/etc/php-fpm.conf<span class="token punctuation">)</span>
+           ├─64861 php-fpm: pool www
+           ├─64862 php-fpm: pool www
+           ├─64863 php-fpm: pool www
+           ├─64864 php-fpm: pool www
+           └─64865 php-fpm: pool www
+
+Dec 08 18:18:02 rocky8.yanlinux.cn systemd<span class="token punctuation">[</span>1<span class="token punctuation">]</span>: Starting The PHP FastCGI Process Manager<span class="token punctuation">..</span>.
+Dec 08 18:18:02 rocky8.yanlinux.cn systemd<span class="token punctuation">[</span>1<span class="token punctuation">]</span>: Started The PHP FastCGI Process Manager.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>模拟MySQL故障</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:13:11 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl stop mysqld.service 
+<span class="token punctuation">[</span>18:13:30 root@rocky8 ~<span class="token punctuation">]</span>$ ss -ntl
+State      Recv-Q     Send-Q           Local Address:Port            Peer Address:Port     Process     
+LISTEN     0          128                    0.0.0.0:80                   0.0.0.0:*                    
+LISTEN     0          128                    0.0.0.0:22                   0.0.0.0:*                    
+LISTEN     0          128                          *:10050                      *:*                    
+LISTEN     0          128                       <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:22                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:*
+
+<span class="token comment" spellcheck="true">#随后立即重启了服务</span>
+<span class="token punctuation">[</span>18:13:47 root@rocky8 ~<span class="token punctuation">]</span>$ ss -ntl
+State      Recv-Q     Send-Q           Local Address:Port            Peer Address:Port     Process     
+LISTEN     0          128                    0.0.0.0:80                   0.0.0.0:*                    
+LISTEN     0          128                    0.0.0.0:22                   0.0.0.0:*                    
+LISTEN     0          128                          *:10050                      *:*                    
+LISTEN     0          70                           *:33060                      *:*                    
+LISTEN     0          128                          *:3306                       *:*                    
+LISTEN     0          128                       <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:22                      <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:*<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>故障持续5-30min验证发邮箱</li>
+</ul>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208183823865.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221208183852537.png" alt=""></p>
+<h2 id="3-zabbix-api批量添加多个主机，要求一些不走代理，一些支持走代理。"><a href="#3-zabbix-api批量添加多个主机，要求一些不走代理，一些支持走代理。" class="headerlink" title="3 zabbix api批量添加多个主机，要求一些不走代理，一些支持走代理。"></a>3 zabbix api批量添加多个主机，要求一些不走代理，一些支持走代理。</h2><h3 id="3-1-Zabbix-API-介绍"><a href="#3-1-Zabbix-API-介绍" class="headerlink" title="3.1 Zabbix API 介绍"></a>3.1 Zabbix API 介绍</h3><p>API（Application Programming Interface，应用程序编程接口）是一些预先定义的函数，目的是提供应用程序与开发人员基于某软件或硬件得以访问一组功能的能力，而又无需直接使用源代码，或理解内部工作机制的细节。</p>
+<p>Zabbix API允许你以编程方式检索和修改Zabbix的配置，并提供对历史数据的访问。它广泛用于:</p>
+<ul>
+<li>创建新的应用程序以使用Zabbix</li>
+<li>将Zabbix与第三方软件集成</li>
+<li>自动执行常规任务</li>
+</ul>
+<p>Zabbix API是基于Web的API，作为Web前端的一部分提供。它使用JSON-RPC 2.0协议，这意味着两件事:</p>
+<ul>
+<li>该API包含一组独立的方法</li>
+<li>客户端和API之间的请求和响应使用JSON格式进行编码</li>
+</ul>
+<p>大多数API至少包含四种方法: <code>get</code>， <code>create</code>，<code>update</code> 和 <code>delete</code>，分别是检索，创建，更新和删除数据，但是某些API提供一套完全不同的一组方法。</p>
+<p><strong>Zabbix 常用API</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash">user.login                            <span class="token comment" spellcheck="true">#用户登录</span>
+host.get<span class="token punctuation">(</span>create<span class="token operator">|</span>delete<span class="token operator">|</span>update<span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">#主机操作</span>
+hostgroup.get<span class="token punctuation">(</span>create<span class="token operator">|</span>delete<span class="token operator">|</span>update<span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">#主机组操作</span>
+item.get<span class="token punctuation">(</span>create<span class="token operator">|</span>delete<span class="token operator">|</span>update<span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">#监控项目操作</span>
+history.get                           <span class="token comment" spellcheck="true">#历史数据查询</span>
+event.get                             <span class="token comment" spellcheck="true">#事件查询</span>
+trigger.get                           <span class="token comment" spellcheck="true">#触发器查询</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-2-获取-Token"><a href="#3-2-获取-Token" class="headerlink" title="3.2 获取 Token"></a>3.2 获取 Token</h3><p>在访问Zabbix内部的任何数据之前，需要登录并获得身份验证令牌。这可以使用<code>user.login</code>方法来完成。</p>
+<p>假设以Zabbix的Admin用户登录。那么JSON请求将是这样的:</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>15:46:07 root@zabbix-server ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> zabbix-api-token.sh 
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+ZABBIX_SERVER<span class="token operator">=</span>zabbix.yanlinux.org
+curl -s -XPOST -H <span class="token string">"Content-Type: application/json-rpc"</span> -d <span class="token string">'
+{
+"jsonrpc": "2.0",
+"method": "user.login",
+"params": {
+"user": "Admin",
+"password": "zabbix"
+},
+"id": 1,
+"auth": null
+}'</span> http://<span class="token variable">${ZABBIX_SERVER}</span>/api_jsonrpc.php
+
+<span class="token punctuation">[</span>15:47:36 root@zabbix-server ~<span class="token punctuation">]</span>$ sh zabbix-api-token.sh <span class="token operator">|</span>jq
+<span class="token punctuation">{</span>
+  <span class="token string">"jsonrpc"</span><span class="token keyword">:</span> <span class="token string">"2.0"</span>,
+  <span class="token string">"result"</span><span class="token keyword">:</span> <span class="token string">"eeda15e7aaaab59206c03ff9ca6be32e"</span>,
+  <span class="token string">"id"</span><span class="token keyword">:</span> 1
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-3-脚本实现批量添加主机"><a href="#3-3-脚本实现批量添加主机" class="headerlink" title="3.3 脚本实现批量添加主机"></a>3.3 脚本实现批量添加主机</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>22:00:58 root@zabbix-server ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> zabbix-api.sh
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+ZABBIX_SERVER<span class="token operator">=</span>zabbix.yanlinux.org
+TOKEN<span class="token operator">=</span><span class="token punctuation">$(</span>./zabbix-api-token.sh<span class="token operator">|</span> <span class="token function">awk</span> -F<span class="token string">'"'</span> <span class="token string">'{print <span class="token variable">$8</span>}'</span><span class="token punctuation">)</span>
+IPLIST<span class="token operator">=</span><span class="token punctuation">(</span>10.0.0.17 10.0.0.27 10.0.0.18 10.0.0.48 10.0.0.58 10.0.0.102<span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> <span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>${#IPLIST[@]}<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">))</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+addhost_confige<span class="token operator">=</span><span class="token string">'
+{
+"jsonrpc": "2.0",
+"method": "host.create",
+"params": {
+"host": "'</span><span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"name": "'</span>web-api-<span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"interfaces": [
+{
+"type": 1,
+"main": 1,
+"useip": 1,
+"ip": "'</span><span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"dns": "",
+"port": "10050"
+}
+],
+"groups": [
+{
+"groupid": "2"
+}
+],
+"templates": [
+{
+"templateid": "10001"
+}
+]
+},
+"id": 1,
+"auth": "'</span><span class="token variable">$TOKEN</span><span class="token string">'"
+}'</span>
+
+addproxy_confige<span class="token operator">=</span><span class="token string">'
+{
+"jsonrpc": "2.0",
+"method": "host.create",
+"params": {
+"host": "'</span><span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"name": "'</span>web-proxy-api-<span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"proxy_hostid": "10455",
+"interfaces": [
+{
+"type": 1,
+"main": 1,
+"useip": 1,
+"ip": "'</span><span class="token variable">${IPLIST[$i]}</span><span class="token string">'",
+"dns": "",
+"port": "10050"
+}
+],
+"groups": [
+{
+"groupid": "2"
+}
+],
+"templates": [
+{
+"templateid": "10001"
+}
+]
+},
+"id": 1,
+"auth": "'</span><span class="token variable">$TOKEN</span><span class="token string">'"
+}'</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$i</span> -lt 4 <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        curl -s -XPOST -H <span class="token string">"Content-Type: application/json-rpc"</span> -d <span class="token string">"<span class="token variable">${addhost_confige}</span>"</span> http://<span class="token variable">${ZABBIX_SERVER}</span>/api_jsonrpc.php <span class="token operator">|</span> python3 -m json.tool
+    <span class="token keyword">else</span>
+        curl -s -XPOST -H <span class="token string">"Content-Type: application/json-rpc"</span> -d <span class="token string">"<span class="token variable">${addproxy_confige}</span>"</span> http://<span class="token variable">${ZABBIX_SERVER}</span>/api_jsonrpc.php <span class="token operator">|</span> python3 -m json.tool
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="4-总结zabbix自定义监控项，基于自定义监控项监控nginx。"><a href="#4-总结zabbix自定义监控项，基于自定义监控项监控nginx。" class="headerlink" title="4 总结zabbix自定义监控项，基于自定义监控项监控nginx。"></a>4 总结zabbix自定义监控项，基于自定义监控项监控nginx。</h2><h3 id="4-1-自定义监控项"><a href="#4-1-自定义监控项" class="headerlink" title="4.1 自定义监控项"></a>4.1 自定义监控项</h3><p>监控项键值的格式：<a href="https://www.zabbix.com/documentation/5.0/zh/manual/config/items/item/key" target="_blank" rel="noopener">https://www.zabbix.com/documentation/5.0/zh/manual/config/items/item/key</a></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221123164722773.png" alt=""></p>
+<p>客户端可以自定义监控项，在Zabbix Agent 配置文件添加内容,格式如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#cat /etc/zabbix/zabbix_agentd.conf</span>
+<span class="token comment" spellcheck="true">#cat /etc/zabbix/zabbix_agent2.conf</span>
+UserParameter<span class="token operator">=</span><span class="token operator">&lt;</span>key<span class="token operator">></span>,<span class="token operator">&lt;</span>shell command<span class="token operator">></span>
+Include<span class="token operator">=</span>/etc/zabbix/zabbix_agentd.d/*.conf
+
+<span class="token comment" spellcheck="true">#或者创建独立的自定义文件</span>
+<span class="token comment" spellcheck="true">#cat /etc/zabbix/zabbix_agentd.d/*.conf</span>
+<span class="token comment" spellcheck="true">#cat /etc/zabbix/zabbix_agent2.d/*.conf</span>
+UserParameter<span class="token operator">=</span><span class="token operator">&lt;</span>key<span class="token operator">></span>,<span class="token operator">&lt;</span>shell command<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>说明：</p>
+<ul>
+<li><p>key 必须整个系统唯一。注意大小写是敏感的, Key名允许的字符如下:</p>
+<p><code>0-9a-zA-Z_-.</code></p>
+<p>key使用 [*] 用于定义该key接受括号内的参数。参数需在配置监控项时给出；参数禁止使用下列字符：\ ’ ” ` * ? [ ] { } ~ $ ! &amp; ; ( ) &lt;&gt;</p>
+</li>
+<li><p>Command：命令用于生成key对应的值。可以在命令中使用位置引用$1 … $9来引用监控项Key中的相应参数。Zabbix解析监控项Key的[]中包含的参数，并相应地替换$1，…，$9。$0会替换为完整的原始命令（在对$0，…，$9执行替换之前的命令）运行。不管位置参数（$0,…,$9)是用双引号( “ )还是单引号( ’ )括起来，都会解析位置引用</p>
+</li>
+</ul>
+<p><strong>测试监控项</strong></p>
+<ul>
+<li>在Zabbix Agent 上执行测试: <code>zabbix_agent -t "在客户端定义的key名"</code></li>
+<li>在Zabbix Server上可以使用zabbix_get工具获取自定义监控项:<code>zabbix_get -s 客户端IP -p 10050 -k "在客户端定义的key名"</code></li>
+</ul>
+<h3 id="4-2-自定义监控nginx"><a href="#4-2-自定义监控nginx" class="headerlink" title="4.2 自定义监控nginx"></a>4.2 自定义监控nginx</h3><h4 id="4-2-1-安装和配置nginx服务"><a href="#4-2-1-安装和配置nginx服务" class="headerlink" title="4.2.1 安装和配置nginx服务"></a>4.2.1 安装和配置nginx服务</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#在10.0.0.18上安装nginx</span>
+<span class="token punctuation">[</span>14:56:25 root@rocky8 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> nginx
+<span class="token punctuation">[</span>15:10:39 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/nginx/nginx.conf
+ http<span class="token punctuation">{</span>
+     server <span class="token punctuation">{</span>
+     <span class="token punctuation">..</span><span class="token punctuation">..</span><span class="token punctuation">..</span>
+        location / <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        error_page 404 /404.html<span class="token punctuation">;</span>
+            location <span class="token operator">=</span> /40x.html <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        error_page 500 502 503 504 /50x.html<span class="token punctuation">;</span>
+            location <span class="token operator">=</span> /50x.html <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">#添加下面几行</span>
+        location /basic_status <span class="token punctuation">{</span>
+            stub_status<span class="token punctuation">;</span>
+            allow 126.0.0.1<span class="token punctuation">;</span>
+            allow 10.0.0.101<span class="token punctuation">;</span>
+            deny all<span class="token punctuation">;</span>                      
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">[</span>15:13:05 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now nginx.service 
+
+<span class="token punctuation">[</span>15:14:59 root@rocky8 ~<span class="token punctuation">]</span>$ curl http://127.0.0.1/basic_status
+Active connections: 1 
+server accepts handled requests
+ 1 1 1 
+Reading: 0 Writing: 1 Waiting: 0
+
+<span class="token punctuation">[</span>18:32:51 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/zabbix/zabbix_agent2.d/nginx_status.sh
+HOST<span class="token operator">=</span>126.0.0.1
+PORT<span class="token operator">=</span><span class="token string">"80"</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> $<span class="token comment" spellcheck="true"># -eq "0" ];then</span>
+    <span class="token keyword">echo</span> <span class="token string">"Usage:<span class="token variable">$0</span>(active|reading|writing|waiting|accepts|handled|requests|ping)"</span> 
+<span class="token keyword">fi</span>
+
+<span class="token comment" spellcheck="true"># Functions to return nginx stats</span>
+<span class="token keyword">function</span> active <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Active'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$NF</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> reading <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Reading'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> writing <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Writing'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$4</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> waiting <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">'Waiting'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$6</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> accepts <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$1</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> handled <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$2</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> requests <span class="token punctuation">{</span>
+  /usr/bin/curl <span class="token string">"http://<span class="token variable">$HOST</span>:<span class="token variable">$PORT</span>/basic_status"</span> 2<span class="token operator">></span>/dev/null<span class="token operator">|</span> <span class="token function">awk</span> NR<span class="token operator">==</span>3 <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print <span class="token variable">$3</span>}'</span>
+  <span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">ping</span> <span class="token punctuation">{</span>
+    /sbin/pidof nginx <span class="token operator">|</span> <span class="token function">wc</span> -l
+<span class="token punctuation">}</span>
+
+<span class="token variable">$1</span>
+
+<span class="token punctuation">[</span>18:36:28 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> +x /etc/zabbix/zabbix_agent2.d/nginx_status.sh
+
+<span class="token punctuation">[</span>18:38:23 root@rocky8 ~<span class="token punctuation">]</span>$ vim /etc/zabbix/zabbix_agent2.d/nginx_status.conf
+UserParameter<span class="token operator">=</span>nginx.status<span class="token punctuation">[</span>*<span class="token punctuation">]</span>,/etc/zabbix/zabbix_agent2.d/nginx_status.sh <span class="token variable">$1</span>
+
+<span class="token comment" spellcheck="true">#重启</span>
+<span class="token punctuation">[</span>18:42:53 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart zabbix-agent2.service
+
+<span class="token comment" spellcheck="true">#测试</span>
+<span class="token punctuation">[</span>18:43:18 root@rocky8 ~<span class="token punctuation">]</span>$ zabbix_agent2 -t nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>
+nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>                          <span class="token punctuation">[</span>s<span class="token operator">|</span>1<span class="token punctuation">]</span>
+<span class="token punctuation">[</span>18:43:32 root@rocky8 ~<span class="token punctuation">]</span>$ zabbix_agent2 -t nginx.status<span class="token punctuation">[</span>writing<span class="token punctuation">]</span>
+nginx.status<span class="token punctuation">[</span>writing<span class="token punctuation">]</span>                         <span class="token punctuation">[</span>s<span class="token operator">|</span>1<span class="token punctuation">]</span>
+<span class="token punctuation">[</span>18:43:48 root@rocky8 ~<span class="token punctuation">]</span>$ zabbix_agent2 -t nginx.status<span class="token punctuation">[</span>accepts<span class="token punctuation">]</span>
+nginx.status<span class="token punctuation">[</span>accepts<span class="token punctuation">]</span>                         <span class="token punctuation">[</span>s<span class="token operator">|</span>12<span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true">#zabbix server测试</span>
+<span class="token punctuation">[</span>16:58:01 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.18 -k nginx.status<span class="token punctuation">[</span>active<span class="token punctuation">]</span>
+1
+<span class="token punctuation">[</span>18:44:36 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.18 -k nginx.status<span class="token punctuation">[</span>writing<span class="token punctuation">]</span>
+1
+<span class="token punctuation">[</span>18:44:50 root@zabbix-server ~<span class="token punctuation">]</span>$ zabbix_get -s 10.0.0.18 -k nginx.status<span class="token punctuation">[</span>accepts<span class="token punctuation">]</span>
+15<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-2自定义模板及监控项并在添加监控的主机上关联模板"><a href="#4-2-2自定义模板及监控项并在添加监控的主机上关联模板" class="headerlink" title="4.2.2自定义模板及监控项并在添加监控的主机上关联模板"></a>4.2.2自定义模板及监控项并在添加监控的主机上关联模板</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126184635133.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126184743409.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126184904991.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126184926249.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126185855759.png" alt=""></p>
+<p>关联主机</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126190012414.png" alt=""></p>
+<p>查看数据</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221126190139463.png" alt=""></p>
+<h2 id="5-基于zabbix实现邮件或微信告警。"><a href="#5-基于zabbix实现邮件或微信告警。" class="headerlink" title="5 基于zabbix实现邮件或微信告警。"></a>5 基于zabbix实现邮件或微信告警。</h2><h3 id="5-1-邮箱开启-SMTP-功能"><a href="#5-1-邮箱开启-SMTP-功能" class="headerlink" title="5.1 邮箱开启 SMTP 功能"></a>5.1 邮箱开启 SMTP 功能</h3><p>在邮箱上开启SMTP功能,利用此邮箱实现发送报警邮件</p>
+<h3 id="5-2-创建报警媒介类型实现发信人功能"><a href="#5-2-创建报警媒介类型实现发信人功能" class="headerlink" title="5.2 创建报警媒介类型实现发信人功能"></a>5.2 创建报警媒介类型实现发信人功能</h3><p>报警媒介类型是一种给运维工程师发送消息通知的渠道，即当zabbix的触发器触发一个事件后，怎么才能把这个事件通过某些方式通知给运维工程师呢? 媒介类型就起到此作用，如果想要实现邮件告警功能，那么对应的媒介类型就是配置用来发送告警邮件的发件人邮箱。</p>
+<p>管理–&gt;报警媒介类型–&gt;创建报警媒介类型</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124154831227.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124155407695.png" alt=""></p>
+<p>添加消息模板用于发送信息</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124155635982.png" alt="问题消息模板"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124155831671.png" alt="恢复发送消息模板"></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124155952738.png" alt="添加成功"></p>
+<p>测试</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124160059233.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124161655589.png" alt=""></p>
+<h3 id="5-3-给指定用户添加报警媒介实现收件人功能"><a href="#5-3-给指定用户添加报警媒介实现收件人功能" class="headerlink" title="5.3 给指定用户添加报警媒介实现收件人功能"></a>5.3 给指定用户添加报警媒介实现收件人功能</h3><p>媒介类型创建好之后，还需要在每个zabbix账户里面添加相应的收件配置，比如邮件类型的媒介类型要给zabbix账户添加邮箱，如果是微信类型的媒介类型那么就要在zabbix账户设置微信号，短信类型的媒介类型那就得给zabbix账户设置手机号用于接收报警消息内容。</p>
+<p>在zabbix用户中添加报警媒介时，需要指定告警信息的收件人的邮件地址</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124162129871.png" alt=""></p>
+<p>然后点击更新</p>
+<h3 id="5-4-创建和配置动作"><a href="#5-4-创建和配置动作" class="headerlink" title="5.4 创建和配置动作"></a>5.4 创建和配置动作</h3><p>动作可以实现当触发器被触发后可以执行哪些操作,一般可以是发送告警或执行命令</p>
+<p>关于宏,即一些在Zabbix 中可以调用的变量</p>
+<h4 id="5-4-1-创建动作"><a href="#5-4-1-创建动作" class="headerlink" title="5.4.1 创建动作"></a>5.4.1 创建动作</h4><p>指定动作即条件为事件的严重度为信息时就触发动作</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163034649.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163109539.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163211440.png" alt=""></p>
+<p>现在暂停被监控主机上的80端口，然后测试是否会发送消息</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163443394.png" alt="两台机器的都发送成功"></p>
+<p>查看邮箱是否收到邮件</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163530430.png" alt=""></p>
+<p>现在恢复被监控主机上的80端口，查看邮件</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124163839600.png" alt=""></p>
+<h3 id="5-5-分级告警"><a href="#5-5-分级告警" class="headerlink" title="5.5 分级告警"></a>5.5 分级告警</h3><p>当出现报警后,一般会根据组织的重要级别,按时间逐级分层向上报警,如下面常见分层报警</p>
+<p><code>初级运维/指定运维组--&gt;高级运维工程师/业务运维--&gt;架构师---&gt;总监/CTO</code></p>
+<p>要实现分级告警，必须确保有多个用户,并分别指定不同的邮箱</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124164925610.png" alt=""></p>
+<h3 id="5-6-邮件告警方法2"><a href="#5-6-邮件告警方法2" class="headerlink" title="5.6 邮件告警方法2"></a>5.6 邮件告警方法2</h3><p>也可以利用脚本方式进行邮件告警</p>
+<h4 id="5-6-1-安装邮件相关软件和配置邮件"><a href="#5-6-1-安装邮件相关软件和配置邮件" class="headerlink" title="5.6.1 安装邮件相关软件和配置邮件"></a>5.6.1 安装邮件相关软件和配置邮件</h4><p>利用 sendemail 工具实现邮件脚本</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>12:36:21 root@zabbix-server ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/lib/zabbix/alertscripts/send_mail.sh
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+email_send<span class="token operator">=</span><span class="token string">'lgq6569@163.com'</span>
+email_passwd<span class="token operator">=</span><span class="token string">'授权码'</span>
+email_smtp_server<span class="token operator">=</span><span class="token string">'smtp.163.com'</span>
+
+<span class="token keyword">.</span> /etc/os-release
+
+msg_error<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">echo</span> -e <span class="token string">"\033[1;31m<span class="token variable">$1</span>\033[0m"</span>
+<span class="token punctuation">}</span>
+
+msg_info<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">echo</span> -e <span class="token string">"\033[1;32m<span class="token variable">$1</span>\033[0m"</span>
+<span class="token punctuation">}</span>
+
+msg_warn<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">echo</span> -e <span class="token string">"\033[1;33m<span class="token variable">$1</span>\033[0m"</span>
+<span class="token punctuation">}</span>
+
+
+color <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    RES_COL<span class="token operator">=</span>60
+    MOVE_TO_COL<span class="token operator">=</span><span class="token string">"echo -en \\033[<span class="token variable">${RES_COL}</span>G"</span>
+    SETCOLOR_SUCCESS<span class="token operator">=</span><span class="token string">"echo -en \\033[1;32m"</span>
+    SETCOLOR_FAILURE<span class="token operator">=</span><span class="token string">"echo -en \\033[1;31m"</span>
+    SETCOLOR_WARNING<span class="token operator">=</span><span class="token string">"echo -en \\033[1;33m"</span>
+    SETCOLOR_NORMAL<span class="token operator">=</span><span class="token string">"echo -en \E[0m"</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$MOVE_TO_COL</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"["</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"success"</span> -o <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"0"</span> <span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token variable">${SETCOLOR_SUCCESS}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"  OK  "</span>    
+    <span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"failure"</span> -o <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"1"</span>  <span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span> 
+        <span class="token variable">${SETCOLOR_FAILURE}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"FAILED"</span>
+    <span class="token keyword">else</span>
+        <span class="token variable">${SETCOLOR_WARNING}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"WARNING"</span>
+    <span class="token keyword">fi</span>
+    <span class="token variable">${SETCOLOR_NORMAL}</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"]"</span>
+    <span class="token keyword">echo</span> 
+<span class="token punctuation">}</span>
+
+
+install_sendemail <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$ID</span> <span class="token operator">=</span>~ rhel<span class="token operator">|</span>centos<span class="token operator">|</span>rocky <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        rpm -q sendemail <span class="token operator">&amp;</span><span class="token operator">></span> /dev/null <span class="token operator">||</span>  yum <span class="token function">install</span> -y sendemail
+    <span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$ID</span> <span class="token operator">=</span> <span class="token string">'ubuntu'</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        dpkg -l <span class="token operator">|</span><span class="token function">grep</span> -q sendemail  <span class="token operator">||</span> <span class="token punctuation">{</span> apt update<span class="token punctuation">;</span> apt <span class="token function">install</span> -y libio-socket-ssl-perl libnet-ssleay-perl sendemail <span class="token punctuation">;</span> <span class="token punctuation">}</span> 
+    <span class="token keyword">else</span>
+        color <span class="token string">"不支持此操作系统，退出!"</span> 1
+        <span class="token keyword">exit</span>
+    <span class="token keyword">fi</span>
+<span class="token punctuation">}</span>
+
+send_email <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    local email_receive<span class="token operator">=</span><span class="token string">"<span class="token variable">$1</span>"</span>
+    local email_subject<span class="token operator">=</span><span class="token string">"<span class="token variable">$2</span>"</span>
+    local email_message<span class="token operator">=</span><span class="token string">"<span class="token variable">$3</span>"</span>
+    sendemail -f <span class="token variable">$email_send</span> -t <span class="token variable">$email_receive</span> -u <span class="token variable">$email_subject</span> -m <span class="token variable">$email_message</span> -s <span class="token variable">$email_smtp_server</span> -o message-charset<span class="token operator">=</span>utf-8 -o tls<span class="token operator">=</span>yes -xu <span class="token variable">$email_send</span> -xp <span class="token variable">$email_passwd</span>
+    <span class="token punctuation">[</span> <span class="token variable">$?</span> -eq 0 <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> color <span class="token string">"邮件发送成功!"</span> 0 <span class="token operator">||</span> color <span class="token string">"邮件发送失败!"</span> 1 
+<span class="token punctuation">}</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> $<span class="token comment" spellcheck="true"># -ne 3 ];then </span>
+    color <span class="token string">"脚本参数不正确!"</span> 1
+    msg_info <span class="token string">"Usage: <span class="token variable"><span class="token variable">`</span><span class="token function">basename</span> $0<span class="token variable">`</span></span> &lt;mail_address> &lt;subject> &lt;message>"</span>
+    <span class="token keyword">exit</span> 1
+<span class="token keyword">fi</span>
+
+install_sendemail 
+
+send_email <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token string">"<span class="token variable">$2</span>"</span> <span class="token string">"<span class="token variable">$3</span>"</span>
+
+<span class="token punctuation">[</span>16:02:15 root@zabbix-server ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> +x /usr/lib/zabbix/alertscripts/send_mail.sh
+<span class="token comment" spellcheck="true">#测试发送</span>
+<span class="token punctuation">[</span>16:03:12 root@zabbix-server alertscripts<span class="token punctuation">]</span>$ ./send_mail.sh 1499214186@qq.com <span class="token function">test</span> <span class="token string">"This is a test mail"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-6-2-创建邮件报警媒介类型"><a href="#5-6-2-创建邮件报警媒介类型" class="headerlink" title="5.6.2 创建邮件报警媒介类型"></a>5.6.2 创建邮件报警媒介类型</h4><p>脚本参数如下:</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">{</span>ALERT.SENDTO<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>ALERT.SUBJECT<span class="token punctuation">}</span>
+<span class="token punctuation">{</span>ALERT.MESSAGE<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124170724919.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171415540.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171706220.png" alt="添加发送信息模板"></p>
+<h4 id="5-6-3-将报警媒介关联用户"><a href="#5-6-3-将报警媒介关联用户" class="headerlink" title="5.6.3 将报警媒介关联用户"></a>5.6.3 将报警媒介关联用户</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124171951462.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172130359.png" alt=""></p>
+<h4 id="5-6-4-创建动作和操作"><a href="#5-6-4-创建动作和操作" class="headerlink" title="5.6.4 创建动作和操作"></a>5.6.4 创建动作和操作</h4><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172237413.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172337976.png" alt=""></p>
+<h4 id="5-6-5-验证邮件告警"><a href="#5-6-5-验证邮件告警" class="headerlink" title="5.6.5 验证邮件告警"></a>5.6.5 验证邮件告警</h4><p>测试故障</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>16:33:21 root@centos6 ~<span class="token punctuation">]</span>$ systemctl start nginx.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172552434.png" alt="说道两封邮件"></p>
+<p>测试故障恢复</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>16:26:38 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl start nginx.service <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124172939543.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221124173010665.png" alt=""></p>
+<h2 id="6-总结zabbix自动发现监控"><a href="#6-总结zabbix自动发现监控" class="headerlink" title="6 总结zabbix自动发现监控"></a>6 总结zabbix自动发现监控</h2><h3 id="6-1-Zabbix-网络发现"><a href="#6-1-Zabbix-网络发现" class="headerlink" title="6.1 Zabbix 网络发现"></a>6.1 Zabbix 网络发现</h3><h4 id="6-1-1-Zabbix-网络发现介绍"><a href="#6-1-1-Zabbix-网络发现介绍" class="headerlink" title="6.1.1 Zabbix 网络发现介绍"></a>6.1.1 Zabbix 网络发现介绍</h4><p>之前都是手动一台一台主机的添加到 Zabbix 中进行监控,很是繁琐,可以利用自动发现功能,自动添加被<br>监控的主机。当众多的服务器都已经安装了agent或者snmp后，利用自动发现功能,Zabbix server 可以自动扫描预先配置好的ip段，自动添加主机，自动关联模板，自动加到主机组里等等。</p>
+<p>自动发现虽然能自动完成发现并添加主机，但仍然存在一些问题</p>
+<ul>
+<li>发现时间长，效率较低</li>
+<li>扫描过程中容易漏扫</li>
+<li>当IP地址不固定难以实现</li>
+<li>无法实现不同类型主机关联不同模板</li>
+</ul>
+<h4 id="6-1-2-实现-Zabbix-网络发现"><a href="#6-1-2-实现-Zabbix-网络发现" class="headerlink" title="6.1.2 实现 Zabbix 网络发现"></a>6.1.2 实现 Zabbix 网络发现</h4><h5 id="6-1-2-1-创建自动发现指定需要监控的网段"><a href="#6-1-2-1-创建自动发现指定需要监控的网段" class="headerlink" title="6.1.2.1 创建自动发现指定需要监控的网段"></a>6.1.2.1 创建自动发现指定需要监控的网段</h5><p>配置– 自动发现– 创建发现规则</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207141157509.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207141723014.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207141800876.png" alt=""></p>
+<h5 id="6-1-2-2-创建添加主机的自动发现动作"><a href="#6-1-2-2-创建添加主机的自动发现动作" class="headerlink" title="6.1.2.2 创建添加主机的自动发现动作"></a>6.1.2.2 创建添加主机的自动发现动作</h5><p>创建新的动作</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207142241179.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207142710070.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207142940250.png" alt=""></p>
+<h5 id="6-1-2-3-创建删除主机的自动发现动作"><a href="#6-1-2-3-创建删除主机的自动发现动作" class="headerlink" title="6.1.2.3 创建删除主机的自动发现动作"></a>6.1.2.3 创建删除主机的自动发现动作</h5><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207145051969.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207145120896.png" alt=""></p>
+<h5 id="6-1-2-4-验证自动发现的结果"><a href="#6-1-2-4-验证自动发现的结果" class="headerlink" title="6.1.2.4 验证自动发现的结果"></a>6.1.2.4 验证自动发现的结果</h5><p>一段时间后,可以观察到下面结果,自动添加两台主机并关联相应的模板</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207144704239.png" alt=""></p>
+<p>测试自动删除</p>
+<p>关闭10.0.0.26的agent服务，然后查看已经删除掉</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207145623035.png" alt=""></p>
+<h3 id="6-2-Zabbix-自动注册"><a href="#6-2-Zabbix-自动注册" class="headerlink" title="6.2 Zabbix 自动注册"></a>6.2 Zabbix 自动注册</h3><h4 id="6-2-1-Zabbix-自动注册介绍"><a href="#6-2-1-Zabbix-自动注册介绍" class="headerlink" title="6.2.1 Zabbix 自动注册介绍"></a>6.2.1 Zabbix 自动注册介绍</h4><p>利用Zabbix的自动注册功能,实现添加主机的自动化,可以大幅减少运维的工作量,减少Zabbix Server 的资源消耗</p>
+<p>此方式和自动发现不同,是由Active agent主动发起请求zabbix server将这些agent加到主机里。</p>
+<p><strong>注意: Agent 必须使用主动模式才支持自动注册</strong></p>
+<p>自动注册由于比自动发现效率更好,Zabbix Server资源消耗更少,<strong>更适合大规模及云环境IP地址不固定的场景使用</strong></p>
+<p>在Zabbix agent 端的配置文件修改以下项目：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">Server<span class="token operator">=</span><span class="token operator">&lt;</span>Zabbix Server IP<span class="token operator">></span>
+ServerActive<span class="token operator">=</span><span class="token operator">&lt;</span>Zabbix Server IP<span class="token operator">></span> <span class="token comment" spellcheck="true">#客户端主动模式是实现自动注册的前提条件</span>
+Hostname<span class="token operator">=</span><span class="token operator">&lt;</span>agent IP<span class="token operator">></span>
+<span class="token comment" spellcheck="true">#HostnameItem=system.hostname</span>
+HostMetadata<span class="token operator">==</span><span class="token operator">&lt;</span>key<span class="token operator">></span> <span class="token comment" spellcheck="true">#非必须项,可以做为添加主机的验证标识和分类,或者实现加入主机的验证功能</span>
+HostMetadataItem<span class="token operator">=</span><span class="token operator">&lt;</span>监控项Item<span class="token operator">></span> <span class="token comment" spellcheck="true">#非必须项,监控项的值可以做为添加主机的验证标识和分类</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="6-2-2-案例-实现-Linux-主机自动注册"><a href="#6-2-2-案例-实现-Linux-主机自动注册" class="headerlink" title="6.2.2 案例: 实现 Linux 主机自动注册"></a>6.2.2 案例: 实现 Linux 主机自动注册</h4><h5 id="6-2-2-1-修改-Zabbix-agent-的配置"><a href="#6-2-2-1-修改-Zabbix-agent-的配置" class="headerlink" title="6.2.2.1 修改 Zabbix agent 的配置"></a>6.2.2.1 修改 Zabbix agent 的配置</h5><p>范例:</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>15:02:56 root@centos6 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/zabbix/zabbix_agent2.conf 
+Server<span class="token operator">=</span>10.0.0.101          <span class="token comment" spellcheck="true">#zabbix Server地址</span>
+ServerActive<span class="token operator">=</span>10.0.0.101    <span class="token comment" spellcheck="true">#zabbix Server地址</span>
+Hostname<span class="token operator">=</span>web-10.0.0.26     <span class="token comment" spellcheck="true">##指定主机名,如果不指定,则服务器将使用agent的系统主机名</span>
+<span class="token punctuation">[</span>15:05:16 root@centos6 ~<span class="token punctuation">]</span>$ systemctl restart zabbix-agent2.service
+
+<span class="token punctuation">[</span>15:03:20 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/zabbix/zabbix_agent2.conf 
+Server<span class="token operator">=</span>10.0.0.101
+ServerActive<span class="token operator">=</span>10.0.0.101
+Hostname<span class="token operator">=</span>web-10.0.0.48
+<span class="token punctuation">[</span>15:06:45 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart zabbix-agent2.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="6-2-2-2-在-Zabbix-Server-配置动作"><a href="#6-2-2-2-在-Zabbix-Server-配置动作" class="headerlink" title="6.2.2.2 在 Zabbix Server 配置动作"></a>6.2.2.2 在 Zabbix Server 配置动作</h5><p>在配置—动作—选择自动注册动作</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207150930391.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207151047140.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207151326528.png" alt=""></p>
+<h5 id="6-2-2-3-验证结果"><a href="#6-2-2-3-验证结果" class="headerlink" title="6.2.2.3 验证结果"></a>6.2.2.3 验证结果</h5><p>稍过一会儿,再观察可以看到下面显示添加主机成功</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207151838594.png" alt=""></p>
+<p>另外也可以利用验证信息首先自动注册</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#修改zabbix_agent2.conf文件的HostMetadata,实现验证</span>
+<span class="token punctuation">[</span>15:19:21 root@centos6 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/zabbix/zabbix_agent2.conf
+Server<span class="token operator">=</span>10.0.0.101
+ServerActive<span class="token operator">=</span>10.0.0.101
+Hostname<span class="token operator">=</span>web-10.0.0.26 
+HostMetadata<span class="token operator">=</span>123456
+<span class="token punctuation">[</span>15:21:43 root@centos6 ~<span class="token punctuation">]</span>$ systemctl restart zabbix-agent2.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207152257624.png" alt="创建自动注册验证动作"></p>
+<p>观察主机10.0.0.26添加成功，10.0.0.48没有添加成功</p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221207153050183.png" alt=""></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力!</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291304818.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207292224344.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+            
+            
+            <div class="reprint1">
+                <p>
+                    <span class="reprint1-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://www.yanlinux.cn" class="b-link-green">焱黎的博客</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/clbf5g4970000ycak8eqhhe7j/" class="b-link-green">第十周作业</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81Njg5OC8zMzM2Mg==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/clbf5g4970000ycak8eqhhe7j/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/img8.jpg" class="responsive-img" alt="第十周作业">
+                        
+                        <span class="card-title">第十周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            小小进步
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-12-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/zabbix/" target="_blank">
+                        <span class="chip bg-color">zabbix</span>
+                    </a>
+                    
+                    <a href="/tags/zabbix自动发现/" target="_blank">
+                        <span class="chip bg-color">zabbix自动发现</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/clbeydtnh0032e0ak26whg0g2/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/img-7.jpg" class="responsive-img" alt="第九周作业">
+                        
+                        <span class="card-title">第九周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            每周都进步一点点！
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-11-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/nginx-rewrite/" target="_blank">
+                        <span class="chip bg-color">nginx rewrite</span>
+                    </a>
+                    
+                    <a href="/tags/nginx动静分离/" target="_blank">
+                        <span class="chip bg-color">nginx动静分离</span>
+                    </a>
+                    
+                    <a href="/tags/nginx防盗链/" target="_blank">
+                        <span class="chip bg-color">nginx防盗链</span>
+                    </a>
+                    
+                    <a href="/tags/nginx负载均衡算法/" target="_blank">
+                        <span class="chip bg-color">nginx负载均衡算法</span>
+                    </a>
+                    
+                    <a href="/tags/LNMP搭建/" target="_blank">
+                        <span class="chip bg-color">LNMP搭建</span>
+                    </a>
+                    
+                    <a href="/tags/jumpserver/" target="_blank">
+                        <span class="chip bg-color">jumpserver</span>
+                    </a>
+                    
+                    <a href="/tags/tomcat应用发布/" target="_blank">
+                        <span class="chip bg-color">tomcat应用发布</span>
+                    </a>
+                    
+                    <a href="/tags/tomcat-session粘滞/" target="_blank">
+                        <span class="chip bg-color">tomcat session粘滞</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('30')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'pre') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 焱黎的博客<br />'
+            + '作者: 焱黎<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+        <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&copy; 2022 焱黎. 
+
+            <br>
+            <span id="sitetime"></span><span class="my-face">ღゝ◡╹)ノ♡</span>
+            <br>
+
+            
+
+            
+                    
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        总访问量: <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    
+        
+                    
+                        <span id="busuanzi_container_site_uv" style='display:none'></span>
+                        人次&nbsp; | &nbsp;访客人数: <span id="busuanzi_value_site_uv" class="white-color"></span> 人
+                    
+    
+            
+
+            
+                &nbsp; | &nbsp;字数统计:&nbsp;
+                <span class="white-color">255.3k</span> 字
+            
+
+            
+            <br>
+
+        </div>
+
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/yanlinux" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+ 
+    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=lgq6579@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=1499214187&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的QQ空间" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+        var t1 = Date.UTC(2022, 07, 25, 00, 00, 00); //北京时间2022-7-25 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+            minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已勉强运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours +
+            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒" ;
+    } /*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+
+
+
+
+
+        <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+        <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+        <script src="https://cdn.bootcss.com/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
+        <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+        <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/js/lightgallery-all.min.js"></script>
+        <script src="/js/matery.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+        
+            <script src="/libs/others/clicklove.js"></script>
+        
+
+        
+            <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+
+        <!-- 洪卫 shw2018 add 2019.08.28 -->
+        <script type="text/javascript">
+            var OriginTitile = document.title,
+                st;
+            document.addEventListener("visibilitychange", function () {
+                document.hidden ? (document.title = "看不见我🙈~看不见我🙈~", clearTimeout(st)) : (document.title =
+                    "(๑•̀ㅂ•́) ✧被发现了～", st = setTimeout(function () {
+                        document.title = OriginTitile
+                    }, 3e3))
+            })
+        </script>
+
+        <!-- 鼠标点击烟花爆炸效果  洪卫 shw2018 add 2019.09.09 -->
+        
+
+        <!-- 背景雪花飘落特效洪卫 shw2018 add 2019.09.10 -->
+        
+            <script type="text/javascript">
+            //只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 鼠标点击文字特效 洪卫 shw2018 add 2019.09.10-->
+        
+            <script src="/js/wenzi.js" type="text/javascript"></script>
+        
+
+        <!-- 背景雪花飘落特效 洪卫 shw2018 add 2019.09.10 -->
+        
+
+        <!-- 在线聊天工具  洪卫 shw2018 add 2019.09.11 -->
+        
+
+        <!-- 背景 canvas-nest  洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" color="0,0,255" pointColor="0,0,255" opacity= "0.8" zIndex="--1" count="150"src="/libs/background/canvas-nest.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 背景静止彩带  洪卫 shw 2018  add 2019.09.15-->
+        
+
+        <!-- 背景动态彩带 洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" src="/libs/background/ribbon-dynamic.js"><\/script>');
+            }
+            </script>
+        
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":200},"mobile":{"show":false},"react":{"opacity":0.7}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+</html>

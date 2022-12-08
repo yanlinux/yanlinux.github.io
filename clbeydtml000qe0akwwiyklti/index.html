@@ -1,0 +1,2137 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <!-- shw2018 洪卫  modify 2019.08.15-->
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="keywords" content="第五周作业, Linux SRE Python R">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="KeoTn_OFy4ndJwXNmm2gMeQfPhd7alqE9vQDwI32KCY">
+    <meta name="description" content="sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识1、SUDO,PAM配置规范说明1.1 SUDO配置规范说明
+sudo即superuser do，允许普通用户执行一些或者全部的root命令。
+实现的过程：
+
+超级用">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>第五周作业 | 焱黎的博客</title>
+    <link rel="icon" type="image/jpeg" href="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image_20220801100631.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <style type="text/css">
+        
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    <body>
+
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">焱黎的博客</span>
+                </a>
+            </div>
+            
+
+
+<!-- <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/AV" class="waves-effect waves-light">
+            
+            <i class="fa fa-music"></i>
+            
+            <span>视听</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/galleries" class="waves-effect waves-light">
+            
+            <i class="fa fa-photo"></i>
+            
+            <span>相册</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-envelope"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul> -->
+
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right nav-menu">
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/" class="waves-effect waves-light">
+              
+                <i class="fa fa-home"></i>
+              
+              <span>首页</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/tags" class="waves-effect waves-light">
+              
+                <i class="fa fa-tags"></i>
+              
+              <span>标签</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/categories" class="waves-effect waves-light">
+              
+                <i class="fa fa-bookmark"></i>
+              
+              <span>分类</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/archives" class="waves-effect waves-light">
+              
+                <i class="fa fa-archive"></i>
+              
+              <span>归档</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/AV" class="waves-effect waves-light">
+              
+                <i class="fa fa-music"></i>
+              
+              <span>视听</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/galleries" class="waves-effect waves-light">
+              
+                <i class="fa fa-photo"></i>
+              
+              <span>相册</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/about" class="waves-effect waves-light">
+              
+                <i class="fa fa-user-circle-o"></i>
+              
+              <span>关于我</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/contact" class="waves-effect waves-light">
+              
+                <i class="fa fa-envelope"></i>
+              
+              <span>留言板</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/friends" class="waves-effect waves-light">
+              
+                <i class="fa fa-address-book"></i>
+              
+              <span>友情链接</span>
+            </a>
+
+            
+      </li>
+    
+
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">焱黎的博客</div>
+        <div class="logo-desc">
+            
+            Linux | SRE | Python
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/AV" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-music"></i>
+                
+                视听
+            </a>
+        </li>
+        
+        <li>
+            <a href="/galleries" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-photo"></i>
+                
+                相册
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envelope"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+   
+   
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<!-- <ul class="menu-list mobile-menu-list">
+    
+        <li class="m-nav-item">
+                
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-home"></i>
+                        
+                        首页
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/tags" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-tags"></i>
+                        
+                        标签
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/categories" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-bookmark"></i>
+                        
+                        分类
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/archives" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-archive"></i>
+                        
+                        归档
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/AV" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-music"></i>
+                        
+                        视听
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/galleries" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-photo"></i>
+                        
+                        相册
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/about" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-user-circle-o"></i>
+                        
+                        关于我
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/contact" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-envelope"></i>
+                        
+                        留言板
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/friends" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-address-book"></i>
+                        
+                        友情链接
+                    </a>
+              
+            </li>
+        
+
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul> -->
+
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/yanlinux/yanlinux.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+        
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/wallhaven-q27kjq.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        第五周作业
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- shw2018 洪卫  modify 2019.08.15-->
+<!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/mysql/" target="_blank">
+                                <span class="chip bg-color">mysql</span>
+                            </a>
+                        
+                            <a href="/tags/sudo/" target="_blank">
+                                <span class="chip bg-color">sudo</span>
+                            </a>
+                        
+                            <a href="/tags/pam/" target="_blank">
+                                <span class="chip bg-color">pam</span>
+                            </a>
+                        
+                            <a href="/tags/DNS解析/" target="_blank">
+                                <span class="chip bg-color">DNS解析</span>
+                            </a>
+                        
+                            <a href="/tags/ntp/" target="_blank">
+                                <span class="chip bg-color">ntp</span>
+                            </a>
+                        
+                            <a href="/tags/iptables/" target="_blank">
+                                <span class="chip bg-color">iptables</span>
+                            </a>
+                        
+                            <a href="/tags/firewall/" target="_blank">
+                                <span class="chip bg-color">firewall</span>
+                            </a>
+                        
+                            <a href="/tags/nft/" target="_blank">
+                                <span class="chip bg-color">nft</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                作业
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-09-17
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                        焱黎
+                    
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        6.5k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        30 分
+                    </div>
+                    
+                
+                
+                
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv" ></span>
+    
+                
+
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识"><a href="#sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识" class="headerlink" title="sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识"></a>sudo、PAM、ntp、DNS解析、防火墙规则配置以及mysql基础知识</h1><h2 id="1、SUDO-PAM配置规范说明"><a href="#1、SUDO-PAM配置规范说明" class="headerlink" title="1、SUDO,PAM配置规范说明"></a>1、SUDO,PAM配置规范说明</h2><h3 id="1-1-SUDO配置规范说明"><a href="#1-1-SUDO配置规范说明" class="headerlink" title="1.1 SUDO配置规范说明"></a>1.1 SUDO配置规范说明</h3><blockquote>
+<p><code>sudo</code>即<code>superuser do</code>，允许普通用户执行一些或者全部的root命令。</p>
+<p>实现的过程：</p>
+<ul>
+<li>超级用户将普通用户的名称、要执行的命令以及以什么身份执行，配置在<code>/etc/sudoers</code>文件中。</li>
+<li>普通用户获得权限后执行命令时需在前面加上<code>sudo</code>，就可以执行授权后的命令了，执行时会询问该用户的密码（为了确认是否该用户本人操作，五分钟之内再次执行sudo，不会再询问密码），密码正确就会执行该命令了。</li>
+</ul>
+</blockquote>
+<p>配置文件格式说明：<code>/etc/sudoers</code>, <code>/etc/sudoers.d/</code><br>配置文件中支持使用通配符 <code>glob</code></p>
+<pre class="line-numbers language-http"><code class="language-http">? 任意单一字符
+* 匹配任意长度字符
+[wxc] 匹配其中一个字符
+[!wxc] 除了这三个字符的其它字符
+\x 转义
+[[alpha]] 字母<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>配置文件规则有两类:</p>
+<ul>
+<li>1、别名定义：不是必须的</li>
+<li>2、授权规则：必须的</li>
+</ul>
+<p><strong>sudoers 授权规则格式：</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash">用户 登入主机<span class="token operator">=</span><span class="token punctuation">(</span>代表用户<span class="token punctuation">)</span> 命令
+user host<span class="token operator">=</span><span class="token punctuation">(</span>runas<span class="token punctuation">)</span> <span class="token function">command</span>
+
+<span class="token comment" spellcheck="true">#格式说明</span>
+user: 运行命令者的身份
+host: 通过哪些主机,可以设定特定的主机ip让其具有权限
+<span class="token punctuation">(</span>runas<span class="token punctuation">)</span>：以哪个用户的身份
+command: 运行哪些命令,需要绝对路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>示例：给lgq用户挂载权限</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>19:45:34 root@rocky ~<span class="token punctuation">]</span>$ visudo /etc/sudoers
+<span class="token punctuation">..</span>.
+<span class="token comment" spellcheck="true">## Allow root to run any commands anywhere </span>
+root    ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   ALL
+lgq     ALL<span class="token operator">=</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>  /usr/bin/mount,/usr/bin/umount  <span class="token comment" spellcheck="true">#添加这一行授权规则</span>
+<span class="token punctuation">..</span>.
+
+<span class="token comment" spellcheck="true">#挂载</span>
+<span class="token punctuation">[</span>19:49:44 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">mount</span> /dev/cdrom /mnt/
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    <span class="token comment" spellcheck="true">#1) Respect the privacy of others.</span>
+    <span class="token comment" spellcheck="true">#2) Think before you type.</span>
+    <span class="token comment" spellcheck="true">#3) With great power comes great responsibility.</span>
+
+<span class="token punctuation">[</span>sudo<span class="token punctuation">]</span> password <span class="token keyword">for</span> lgq: 
+mount: /mnt: WARNING: device write-protected, mounted read-only.
+<span class="token punctuation">[</span>19:50:31 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /mnt/
+AppStream  BaseOS  EFI  images  isolinux  LICENSE  media.repo  TRANS.TBL
+
+<span class="token comment" spellcheck="true">#卸载</span>
+<span class="token punctuation">[</span>19:51:21 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">umount</span> /mnt  <span class="token comment" spellcheck="true">#这次没有输入密码是因为sudo机制在距离上一次五分钟之内，不用重复输入密码</span>
+<span class="token punctuation">[</span>19:51:57 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /mnt/
+hgfs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>sudoers的别名：</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash">User和runas:
+    username
+    <span class="token comment" spellcheck="true">#uid</span>
+    %group_name
+    %<span class="token comment" spellcheck="true">#gid</span>
+    user_alias<span class="token operator">|</span>runas_alias
+host:
+    ip或hostname
+    network<span class="token punctuation">(</span>/netmask<span class="token punctuation">)</span>
+    host_alias
+command:
+    <span class="token function">command</span> name
+    directory
+    sudoedit
+    Cmnd_Alias<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>sudo</code>别名有四种类型：</p>
+<ul>
+<li><code>User_Alias</code></li>
+<li><code>Runas_Alias</code></li>
+<li><code>Host_Alias</code></li>
+<li><code>Cmnd_Alias</code></li>
+</ul>
+<p><strong>别名的格式：</strong></p>
+<pre class="line-numbers language-http"><code class="language-http">[A-Z]([A-Z][0-9]_)*  #必须以大写字母开头，只能有大写字母、数字、下划线
+
+#定义别名
+Alias_Type NAME1 = item1,item2,item3 : NAME2 = item4, item5<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>示例：设置用户别名表示两个账户，在设置命令别名表示所需要设置的命令，然后授权</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>20:49:10 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># visudo /etc/sudoers</span>
+<span class="token comment" spellcheck="true">## Allow root to run any commands anywhere </span>
+root    ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   ALL
+lgq     ALL<span class="token operator">=</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>  /usr/bin/mount,/usr/bin/umount
+User_Alias NETADMIN <span class="token operator">=</span> netuser1,netuser2
+Cmnd_Alias NETCMD <span class="token operator">=</span> /usr/sbin/ip,/usr/sbin/ifconfig
+NETADMIN ALL<span class="token operator">=</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> NETCMD                                                                             
+<span class="token comment" spellcheck="true">## Allows members of the 'sys' group to run networking, software,</span>
+<span class="token punctuation">..</span>.
+
+<span class="token comment" spellcheck="true">#netuser1账户测试</span>
+<span class="token punctuation">[</span>netuser1@rocky root<span class="token punctuation">]</span>$ <span class="token function">sudo</span> ip a
+1: lo: <span class="token operator">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="token operator">></span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:0c:29:b9:2b:b4 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.0.3/24 brd 10.0.0.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::20c:29ff:feb9:2bb4/64 scope <span class="token function">link</span> 
+       valid_lft forever preferred_lft forever
+
+<span class="token comment" spellcheck="true">#netuser2账户测试</span>
+<span class="token punctuation">[</span>netuser2@rocky root<span class="token punctuation">]</span>$ <span class="token function">sudo</span> ip a
+1: lo: <span class="token operator">&lt;</span>LOOPBACK,UP,LOWER_UP<span class="token operator">></span> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:0c:29:b9:2b:b4 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.0.3/24 brd 10.0.0.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::20c:29ff:feb9:2bb4/64 scope <span class="token function">link</span> 
+       valid_lft forever preferred_lft forever<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>范例：授权lgq用户可以查看<code>/var/log/messages*</code>文件：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>20:57:00 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># visudo /etc/sudoers</span>
+<span class="token punctuation">..</span>.
+lgq     ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   /bin/cat /var/log/messages*
+<span class="token punctuation">..</span>.
+
+<span class="token punctuation">[</span>21:01:49 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">cat</span> /var/log/messages-20220813<span class="token operator">|</span><span class="token function">head</span>
+Jul 28 22:09:38 rocky kernel: Linux version 4.18.0-348.el8.0.2.x86_64 <span class="token punctuation">(</span>mockbuild@dal1-prod-builder001.bld.equ.rockylinux.org<span class="token punctuation">)</span> <span class="token punctuation">(</span>gcc version 8.5.0 20210514 <span class="token punctuation">(</span>Red Hat 8.5.0-3<span class="token punctuation">)</span> <span class="token punctuation">(</span>GCC<span class="token punctuation">))</span> <span class="token comment" spellcheck="true">#1 SMP Sun Nov 14 00:51:12 UTC 2021</span>
+<span class="token punctuation">..</span>.
+
+<span class="token comment" spellcheck="true">## 可以查看，但是在这个文件的后面再加上一个普通用户没有查看权限的文件时发生了惊喜，发现可以查看了。</span>
+<span class="token punctuation">[</span>21:06:41 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">cat</span> /var/log/messages-20220813 /etc/passwd<span class="token operator">|</span><span class="token function">tail</span>
+cockpit-wsinstance:x:992:988:User <span class="token keyword">for</span> cockpit-ws instances:/nonexisting:/sbin/nologin
+sssd:x:991:987:User <span class="token keyword">for</span> sssd:/:/sbin/nologin
+chrony:x:990:986::/var/lib/chrony:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+lgq:x:1000:1000:lgq:/home/lgq:/bin/bash
+nginx:x:989:985:Nginx web server:/var/lib/nginx:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+pcp:x:988:984:Performance Co-Pilot:/var/lib/pcp:/sbin/nologin
+
+<span class="token comment" spellcheck="true">##是不是很惊喜，这样设置的权限的话是有安全风险的，改正的措施就是：</span>
+<span class="token punctuation">[</span>21:03:28 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># visudo /etc/sudoers</span>
+<span class="token punctuation">..</span>.
+lgq     ALL<span class="token operator">=</span><span class="token punctuation">(</span>ALL<span class="token punctuation">)</span>   /bin/cat /var/log/messages* <span class="token operator">!</span>/bin/cat /var/log/messages* * <span class="token comment" spellcheck="true"># ！表示排除这种情况</span>
+<span class="token punctuation">..</span>.
+
+<span class="token punctuation">[</span>21:06:45 lgq@rocky ~<span class="token punctuation">]</span>$ <span class="token function">sudo</span> <span class="token function">cat</span> /var/log/messages-20220813 /etc/passwd<span class="token operator">|</span><span class="token function">tail</span>
+Sorry, user lgq is not allowed to execute <span class="token string">'/bin/cat /var/log/messages-20220813 /etc/passwd'</span> as root on rocky.lgq.com.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="1-2-PAM配置规范"><a href="#1-2-PAM配置规范" class="headerlink" title="1.2 PAM配置规范"></a>1.2 PAM配置规范</h3><blockquote>
+<p><code>PAM</code>:<code>Pluggable Authrntication Modules</code>，插件式的验证模块，PAM只关注如何为服务验真用户的API，通过提供一些动态链接库和一套统一的API，将系统提供的服务和该服务的认证方式分开，是系统管理员可以灵活的根据需要给不同的服务盘配置不同的认证方式且不需要更改服务程序的一种认证框架，自身不做认证。</p>
+</blockquote>
+<p>模块文件目录：<code>/lib64/security/*.so</code><br>特定模块相关的设置文件：<code>/etc/security/</code><br>应用程序调用PAM模块的配置文件：</p>
+<ul>
+<li>主配置文件：<code>/etc/pam.conf</code>，默认不存在，一般不使用主配置</li>
+<li>为每种应用模块提供一个专用的配置文件：<code>/etc/pam.d/APP_NAME</code></li>
+<li>注意：如<code>/etc/pam.d</code>存在，<code>/etc/pam.conf</code>将失效</li>
+</ul>
+<p>工作原理：</p>
+<ul>
+<li>PAM认证首先要确定那一项服务，然后加载相应的PAM的配置文件(位于<code>/etc/pam.d</code>下)，最后调用认证文件(位于<code>/lib64/security</code>下)进行安全认证。</li>
+</ul>
+<p>认证过程：</p>
+<ul>
+<li>1.使用者执行<code>/usr/bin/passwd</code>程序，并输入密码</li>
+<li>2.<code>passwd</code>开始调用<code>PAM</code>模块，<code>PAM</code>模块会搜寻<code>passwd</code>程序的<code>PAM</code>相关设置文件，这个设置文件一般是在<code>/etc/pam.d/</code>里边的与<strong>程序同名</strong>的文件，即PAM会搜寻<code>/etc/pam.d/passwd</code>此设置文件</li>
+<li>3.经由<code>/etc/pam.d/passwd</code>设定文件的数据，取用<code>PAM</code>所提供的相关模块来进行验证</li>
+<li>4.将验证结果回传给<code>passwd</code>这个程序，而<code>passwd</code>这个程序会根据PAM回传的结果决定下一个动作（重新输入密码或者通过验证）</li>
+</ul>
+<p><strong>通用配置文件<code>/etc/pam.conf</code>格式</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash">application <span class="token function">type</span> control module-path arguments<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>专用配置文件<code>/etc/pam.d</code>格式：</strong></p>
+<pre class="line-numbers language-http"><code class="language-http">type  control    module-path      arguments<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-http"><code class="language-http">application： 指服务名，如：telnet、login、ftp等，服务名字“OTHER”代表所有没有在该文件中明确配置的其它服务
+type：        指模块类型，即功能
+control ：    PAM库该如何处理与该服务相关的PAM模块的成功或失败情况，一个关健词实现
+module-path： 用来指明本模块对应的程序文件的路径名
+Arguments：   用来传递给该模块的参数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>模块类型：</strong></p>
+<ul>
+<li><code>Auth</code> <strong>账号的认证和授权</strong></li>
+<li><code>Account</code> <strong>帐户的有效性</strong>，与账号管理相关的非认证类的功能，如：用来限制/允许用户对某个服务的访问时间，限制用户的位置(例如：root用户只能从控制台登录)</li>
+<li><code>Password</code> <strong>用户修改密码时密码复杂度检查机制</strong>等功能</li>
+<li><code>Session</code> 用户<strong>会话期间的控制</strong>，如：最多打开的文件数，最多的进程数等</li>
+<li><code>-type</code> 表示因为缺失而不能加载的模块将不记录到系统日志,对于那些不总是安装在系统上的模块有用</li>
+</ul>
+<p><strong>Control</strong>:</p>
+<ul>
+<li><code>required</code> ：<strong>一票否决</strong>，表示本模块必须返回成功才能通过认证，但是如果该模块返回失败，失败结果<strong>也不会立即通知用户</strong>，而是要等到<strong>同一type中的所有模块全部执行完毕</strong>，再将失败结果返回给应用程序，即为<strong>必要条件</strong></li>
+<li><code>requisite</code> ：<strong>一票否决</strong>，该模块必须返回成功才能通过认证，但是一旦该模块返回失败，将<strong>不再执行同一type内</strong>的任何模块，而是直接将控制权返回给应用程序。是一个<strong>必要条件</strong></li>
+<li><code>sufficient</code>：<strong>一票通过</strong>，表明本模块返回成功则通过身份认证的要求，不必再执行同一type内的其它模块，但如果本模块返回失败可忽略，即为<strong>充分条件</strong>，<strong>优先于前面的required和requisite</strong></li>
+<li><code>optional</code>：表明本模块是<strong>可选的</strong>，它的成功与否<strong>不会对身份认证起关键作用</strong>，其返回值一般被忽略</li>
+<li><code>include</code>： 调用<strong>其他的配置文件中定义的配置信息</strong></li>
+</ul>
+<p><strong>module-path:</strong></p>
+<ul>
+<li>模块文件所在绝对路径：</li>
+<li>模块文件所在相对路径：<code>/lib64/security</code>目录下的模块可使用相对路径，如：<code>pam_shells.so</code>、<code>pam_limits.so</code></li>
+<li>有些模块有自已的专有配置文件，在<code>/etc/security/*.conf</code>目 录下</li>
+</ul>
+<p><strong>Arguments：</strong></p>
+<ul>
+<li><code>debug</code> ：该模块应当用<code>syslog( )</code>将调试信息写入到系统日志文件中</li>
+<li><code>no_warn</code> ：表明该模块不应把警告信息发送给应用程序</li>
+<li><code>use_first_pass</code> ：该模块不能提示用户输入密码，只能从前一个模块得到输入密码</li>
+<li><code>try_first_pass</code> ：该模块首先用<strong>前一个模块从用户得到密码</strong>，如果该密码验证不通过，再提示用户输入新密码</li>
+<li><code>use_mapped_pass</code>该模块不能提示用户输入密码，而是使用映射过的密码</li>
+<li><code>expose_account</code>允许该模块显示用户的帐号名等信息，一般只能在安全的环境下使用，因为泄漏用户名会对安全造成一定程度的威胁</li>
+</ul>
+<p>示例1、查看某些服务的PAM配置文件格式</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>22:50:54 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/pam.d/sshd
+<span class="token comment" spellcheck="true">#%PAM-1.0</span>
+auth       substack     password-auth
+auth       include      postlogin
+account    required     pam_sepermit.so
+account    required     pam_nologin.so
+account    include      password-auth
+password   include      password-auth
+<span class="token comment" spellcheck="true"># pam_selinux.so close should be the first session rule</span>
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+<span class="token comment" spellcheck="true"># pam_selinux.so open should only be followed by sessions to be executed in the user context</span>
+session    required     pam_selinux.so <span class="token function">open</span> env_params
+session    required     pam_namespace.so
+session    optional     pam_keyinit.so force revoke
+session    optional     pam_motd.so
+session    include      password-auth
+session    include      postlogin
+
+<span class="token punctuation">[</span>22:51:14 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /etc/pam.d/passwd
+<span class="token comment" spellcheck="true">#%PAM-1.0</span>
+<span class="token comment" spellcheck="true"># This tool only uses the password stack.</span>
+password   substack    system-auth
+-password   optional    pam_gnome_keyring.so use_authtok
+password   substack    postlogin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>示例：例如设置<code>pam_limits.so</code>模块配置文件</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#配置格式</span>
+<span class="token operator">&lt;</span>domian<span class="token operator">></span>    <span class="token operator">&lt;</span>type<span class="token operator">></span>   <span class="token operator">&lt;</span>item<span class="token operator">></span>   <span class="token operator">&lt;</span>value<span class="token operator">></span>
+
+<span class="token comment" spellcheck="true">##1、限制用户lgq的进程数最大为5</span>
+<span class="token punctuation">[</span>12:23:03 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/security/limits.conf
+<span class="token punctuation">..</span>.
+<span class="token comment" spellcheck="true"># End of file</span>
+lgq              -       nproc           5
+
+<span class="token punctuation">[</span>11:55:06 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># su lgq</span>
+<span class="token punctuation">[</span>11:59:15 lgq@rocky /root<span class="token punctuation">]</span>$ <span class="token function">bash</span>
+<span class="token punctuation">[</span>11:59:21 lgq@rocky /root<span class="token punctuation">]</span>$ bahs
+bash: bahs: <span class="token function">command</span> not found
+<span class="token punctuation">[</span>11:59:22 lgq@rocky /root<span class="token punctuation">]</span>$ <span class="token function">bash</span>
+bash: fork: retry: Resource temporarily unavailable
+bash: fork: retry: Resource temporarily unavailable
+bash: fork: retry: Resource temporarily unavailable
+<span class="token comment" spellcheck="true">###发现已经不能开启进程了</span>
+
+
+<span class="token comment" spellcheck="true">##2、systemd的service资源设置单独配置。假设设置所有的进程数为66666，然后查看postfix服务的进程数限制是否被修改</span>
+<span class="token punctuation">[</span>12:28:47 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/security/limits.conf
+<span class="token comment" spellcheck="true"># End of file</span>
+*                -       nproc           66666
+
+<span class="token comment" spellcheck="true">#查看lgq用户的默认限制数</span>
+<span class="token punctuation">[</span>12:45:31 lgq@rocky /root<span class="token punctuation">]</span>$ <span class="token function">ulimit</span> -a
+core <span class="token function">file</span> size          <span class="token punctuation">(</span>blocks, -c<span class="token punctuation">)</span> unlimited
+data seg size           <span class="token punctuation">(</span>kbytes, -d<span class="token punctuation">)</span> unlimited
+scheduling priority             <span class="token punctuation">(</span>-e<span class="token punctuation">)</span> 0
+<span class="token function">file</span> size               <span class="token punctuation">(</span>blocks, -f<span class="token punctuation">)</span> unlimited
+pending signals                 <span class="token punctuation">(</span>-i<span class="token punctuation">)</span> 7011
+max locked memory       <span class="token punctuation">(</span>kbytes, -l<span class="token punctuation">)</span> 32000
+max memory size         <span class="token punctuation">(</span>kbytes, -m<span class="token punctuation">)</span> unlimited
+<span class="token function">open</span> files                      <span class="token punctuation">(</span>-n<span class="token punctuation">)</span> 1000000
+pipe size            <span class="token punctuation">(</span>512 bytes, -p<span class="token punctuation">)</span> 8
+POSIX message queues     <span class="token punctuation">(</span>bytes, -q<span class="token punctuation">)</span> 8192000
+real-time priority              <span class="token punctuation">(</span>-r<span class="token punctuation">)</span> 0
+stack size              <span class="token punctuation">(</span>kbytes, -s<span class="token punctuation">)</span> 8192
+cpu <span class="token function">time</span>               <span class="token punctuation">(</span>seconds, -t<span class="token punctuation">)</span> unlimited
+max user processes              <span class="token punctuation">(</span>-u<span class="token punctuation">)</span> 66666   <span class="token comment" spellcheck="true">#发现已经生效了</span>
+virtual memory          <span class="token punctuation">(</span>kbytes, -v<span class="token punctuation">)</span> unlimited
+<span class="token function">file</span> locks                      <span class="token punctuation">(</span>-x<span class="token punctuation">)</span> unlimited
+
+<span class="token comment" spellcheck="true">#接下来观察postfix服务的限制数</span>
+<span class="token comment" spellcheck="true">##查看该服务的进程号</span>
+<span class="token punctuation">[</span>12:47:26 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> xf<span class="token operator">|</span><span class="token function">grep</span> postfix<span class="token operator">|</span><span class="token function">grep</span> -v <span class="token function">grep</span>
+   1507 ?        Ss     0:00 /usr/libexec/postfix/master -w
+<span class="token comment" spellcheck="true">##查看限制数</span>
+<span class="token punctuation">[</span>12:48:30 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /proc/1507/limits
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu <span class="token function">time</span>              unlimited            unlimited            seconds   
+Max <span class="token function">file</span> size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core <span class="token function">file</span> size        0                    unlimited            bytes     
+Max resident <span class="token keyword">set</span>          unlimited            unlimited            bytes     
+Max processes             7011                 7011                 processes  <span class="token comment" spellcheck="true">#发现进程的限制数还是7011，没有变化,这说明systemd服务的限制需要单独配置</span>
+Max <span class="token function">open</span> files            262144               262144               files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max <span class="token function">file</span> locks            unlimited            unlimited            locks     
+Max pending signals       7011                 7011                 signals   
+Max msgqueue size         819200               819200               bytes     
+Max <span class="token function">nice</span> priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime <span class="token function">timeout</span>      unlimited            unlimited            us
+
+
+<span class="token comment" spellcheck="true">#这种情况的解决办法，是修改service文件/lib/systemd/system/postfix.service中的限制数</span>
+<span class="token comment" spellcheck="true">## 查看这个服务中进程限制数的默认值</span>
+<span class="token punctuation">[</span>12:57:00 root@rocky ~<span class="token punctuation">]</span>$ systemctl show postfix.service <span class="token operator">|</span><span class="token function">grep</span> -i proc
+LimitNPROC<span class="token operator">=</span>7011
+LimitNPROCSoft<span class="token operator">=</span>7011
+SameProcessGroup<span class="token operator">=</span>no
+<span class="token comment" spellcheck="true">## 修改</span>
+<span class="token punctuation">[</span>12:57:06 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /lib/systemd/system/postfix.service
+<span class="token punctuation">..</span>.
+ExecReload<span class="token operator">=</span>/usr/sbin/postfix reload
+ExecStop<span class="token operator">=</span>/usr/sbin/postfix stop
+LimitNPROC<span class="token operator">=</span>66666
+<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>12:59:17 root@rocky ~<span class="token punctuation">]</span>$ systemctl daemon-reload 
+<span class="token punctuation">[</span>13:00:42 root@rocky ~<span class="token punctuation">]</span>$ systemctl restart postfix.service 
+<span class="token punctuation">[</span>13:00:52 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">ps</span> xf<span class="token operator">|</span><span class="token function">grep</span> postfix<span class="token operator">|</span><span class="token function">grep</span> -v <span class="token function">grep</span>
+   2535 ?        Ss     0:00 /usr/libexec/postfix/master -w
+<span class="token punctuation">[</span>13:01:18 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> /proc/2535/limits 
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu <span class="token function">time</span>              unlimited            unlimited            seconds   
+Max <span class="token function">file</span> size             unlimited            unlimited            bytes     
+Max data size             unlimited            unlimited            bytes     
+Max stack size            8388608              unlimited            bytes     
+Max core <span class="token function">file</span> size        0                    unlimited            bytes     
+Max resident <span class="token keyword">set</span>          unlimited            unlimited            bytes     
+Max processes             66666                66666                processes  <span class="token comment" spellcheck="true">#发现已经修改了</span>
+Max <span class="token function">open</span> files            262144               262144               files     
+Max locked memory         65536                65536                bytes     
+Max address space         unlimited            unlimited            bytes     
+Max <span class="token function">file</span> locks            unlimited            unlimited            locks     
+Max pending signals       7011                 7011                 signals   
+Max msgqueue size         819200               819200               bytes     
+Max <span class="token function">nice</span> priority         0                    0                    
+Max realtime priority     0                    0                    
+Max realtime <span class="token function">timeout</span>      unlimited            unlimited            us<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="2、chrony搭建私有ntp服务"><a href="#2、chrony搭建私有ntp服务" class="headerlink" title="2、chrony搭建私有ntp服务"></a>2、chrony搭建私有ntp服务</h2><blockquote>
+<p>搭建环境：服务端：10.0.0.3</p>
+<p>​                      客户端：10.0.0.4</p>
+</blockquote>
+<ul>
+<li><p>服务器端配置：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1、首先查看是或否有chrony软件，没有的话安装</span>
+<span class="token punctuation">[</span>17:36:27 root@rocky8 ~<span class="token punctuation">]</span>$ rpm -q chrony <span class="token operator">&amp;</span><span class="token operator">></span> /dev/null <span class="token operator">||</span> yum -y <span class="token function">install</span> chrony
+
+<span class="token comment" spellcheck="true">#2、编辑配置文件</span>
+<span class="token punctuation">[</span>17:58:19 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/chrony.conf
+<span class="token comment" spellcheck="true"># Use public servers from the pool.ntp.org project.</span>
+<span class="token comment" spellcheck="true"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span>
+<span class="token comment" spellcheck="true">#pool 2.pool.ntp.org iburst    #将自带的时间服务器注释掉，加上几个国内的</span>
+server ntp.aliyun.com iburst
+server time1.cloud.tencent.com iburst
+server ntp1.aliyun.com iburst
+<span class="token punctuation">..</span>.
+<span class="token comment" spellcheck="true"># Allow NTP client access from local network.</span>
+<span class="token comment" spellcheck="true">#allow 192.168.0.0/16 </span>
+allow 0.0.0.0/0 <span class="token comment" spellcheck="true">#加上这一行，指定允许同步的网段</span>
+
+<span class="token comment" spellcheck="true"># Serve time even if not synchronized to a time source.</span>
+local stratum 10 <span class="token comment" spellcheck="true">#将这一行的注释去掉。表示互联网无法连接时，仍然可以为客户端提供时间同步</span>
+
+<span class="token comment" spellcheck="true">#3、重启chronyd服务</span>
+<span class="token punctuation">[</span>18:03:58 root@rocky ~<span class="token punctuation">]</span>$ systemctl restart chronyd
+
+<span class="token comment" spellcheck="true">#4、查看服务端的监听端口123是否开启</span>
+<span class="token punctuation">[</span>18:04:34 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># ss -ntlu</span>
+Netid    State     Recv-Q    Send-Q         Local Address:Port         Peer Address:Port    Process    
+udp      UNCONN    0         0                    0.0.0.0:123               0.0.0.0:* <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>客户端配置：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:06:30 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/chrony.conf
+<span class="token comment" spellcheck="true"># Use public servers from the pool.ntp.org project.</span>
+<span class="token comment" spellcheck="true"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span>
+<span class="token comment" spellcheck="true">#pool 2.pool.ntp.org iburst #注释掉默认服务器，添加上自己搭建的时间服务器地址</span>
+server 10.0.0.3 iburst
+
+<span class="token comment" spellcheck="true">#重启服务</span>
+<span class="token punctuation">[</span>18:07:53 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl restart chronyd
+
+<span class="token comment" spellcheck="true">#查看连接状态</span>
+<span class="token punctuation">[</span>18:10:38 root@rocky8 ~<span class="token punctuation">]</span>$ chronyc sources -nv
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+<span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span>
+^* 10.0.0.3                      3   6    37    51  -1278ns<span class="token punctuation">[</span> -127us<span class="token punctuation">]</span> +/-   28ms  <span class="token comment" spellcheck="true">#*表示连接成功</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h2 id="3、CDN原理"><a href="#3、CDN原理" class="headerlink" title="3、CDN原理"></a>3、CDN原理</h2><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/Snipaste_2022-09-03_17-29-42.png" alt=""></p>
+<ul>
+<li>用户在浏览器输入<code>www.a.com</code>这个域名，浏览器第一次发现本地没有<code>DNS缓存</code>，则向<strong>网站的DNS服务器</strong>发起请求。</li>
+<li>网站的DNS域名解析器设置了<code>CNAME</code>，指向了<code>www.a.tbcdn.com</code>，请求指向了CDN网络中的<strong>智能DNS负载均衡系统</strong>。</li>
+<li>智能负载均衡系统<strong>解析域名</strong>，把对用户响应速度最快的IP节点<code>2.2.2.2</code>返回给用户。</li>
+<li>用户向该IP节点（CDN服务器）发出请求。</li>
+<li>由于是第一次访问，CDN服务器会通过<code>cache</code>内部专用DNS解析得到此域名的原web站点IP，向原站点服务器发起请求，并在CDN服务器上缓存内容。</li>
+<li>请求结果发给用户。</li>
+</ul>
+<h2 id="4-搭建智能DNS，实现不同地域客户端解析到不同主机"><a href="#4-搭建智能DNS，实现不同地域客户端解析到不同主机" class="headerlink" title="4. 搭建智能DNS，实现不同地域客户端解析到不同主机"></a>4. 搭建智能DNS，实现不同地域客户端解析到不同主机</h2><blockquote>
+<p>实验环境：</p>
+<p>DNS主服务器：10.0.0.3/24, 192.168.10.130/24</p>
+<p>web服务器bj：10.0.0.4/24</p>
+<p>web服务器sh：192.168.10.132/24</p>
+<p>DNS客户端: 10.0.0.8/24, 192.168.10.131/24</p>
+</blockquote>
+<h3 id="4-1-主DNS服务器10-0-0-3配置"><a href="#4-1-主DNS服务器10-0-0-3配置" class="headerlink" title="4.1 主DNS服务器10.0.0.3配置"></a>4.1 主DNS服务器10.0.0.3配置</h3><h4 id="4-1-1-配置网卡"><a href="#4-1-1-配置网卡" class="headerlink" title="4.1.1 配置网卡"></a>4.1.1 配置网卡</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>17:50:58 root@rocky ~<span class="token punctuation">]</span>$ ip a show eth0
+2: eth0: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:0c:29:b9:2b:b4 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.0.3/24 brd 10.0.0.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::20c:29ff:feb9:2bb4/64 scope <span class="token function">link</span> 
+       valid_lft forever preferred_lft forever
+<span class="token punctuation">[</span>17:51:03 root@rocky ~<span class="token punctuation">]</span>$ ip a show eth1
+3: eth1: <span class="token operator">&lt;</span>BROADCAST,MULTICAST,UP,LOWER_UP<span class="token operator">></span> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:0c:29:b9:2b:be brd ff:ff:ff:ff:ff:ff
+    inet 192.168.10.130/24 brd 192.168.10.255 scope global noprefixroute eth1
+       valid_lft forever preferred_lft forever<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-1-2-配置文件实现view"><a href="#4-1-2-配置文件实现view" class="headerlink" title="4.1.2 配置文件实现view"></a>4.1.2 配置文件实现view</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 安装软件bind</span>
+<span class="token punctuation">[</span>17:51:14 root@rocky ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> bind
+
+<span class="token comment" spellcheck="true">#2 修改配置文件/etc/named.conf</span>
+<span class="token punctuation">[</span>17:54:29 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/named.conf
+acl beijingnet <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#在文件最前面加上两个地区的acl</span>
+    10.0.0.0/24<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+acl shanghainet <span class="token punctuation">{</span>
+    192.168.10.0/24<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+options <span class="token punctuation">{</span>                              
+//  listen-on port 53 <span class="token punctuation">{</span> 127.0.0.1<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#注释掉这一行</span>
+    listen-on-v6 port 53 <span class="token punctuation">{</span> ::1<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    directory   <span class="token string">"/var/named"</span><span class="token punctuation">;</span>
+    dump-file   <span class="token string">"/var/named/data/cache_dump.db"</span><span class="token punctuation">;</span>
+    statistics-file <span class="token string">"/var/named/data/named_stats.txt"</span><span class="token punctuation">;</span>
+    memstatistics-file <span class="token string">"/var/named/data/named_mem_stats.txt"</span><span class="token punctuation">;</span>
+    secroots-file   <span class="token string">"/var/named/data/named.secroots"</span><span class="token punctuation">;</span>
+    recursing-file  <span class="token string">"/var/named/data/named.recursing"</span><span class="token punctuation">;</span>
+//  allow-query     <span class="token punctuation">{</span> localhost<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#注释掉这一行</span>
+<span class="token punctuation">..</span>.
+
+view beijingview <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#添加两个地区的view</span>
+    match-clients <span class="token punctuation">{</span> beijingnet<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    include <span class="token string">"/etc/named.rfc1912.zones.bj"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+view shanghaiview <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#添加view</span>
+    match-clients <span class="token punctuation">{</span> shanghainet<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    include <span class="token string">"/etc/named.rfc1912.zones.sh"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+zone <span class="token string">"."</span> IN <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#将该zone拷贝至区域配置文件/etc/named.rfc1912.zones</span>
+    <span class="token function">type</span> hint<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"named.ca"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+include <span class="token string">"/etc/named.rfc1912.zones"</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#将配置文件的只一行删除</span>
+
+
+<span class="token comment" spellcheck="true">#3 配置区域配置文件</span>
+<span class="token comment" spellcheck="true">##3.1 配置北京地区配置文件</span>
+<span class="token punctuation">[</span>18:00:42 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> /etc/named.rfc1912.zones /etc/named.rfc1912.zones.bj
+<span class="token punctuation">[</span>18:05:10 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/named.rfc1912.zones.bj
+<span class="token punctuation">..</span>.省略
+zone <span class="token string">"."</span> IN <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#将主配置文件/etc/named.conf中的该zone配置信息粘贴过来</span>
+    <span class="token function">type</span> hint<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"named.ca"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+zone <span class="token string">"yanlinux.org"</span> IN <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#配置网站zone信息</span>
+    <span class="token function">type</span> master<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"yanlinux.org.zone.bj"</span><span class="token punctuation">;</span>                                                                       
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">..</span>.省略
+
+<span class="token comment" spellcheck="true">##3.2 配置上海地区配置文件</span>
+<span class="token punctuation">[</span>18:08:09 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> /etc/named.rfc1912.zones /etc/named.rfc1912.zones.sh
+<span class="token punctuation">[</span>18:08:36 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/named.rfc1912.zones.sh
+<span class="token punctuation">..</span>.省略
+zone <span class="token string">"."</span> IN <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#将主配置文件/etc/named.conf中的该zone配置信息粘贴过来</span>
+    <span class="token function">type</span> hint<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"named.ca"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+zone <span class="token string">"yanlinux.org"</span> IN <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">#配置上海地区网站zone信息</span>
+    <span class="token function">type</span> master<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"yanlinux.org.zone.sh"</span><span class="token punctuation">;</span>                                                                       
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">..</span>.省略
+
+
+<span class="token comment" spellcheck="true">#4 创建两个地区的区域数据库文件</span>
+<span class="token comment" spellcheck="true">##4.1 创建北京地区区域数据库文件</span>
+<span class="token punctuation">[</span>18:10:52 root@rocky named<span class="token punctuation">]</span>$ <span class="token function">vi</span> yanlinux.org.zone.bj
+<span class="token variable">$TTL</span> 1D
+@          IN   SOA master admin.yanlinux.org. <span class="token punctuation">(</span> 1 1H 10M 1D 2H <span class="token punctuation">)</span>
+                NS  master
+master          A   10.0.0.3
+www             A   10.0.0.4
+<span class="token punctuation">[</span>18:14:54 root@rocky named<span class="token punctuation">]</span>$ <span class="token function">chmod</span> 640 yanlinux.org.zone.bj<span class="token punctuation">;</span><span class="token function">chgrp</span> named yanlinux.org.zone.bj
+<span class="token punctuation">[</span>18:15:29 root@rocky named<span class="token punctuation">]</span>$ ll yanlinux.org.zone.bj
+-rw-r----- 1 root named 165 Sep  3 18:12 yanlinux.org.zone.bj
+
+<span class="token comment" spellcheck="true">##4.2 创建上海地区区域数据库文件</span>
+<span class="token punctuation">[</span>18:16:31 root@rocky named<span class="token punctuation">]</span>$ <span class="token function">vi</span> yanlinux.org.zone.sh
+<span class="token variable">$TTL</span> 1D
+@          IN   SOA master admin.yanlinux.org. <span class="token punctuation">(</span> 1 1H 10M 1D 2H <span class="token punctuation">)</span>
+                NS  master
+master          A   10.0.0.3
+www             A   192.168.10.132
+<span class="token punctuation">[</span>18:16:56 root@rocky named<span class="token punctuation">]</span>$ <span class="token function">chmod</span> 640 yanlinux.org.zone.sh<span class="token punctuation">;</span><span class="token function">chgrp</span> named yanlinux.org.zone.sh
+<span class="token punctuation">[</span>18:17:31 root@rocky named<span class="token punctuation">]</span>$ ll yanlinux.org.zone.sh
+-rw-r----- 1 root named 159 Sep  3 18:16 yanlinux.org.zone.sh
+
+
+<span class="token comment" spellcheck="true">#5 重载配置文件</span>
+<span class="token punctuation">[</span>18:18:33 root@rocky named<span class="token punctuation">]</span>$ rndc reload
+server reload successful<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-2-搭建两个不同区域的WEB服务器"><a href="#4-2-搭建两个不同区域的WEB服务器" class="headerlink" title="4.2 搭建两个不同区域的WEB服务器"></a>4.2 搭建两个不同区域的WEB服务器</h3><h4 id="4-2-1-北京地区的"><a href="#4-2-1-北京地区的" class="headerlink" title="4.2.1 北京地区的"></a>4.2.1 北京地区的</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:25:33 root@rocky8 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> httpd
+<span class="token punctuation">[</span>18:28:30 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now httpd
+Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
+<span class="token punctuation">[</span>18:28:45 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> www.yanlinux.org <span class="token keyword">in</span> beijing <span class="token operator">></span>  /var/www/html/index.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-2-上海地区"><a href="#4-2-2-上海地区" class="headerlink" title="4.2.2 上海地区"></a>4.2.2 上海地区</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>18:29:53 root@rocky8 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> httpd
+<span class="token punctuation">[</span>18:30:15 root@rocky8 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now httpd
+Created symlink /etc/systemd/system/multi-user.target.wants/httpd.service → /usr/lib/systemd/system/httpd.service.
+<span class="token punctuation">[</span>18:30:32 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> www.yanlinux.org <span class="token keyword">in</span> shanghai <span class="token operator">></span>  /var/www/html/index.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-3-客户端测试"><a href="#4-3-客户端测试" class="headerlink" title="4.3 客户端测试"></a>4.3 客户端测试</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#网卡eth0(10.0.0.8)测试</span>
+<span class="token punctuation">[</span>18:39:09 root@centos7 ~<span class="token punctuation">]</span>$ curl www.yanlinux.org
+www.yanlinux.org <span class="token keyword">in</span> beijing
+
+<span class="token comment" spellcheck="true">#关闭网卡eth0</span>
+<span class="token punctuation">[</span>18:40:08 root@centos7 ~<span class="token punctuation">]</span>$ nmcli connection down eth0
+
+<span class="token comment" spellcheck="true">#网卡eth1(192.168.10.131)测试</span>
+<span class="token punctuation">[</span>18:41:31 root@centos7 ~<span class="token punctuation">]</span>$ curl www.yanlinux.org
+www.yanlinux.org <span class="token keyword">in</span> shanghai<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="5、解释DNS解析流程"><a href="#5、解释DNS解析流程" class="headerlink" title="5、解释DNS解析流程"></a>5、解释DNS解析流程</h2><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/DNS%E8%A7%A3%E6%9E%90.png" alt=""></p>
+<p>DNS解析流程：</p>
+<ul>
+<li>用户端在浏览器中输入<code>www.yanlinux.com</code>的网址，浏览器发起DNS解析请求，若在本地缓存服务器中有对应结果，则解析结束；反之，DNS解析服务器会询问根域名服务器。</li>
+<li>根域名服务器存放了各个顶级域所在的服务器位置，根域名服务器收到<code>www.yanlinux.com</code>解析请求时，其会返回<code>.com</code>服务器所在位置信息。</li>
+<li>递归服务器拿到<code>.com</code>服务器地址后，向其发起解析请求，<code>.com</code>域名服务器返回<code>yanlinux.com</code>域名服务器的地址。</li>
+<li>根据<code>yanlinux.com</code>域名服务器的地址，发起解析请求，它会根据本地的<code>yanlinux.com</code>对应的配置文件返回对应的IP地址6.6.6.6</li>
+<li>DNS代理解析服务器拿到解析记录后，会立即进行本地缓存，以备下次解析使用。另外将解析后的IP地址返回客户端进行网页访问。</li>
+</ul>
+<h2 id="6、iptables-5表5链解释"><a href="#6、iptables-5表5链解释" class="headerlink" title="6、iptables 5表5链解释"></a>6、iptables 5表5链解释</h2><p>五个内置链chain：</p>
+<ul>
+<li><code>PREROUTING</code> ：数据包在进行路由决策前的规则，一般用于改变数据包的目标地址</li>
+<li><code>INPUT</code> ：数据包经由路由决策后，进入本机处理之前应用的规则，一般用于本机进程处理的数据包（数据包本机处理）</li>
+<li><code>OUTPUT</code> ：从本机输出时应用的规则，一般用于本机处理后的数据包（数据包本机发出）</li>
+<li><code>FORWARD</code>：数据包经由路由决策后，本机不做处理，仅仅是转发数据包时应用的规则（数据包本机转发）</li>
+<li><code>POSTROUTING</code>：数据包从本机出去前，对数据包应用的规则，一般用于更改数据包的原地址信息</li>
+</ul>
+<p>五个表table：</p>
+<ul>
+<li><code>filter</code>：过滤规则表，根据与定义的规则过滤符合条件的数据包，默认表。</li>
+<li><code>nat</code>：地址转换规则表。主要实现网络地址转换的表。可以自由转换数据报文中的<code>ip</code>和<code>port</code></li>
+<li><code>mangle</code>：修改数据标记位规则表，主要实现数据包的而拆分-修改-封装</li>
+<li><code>raw</code>：通过关闭<code>nat</code>表的追踪功能，从而实现加速防火墙过滤的表</li>
+<li><code>security</code>：用于强制访问控制（MAC）网络规则，由Linux安全模块（如SELinux）实现。主要针对的是数据链路层的管理规则组合</li>
+</ul>
+<h2 id="7、iptables-firewalld-nftable-实现主机防火墙。5000-6000端口仅192-168-0-0-24网段内的主机访问"><a href="#7、iptables-firewalld-nftable-实现主机防火墙。5000-6000端口仅192-168-0-0-24网段内的主机访问" class="headerlink" title="7、iptables/firewalld/nftable 实现主机防火墙。5000-6000端口仅192.168.0.0/24网段内的主机访问"></a>7、iptables/firewalld/nftable 实现主机防火墙。5000-6000端口仅192.168.0.0/24网段内的主机访问</h2><h3 id="7-1-iptables实现"><a href="#7-1-iptables实现" class="headerlink" title="7.1 iptables实现"></a>7.1 iptables实现</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>22:56:52 root@rocky ~<span class="token punctuation">]</span>$ iptables -A INPUT -s 192.168.0.0/24 -p tcp --dport 5000:6000 -j ACCEPT
+<span class="token punctuation">[</span>23:01:13 root@rocky ~<span class="token punctuation">]</span>$ iptables -vnL
+Chain INPUT <span class="token punctuation">(</span>policy ACCEPT 0 packets, 0 bytes<span class="token punctuation">)</span>
+ pkts bytes target     prot opt <span class="token keyword">in</span>     out     <span class="token function">source</span>               destination         
+    0     0 ACCEPT     tcp  --  *      *       192.168.0.0/24       0.0.0.0/0            tcp dpts:5000:6000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="7-2-firewalld实现"><a href="#7-2-firewalld实现" class="headerlink" title="7.2 firewalld实现"></a>7.2 firewalld实现</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>23:04:09 root@rocky ~<span class="token punctuation">]</span>$ firewall-cmd --permanent --zone<span class="token operator">=</span>public --add-rich-rule<span class="token operator">=</span><span class="token string">'rule family=ipv4 source address=192.168.0.0/24 port protocol=tcp port=5000-6000 accept'</span>
+success
+<span class="token punctuation">[</span>23:16:12 root@rocky ~<span class="token punctuation">]</span>$ firewall-cmd --reload
+success<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="7-3-nftable实现"><a href="#7-3-nftable实现" class="headerlink" title="7.3 nftable实现"></a>7.3 nftable实现</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#创建表</span>
+<span class="token punctuation">[</span>16:02:59 root@rocky ~<span class="token punctuation">]</span>$ nft add table inet test_table
+<span class="token comment" spellcheck="true">#创建链</span>
+<span class="token punctuation">[</span>16:04:12 root@rocky ~<span class="token punctuation">]</span>$ nft add chain inet test_table test_filter_input_chain <span class="token punctuation">{</span> <span class="token function">type</span> filter hook input priority 0 \<span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">#添加规则</span>
+<span class="token punctuation">[</span>16:07:10 root@rocky ~<span class="token punctuation">]</span>$ nft add rule inet test_table test_filter_input_chain ip saddr 192.168.0.0/24 tcp dport <span class="token punctuation">{</span>5000-6000<span class="token punctuation">}</span> accept<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="8、mysql的各发行版有哪些-？"><a href="#8、mysql的各发行版有哪些-？" class="headerlink" title="8、mysql的各发行版有哪些 ？"></a>8、mysql的各发行版有哪些 ？</h2><ul>
+<li><code>MySQL</code>官方版本：社区版和企业版</li>
+<li><code>Percona MySQL</code>：是基于官方社区版本二次开发的，在MySQL官方社区版基础上增加了一些企业版才有的功能，同时对官方社区进行了优化。</li>
+<li><code>MariaDB</code>：由MySQL初始创建者在MySQL被Oracle收购之后，又独立成立了一家公司，来开发的数据库。以MySQL5.5源代码为基础，发展起来的，大多数功能都是兼容的</li>
+</ul>
+<h2 id="9、mysql索引的作用"><a href="#9、mysql索引的作用" class="headerlink" title="9、mysql索引的作用"></a>9、mysql索引的作用</h2><p>索引提供了指向存储在表的指定列中的数据值的指针，按照指定的排序顺序排序指针。数据库使用索引找到特定值，然后根据指针找到包含该值的行，这样使SQL语句执行结果可以更快得到，快速访问数据表中的数据。</p>
+<p>作用就是：</p>
+<ul>
+<li>可以快速的查询到数据，降低服务需要扫描的数据量，减少了IO次数</li>
+<li>保证数据记录的唯一性</li>
+<li>实现表与表之间的参照完整性</li>
+<li>在使用分组和排序子句进行检索的时候，利用索引可以减少排序和分组的时间。</li>
+</ul>
+<h2 id="10、mysql-btree索引的原理"><a href="#10、mysql-btree索引的原理" class="headerlink" title="10、mysql btree索引的原理"></a>10、mysql btree索引的原理</h2><p>B-Tree结构的数据可以让系统高效的找到数据所在的磁盘块。为了描述B-Tree，首先定义一条记录为一个二元组[key, data] ，key为记录的键值，对应表中的主键值，data为一行记录中除主键外的数据。对于不同的记录，key值互不相同。<img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20220915104822172.png" alt=""></p>
+<p><strong>检索原理：</strong>首先从根节点进行二分查找，如果找到则返回对应节点的data，否则对相应区间的指针指向的节点递归进行查找，直到找到节点或未找到节点返回null指针。</p>
+<h2 id="11、mysql安全加固？"><a href="#11、mysql安全加固？" class="headerlink" title="11、mysql安全加固？"></a>11、mysql安全加固？</h2><ul>
+<li>安装完后运行<code>mysql_secure_installation</code>脚本，设置数据库管理员root口令；禁止root远程登录；删除<code>anonymous</code>用户账号；删除test数据库。</li>
+<li>根据性能和业务需求，设置最大、最小连接数。</li>
+<li>开启二进制日志，并将二进制日志文件与数据库文件分开存放</li>
+<li>在数据库权限配置能力范围内，根据用户的业务需要，配置其所需的最小权限。</li>
+<li>配置防火墙策略，更改默认端口</li>
+<li>定时备份数据库</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力!</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291304818.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207292224344.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+            
+            
+            <div class="reprint1">
+                <p>
+                    <span class="reprint1-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://www.yanlinux.cn" class="b-link-green">焱黎的博客</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/clbeydtml000qe0akwwiyklti/" class="b-link-green">第五周作业</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81Njg5OC8zMzM2Mg==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/clbeydtmn000ve0aktn68q3pd/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/5.jpg" class="responsive-img" alt="第六周作业">
+                        
+                        <span class="card-title">第六周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            加油!
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2022-09-26
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/SQL/" target="_blank">
+                        <span class="chip bg-color">SQL</span>
+                    </a>
+                    
+                    <a href="/tags/xtrabackup备份/" target="_blank">
+                        <span class="chip bg-color">xtrabackup备份</span>
+                    </a>
+                    
+                    <a href="/tags/mysql主从复制/" target="_blank">
+                        <span class="chip bg-color">mysql主从复制</span>
+                    </a>
+                    
+                    <a href="/tags/mysql主主复制/" target="_blank">
+                        <span class="chip bg-color">mysql主主复制</span>
+                    </a>
+                    
+                    <a href="/tags/mysql半同步复制/" target="_blank">
+                        <span class="chip bg-color">mysql半同步复制</span>
+                    </a>
+                    
+                    <a href="/tags/mycat/" target="_blank">
+                        <span class="chip bg-color">mycat</span>
+                    </a>
+                    
+                    <a href="/tags/openvpn/" target="_blank">
+                        <span class="chip bg-color">openvpn</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/clbeydtlx0002e0akqhf2nsc3/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/wallhaven-q27ked.jpg" class="responsive-img" alt="今日小技巧">
+                        
+                        <span class="card-title">今日小技巧</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            zabbix常用的监控架构平台:
+
+1、server-agentd模式：
+这个是最简单的架构了，常用于监控主机比较少的情况下。
+
+2、server-proxy-agentd模式：
+这个常用于比较多的机器，使用proxy进行分布式监控，有效的
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-08-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/知识点/" class="post-category" target="_blank">
+                                    知识点
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/zabbix/" target="_blank">
+                        <span class="chip bg-color">zabbix</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('30')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'pre') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 焱黎的博客<br />'
+            + '作者: 焱黎<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+        <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&copy; 2022 焱黎. 
+
+            <br>
+            <span id="sitetime"></span><span class="my-face">ღゝ◡╹)ノ♡</span>
+            <br>
+
+            
+
+            
+                    
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        总访问量: <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    
+        
+                    
+                        <span id="busuanzi_container_site_uv" style='display:none'></span>
+                        人次&nbsp; | &nbsp;访客人数: <span id="busuanzi_value_site_uv" class="white-color"></span> 人
+                    
+    
+            
+
+            
+                &nbsp; | &nbsp;字数统计:&nbsp;
+                <span class="white-color">255.3k</span> 字
+            
+
+            
+            <br>
+
+        </div>
+
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/yanlinux" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+ 
+    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=lgq6579@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=1499214187&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的QQ空间" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+        var t1 = Date.UTC(2022, 07, 25, 00, 00, 00); //北京时间2022-7-25 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+            minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已勉强运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours +
+            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒" ;
+    } /*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+
+
+
+
+
+        <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+        <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+        <script src="https://cdn.bootcss.com/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
+        <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+        <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/js/lightgallery-all.min.js"></script>
+        <script src="/js/matery.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+        
+            <script src="/libs/others/clicklove.js"></script>
+        
+
+        
+            <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+
+        <!-- 洪卫 shw2018 add 2019.08.28 -->
+        <script type="text/javascript">
+            var OriginTitile = document.title,
+                st;
+            document.addEventListener("visibilitychange", function () {
+                document.hidden ? (document.title = "看不见我🙈~看不见我🙈~", clearTimeout(st)) : (document.title =
+                    "(๑•̀ㅂ•́) ✧被发现了～", st = setTimeout(function () {
+                        document.title = OriginTitile
+                    }, 3e3))
+            })
+        </script>
+
+        <!-- 鼠标点击烟花爆炸效果  洪卫 shw2018 add 2019.09.09 -->
+        
+
+        <!-- 背景雪花飘落特效洪卫 shw2018 add 2019.09.10 -->
+        
+            <script type="text/javascript">
+            //只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 鼠标点击文字特效 洪卫 shw2018 add 2019.09.10-->
+        
+            <script src="/js/wenzi.js" type="text/javascript"></script>
+        
+
+        <!-- 背景雪花飘落特效 洪卫 shw2018 add 2019.09.10 -->
+        
+
+        <!-- 在线聊天工具  洪卫 shw2018 add 2019.09.11 -->
+        
+
+        <!-- 背景 canvas-nest  洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" color="0,0,255" pointColor="0,0,255" opacity= "0.8" zIndex="--1" count="150"src="/libs/background/canvas-nest.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 背景静止彩带  洪卫 shw 2018  add 2019.09.15-->
+        
+
+        <!-- 背景动态彩带 洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" src="/libs/background/ribbon-dynamic.js"><\/script>');
+            }
+            </script>
+        
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":200},"mobile":{"show":false},"react":{"opacity":0.7}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+</html>
