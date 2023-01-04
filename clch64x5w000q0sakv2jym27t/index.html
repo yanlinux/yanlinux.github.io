@@ -1,0 +1,2842 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <!-- shw2018 洪卫  modify 2019.08.15-->
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <meta name="keywords" content="第七周作业, Linux SRE Python R">
+    <meta name="baidu-site-verification" content="fmlEuI34ir">
+    <meta name="google-site-verification" content="KeoTn_OFy4ndJwXNmm2gMeQfPhd7alqE9vQDwI32KCY">
+    <meta name="description" content="1 postgresql架构与原理。
+PostgreSQL体系结构分两部分
+
+实例 instance
+进程
+内存存储结构
+
+
+磁盘存储
+
+进程主要分为：主进程Postmaster和一些辅助进程
+
+主进程Postmaster：整个数据库实例的">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>第七周作业 | 焱黎的博客</title>
+    <link rel="icon" type="image/jpeg" href="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image_20220801100631.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <style type="text/css">
+        
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?46e79e71af0709a5b9106bf20cecc493";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+    
+    
+        <script>
+            (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+                }
+                else {
+                    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+            })();
+        </script>
+    
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+    <body>
+
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">焱黎的博客</span>
+                </a>
+            </div>
+            
+
+
+<!-- <a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/AV" class="waves-effect waves-light">
+            
+            <i class="fa fa-music"></i>
+            
+            <span>视听</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/galleries" class="waves-effect waves-light">
+            
+            <i class="fa fa-photo"></i>
+            
+            <span>相册</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于我</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/contact" class="waves-effect waves-light">
+            
+            <i class="fa fa-envelope"></i>
+            
+            <span>留言板</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul> -->
+
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right nav-menu">
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/" class="waves-effect waves-light">
+              
+                <i class="fa fa-home"></i>
+              
+              <span>首页</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/tags" class="waves-effect waves-light">
+              
+                <i class="fa fa-tags"></i>
+              
+              <span>标签</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/categories" class="waves-effect waves-light">
+              
+                <i class="fa fa-bookmark"></i>
+              
+              <span>分类</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/archives" class="waves-effect waves-light">
+              
+                <i class="fa fa-archive"></i>
+              
+              <span>归档</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/AV" class="waves-effect waves-light">
+              
+                <i class="fa fa-music"></i>
+              
+              <span>视听</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/galleries" class="waves-effect waves-light">
+              
+                <i class="fa fa-photo"></i>
+              
+              <span>相册</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/about" class="waves-effect waves-light">
+              
+                <i class="fa fa-user-circle-o"></i>
+              
+              <span>关于我</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/contact" class="waves-effect waves-light">
+              
+                <i class="fa fa-envelope"></i>
+              
+              <span>留言板</span>
+            </a>
+
+            
+      </li>
+    
+      <li class="hide-on-med-and-down nav-item" >
+
+        
+            <a href="/friends" class="waves-effect waves-light">
+              
+                <i class="fa fa-address-book"></i>
+              
+              <span>友情链接</span>
+            </a>
+
+            
+      </li>
+    
+
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291252776.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">焱黎的博客</div>
+        <div class="logo-desc">
+            
+            Linux | SRE | Python
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/AV" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-music"></i>
+                
+                视听
+            </a>
+        </li>
+        
+        <li>
+            <a href="/galleries" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-photo"></i>
+                
+                相册
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于我
+            </a>
+        </li>
+        
+        <li>
+            <a href="/contact" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envelope"></i>
+                
+                留言板
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+   
+   
+<!-- 支持二级菜单特性 洪卫 shw2018 modify 2019.09.17  -->
+<!-- <ul class="menu-list mobile-menu-list">
+    
+        <li class="m-nav-item">
+                
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-home"></i>
+                        
+                        首页
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/tags" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-tags"></i>
+                        
+                        标签
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/categories" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-bookmark"></i>
+                        
+                        分类
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/archives" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-archive"></i>
+                        
+                        归档
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/AV" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-music"></i>
+                        
+                        视听
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/galleries" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-photo"></i>
+                        
+                        相册
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/about" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-user-circle-o"></i>
+                        
+                        关于我
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/contact" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-envelope"></i>
+                        
+                        留言板
+                    </a>
+              
+            </li>
+        
+        <li class="m-nav-item">
+                
+                    <a href="/friends" class="waves-effect waves-light">
+                        
+                        <i class="fa fa-fw fa-address-book"></i>
+                        
+                        友情链接
+                    </a>
+              
+            </li>
+        
+
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/yanlinux/yanlinux.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul> -->
+
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/yanlinux/yanlinux.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+        
+<script src="/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/6.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        第七周作业
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- shw2018 洪卫  modify 2019.08.15-->
+<!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/redis/" target="_blank">
+                                <span class="chip bg-color">redis</span>
+                            </a>
+                        
+                            <a href="/tags/Postgresql/" target="_blank">
+                                <span class="chip bg-color">Postgresql</span>
+                            </a>
+                        
+                            <a href="/tags/高可用LAMP搭建/" target="_blank">
+                                <span class="chip bg-color">高可用LAMP搭建</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                作业
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-10-26
+                </div>
+
+                <div class="post-author info-break-policy">
+                    <i class="fa fa-user-o fa-fw"></i>作者:&nbsp;&nbsp;
+                    
+                        焱黎
+                    
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        12.5k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        59 分
+                    </div>
+                    
+                
+                
+                
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv" ></span>
+    
+                
+
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="1-postgresql架构与原理。"><a href="#1-postgresql架构与原理。" class="headerlink" title="1 postgresql架构与原理。"></a>1 postgresql架构与原理。</h2><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221026213639744.png" alt=""></p>
+<p><code>PostgreSQL</code>体系结构分两部分</p>
+<ul>
+<li>实例 <code>instance</code><ul>
+<li>进程</li>
+<li>内存存储结构</li>
+</ul>
+</li>
+<li>磁盘存储</li>
+</ul>
+<p>进程主要分为：主进程<code>Postmaster</code>和一些辅助进程</p>
+<ul>
+<li>主进程<code>Postmaster</code>：整个数据库实例的总控进程，负责启动和关闭数据库实例</li>
+<li>辅助进程<ul>
+<li><strong><code>Syslogger</code>（系统日志）进程</strong>：<code>Postgres.conf</code>中<code>logging_collection</code>设置为<code>on</code>，此时主进程才会启动<code>Syslogger</code>辅助进程。</li>
+<li><strong><code>BgWriter</code>（后台）写进程</strong>：把共享内存中的脏页写到磁盘上的进程。主要是为了提高插入、更新和删除数据的性能</li>
+<li><strong><code>WalWrite</code>（预写式日志）进程</strong>：在修改数据之前把修改操作记录到磁盘中，以便后面更新实时数据时就不需要数据持久化到文件中</li>
+<li><strong>PgArch（归档）进程</strong>：WAL日志会循环使用，PgArch在归档前会将WAL日志备份出来。通过PITY技术，对数据库进行全量备份后，将备份时间点之后的<strong>WAL日志通过归档进行备份</strong>，使用数据库的全量备份再加上后面产生的WAL日志，即可把数据库向前推到全量备份后的任一时间点</li>
+<li><strong>AutoVacuum（自动清理）进程</strong>：对标进行DELETE操作后，旧的数据并<strong>不会立即删除</strong>，并且在更新数据时，也不会在旧的数据上做更新，而是新生成一行数据。旧的数据只是<strong>被标识为删除状态</strong>，只有在没有并发的其他事务读到这些数据时，才会被清除。这个清除工作就是AutoVacuum进程完成。</li>
+<li><strong>PgStat（统计数据收集）进程</strong>：主要用于查询优化时的代价估算，包括一个表和索引进行了多少此的插入、更新、删除操作，磁盘块读写的次数、行的读次数。<code>pg_statistic</code>中存储了PgStat收集的数据</li>
+<li><strong><code>Checkpointer</code>检查点进程</strong>：检查点进程 (CKPT) 在特定时间自动执行一个检查点,通过向数据库写入进程 (BgWriter) 传递消<br>息来启动检查点请求。在检查点时，所有脏数据页都冲刷到磁盘并且向日志文件中写入一条特殊的检查点记录。</li>
+<li><strong><code>startup</code> 启动进程</strong>：用于数据库恢复的进程</li>
+<li><strong><code>Session</code> 会话进程</strong>：每一个用户发起连接后，一旦验证成功,postmaster进程就会fork—个新的子进程负责连接此<br>用户。</li>
+</ul>
+</li>
+</ul>
+<p>内存存储结构：包括<strong>共享内存</strong>和<strong>本地内存</strong></p>
+<ul>
+<li>共享内存：服务启动后，会生成一块共享内存，用于做数据块的缓冲区，以便提高读写性能。<code>WAL</code>日志缓冲区和<code>commit log(Clog)</code>缓冲区也存在共享内存中，此外还有全局信息比如进程、锁、全局统计等也都保存在共享内存中。</li>
+<li>本地内存：非全局存储的数据都存储在本地内存中，主要包括:<ul>
+<li>临时缓冲区：用于访问临时表的缓冲区。<code>tem_buffer</code>控制，默认是8M。</li>
+<li><code>work_mem</code>：内部排序操作和Hash表在使用临时操作文件之前使用的存储缓冲区。</li>
+<li><code>manintance_work_mem</code>：用于一些维护操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-基于流复制完成postgresql的高可用。"><a href="#2-基于流复制完成postgresql的高可用。" class="headerlink" title="2 基于流复制完成postgresql的高可用。"></a>2 基于流复制完成postgresql的高可用。</h2><blockquote>
+<p>实验环境</p>
+<ul>
+<li>Master：10.0.0.6</li>
+<li>Standby：10.0.0.3</li>
+</ul>
+</blockquote>
+<h3 id="2-1-Master节点配置"><a href="#2-1-Master节点配置" class="headerlink" title="2.1 Master节点配置"></a>2.1 Master节点配置</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 创建复制的用户并授权</span>
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># create role repluser with replication login password 'lgq123456';</span>
+CREATE ROLE
+
+<span class="token comment" spellcheck="true">#2 修改pg_hba.conf进行授权</span>
+<span class="token punctuation">[</span>21:27:17 root@ubuntu2004 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /pgsql/data/pg_hba.conf
+local   replication     all                                     trust
+<span class="token comment" spellcheck="true">##在这一行下面添加下面一行的授权</span>
+host    replication     all             0.0.0.0/0               md5
+
+<span class="token comment" spellcheck="true">#3 修改配置（可选）</span>
+<span class="token punctuation">[</span>21:27:54 root@ubuntu2004 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /pgsql/data/postgresql.conf
+synchronous_standby_names <span class="token operator">=</span> <span class="token string">'*'</span> <span class="token comment" spellcheck="true">#开启此项,表示同步方式,需要同时打开synchronous_commit = on,此为默认值,默认是异步方式</span>
+synchronous_commit <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#开启同步模式</span>
+archive_mode <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#建议打开归档模式,防止长时间无法同步,WAL被覆盖造成数据丢失</span>
+archive_command <span class="token operator">=</span> <span class="token string">'[ ! -f /archive/%f ] &amp;&amp; cp %p /archive/%f'</span>
+wa1_level <span class="token operator">=</span> replica <span class="token comment" spellcheck="true">#设置wal的级别</span>
+max_wal_senders <span class="token operator">=</span> 5 <span class="token comment" spellcheck="true">#这个设置可以最多有几个流复制连接，一般有几个从节点就设置几个</span>
+wal_keep_segments <span class="token operator">=</span> 128 <span class="token comment" spellcheck="true">#设置流复制保留的最多的WAL文件数目</span>
+wal_sender_timeout <span class="token operator">=</span> 60s <span class="token comment" spellcheck="true">#设置流复制主机发送数据的超时时间</span>
+max_connections <span class="token operator">=</span> 200 <span class="token comment" spellcheck="true"># 一般查多于写的应用从库的最大连接数要比较大</span>
+hot_standby <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#对主库无影响,用于将来可能会成为从库,这台机器不仅仅是用于数据归档，也用于数据查询,在从库上配置此项后为只读</span>
+max_standby_streaming_delay <span class="token operator">=</span> 30s <span class="token comment" spellcheck="true">#数据流备份的最大延迟时间</span>
+wal_receiver_status_interval <span class="token operator">=</span> 10s <span class="token comment" spellcheck="true">#多久向主报告一次从的状态，当然从每次数据复制都会向主报告状态，只是设置最长的间隔时间</span>
+hot_standby_feedback <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#如果有错误的数据复制，是否向主进行反馈</span>
+wal_log_hints <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#对非关键更新进行整页写入</span>
+<span class="token comment" spellcheck="true">#重启服务</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-2-Standby节点配置"><a href="#2-2-Standby节点配置" class="headerlink" title="2.2 Standby节点配置"></a>2.2 Standby节点配置</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#清空数据和归档</span>
+<span class="token punctuation">[</span>21:34:07 root@rocky ~<span class="token punctuation">]</span>$ systemctl stop postgresql.service 
+<span class="token punctuation">[</span>21:34:30 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> -rf /pgsql/data/*
+<span class="token punctuation">[</span>21:34:53 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> -rf /archive/*
+<span class="token punctuation">[</span>21:35:09 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> -rf /pgsql/backup/*
+
+<span class="token comment" spellcheck="true">#备份主库数据到standby节点</span>
+<span class="token punctuation">[</span>21:37:09 root@rocky ~<span class="token punctuation">]</span>$ pg_basebackup -D /pgsql/backup/ -Ft -Pv -Upostgres -h 10.0.0.6 -p 5432 -R
+
+<span class="token comment" spellcheck="true">#还原</span>
+<span class="token punctuation">[</span>21:38:03 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> xf /pgsql/backup/base.tar -C /pgsql/data/
+<span class="token punctuation">[</span>21:38:45 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> xf /pgsql/backup/pg_wal.tar -C /archive/
+
+<span class="token comment" spellcheck="true">#修改配置文件</span>
+<span class="token punctuation">[</span>21:41:06 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /pgsql/data/postgresql.conf 
+<span class="token comment" spellcheck="true">##修改下面两行的选项值</span>
+primary_conninfo <span class="token operator">=</span> <span class="token string">'host=10.0.0.6 port=5432 user=repluser password=lgq123456'</span>
+restore_command <span class="token operator">=</span> <span class="token string">'cp /archive/%f %p'</span>
+
+<span class="token comment" spellcheck="true">##下面配置是可选的</span>
+hot_standby <span class="token operator">=</span> on <span class="token comment" spellcheck="true">#开启此项,此是默认项</span>
+recovery_target_timeline <span class="token operator">=</span> latest <span class="token comment" spellcheck="true"># 默认</span>
+max_connections <span class="token operator">=</span> 120 <span class="token comment" spellcheck="true"># 大于等于主节点，正式环境应当重新考虑此值的大小</span>
+max_standby_streaming_delay <span class="token operator">=</span> 30s
+wal_receiver_status_interval <span class="token operator">=</span> 10
+shot_standby_feedback <span class="token operator">=</span> on
+max_wal_senders <span class="token operator">=</span> 15
+1ogging_co1lector <span class="token operator">=</span> on
+1og_directory <span class="token operator">=</span> <span class="token string">'pg_log'</span>
+1og_filename <span class="token operator">=</span> <span class="token string">'postgresql-%Y-%m-%d_%H%M%S.1og'</span>
+
+<span class="token comment" spellcheck="true">#启动服务</span>
+<span class="token punctuation">[</span>21:45:49 root@rocky ~<span class="token punctuation">]</span>$ systemctl start postgresql.service<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-3-监控同步状态"><a href="#2-3-监控同步状态" class="headerlink" title="2.3 监控同步状态"></a>2.3 监控同步状态</h3><h4 id="2-3-1-在主库查看状态"><a href="#2-3-1-在主库查看状态" class="headerlink" title="2.3.1 在主库查看状态"></a>2.3.1 在主库查看状态</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>22:02:45 root@ubuntu2004 ~<span class="token punctuation">]</span>$ pg_controldata 
+pg_control version number:            1300
+Catalog version number:               202107181
+Database system identifier:           7146423305602937695
+Database cluster state:               <span class="token keyword">in</span> production <span class="token comment" spellcheck="true">#主库状态</span>
+
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># select pid,state,client_addr,sync_priority,sync_state from pg_stat_replication;</span>
+  pid  <span class="token operator">|</span>   state   <span class="token operator">|</span> client_addr <span class="token operator">|</span> sync_priority <span class="token operator">|</span> sync_state 
+-------+-----------+-------------+---------------+------------
+ 23455 <span class="token operator">|</span> streaming <span class="token operator">|</span> 10.0.0.3    <span class="token operator">|</span>             0 <span class="token operator">|</span> async
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#下面只在主节点查看同步模式,注意:如果无从节点连接,将无任何显示信息</span>
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># \x</span>
+Expanded display is on.
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># select pg_current_wal_insert_lsn(),* from pg_stat_replication;</span>
+-<span class="token punctuation">[</span> RECORD 1 <span class="token punctuation">]</span>-------------+------------------------------
+pg_current_wal_insert_lsn <span class="token operator">|</span> 0/21000EE8
+pid                       <span class="token operator">|</span> 23455
+usesysid                  <span class="token operator">|</span> 10
+usename                   <span class="token operator">|</span> postgres
+application_name          <span class="token operator">|</span> walreceiver
+client_addr               <span class="token operator">|</span> 10.0.0.3
+client_hostname           <span class="token operator">|</span> 
+client_port               <span class="token operator">|</span> 55636
+backend_start             <span class="token operator">|</span> 2022-10-18 22:01:05.190842+08
+backend_xmin              <span class="token operator">|</span> 
+state                     <span class="token operator">|</span> streaming
+sent_lsn                  <span class="token operator">|</span> 0/21000EE8
+write_lsn                 <span class="token operator">|</span> 0/21000EE8
+flush_lsn                 <span class="token operator">|</span> 0/21000EE8
+replay_lsn                <span class="token operator">|</span> 0/21000EE8
+write_lag                 <span class="token operator">|</span> 
+flush_lag                 <span class="token operator">|</span> 
+replay_lag                <span class="token operator">|</span> 
+sync_priority             <span class="token operator">|</span> 0
+sync_state                <span class="token operator">|</span> async
+reply_time                <span class="token operator">|</span> 2022-10-18 22:05:54.621397+08
+
+
+<span class="token comment" spellcheck="true">##服务器查看数据库是否为备库，f表主库 t表示为备库</span>
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># select * from pg_is_in_recovery();</span>
+ pg_is_in_recovery 
+-------------------
+ t
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-3-2-在从库查看状态"><a href="#2-3-2-在从库查看状态" class="headerlink" title="2.3.2 在从库查看状态"></a>2.3.2 在从库查看状态</h4><pre class="line-numbers language-postgresql"><code class="language-postgresql">[22:12:28 root@rocky ~]# pg_controldata 
+pg_control version number:            1300
+Catalog version number:               202107181
+Database system identifier:           7146423305602937695
+Database cluster state:               in archive recovery #从库状态
+
+postgres=# SELECT * FROM pg_stat_wal_receiver;
+-[ RECORD 1 ]---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pid                   | 5387
+status                | streaming
+receive_start_lsn     | 0/21000000
+receive_start_tli     | 1
+written_lsn           | 0/21000EE8
+flushed_lsn           | 0/21000EE8
+received_tli          | 1
+last_msg_send_time    | 2022-10-18 22:14:06.419656+08
+last_msg_receipt_time | 2022-10-18 22:14:05.239946+08
+latest_end_lsn        | 0/21000EE8
+latest_end_time       | 2022-10-18 22:01:05.196065+08
+slot_name             | 
+sender_host           | 10.0.0.6
+sender_port           | 5432
+conninfo              | user=postgres password=******** channel_binding=disable dbname=replication host=10.0.0.6 port=5432 fallback_application_name=walreceiver sslmode=disable sslcompression=0 sslsni=1 ssl_min_protocol_version=TLSv1.2 gssencmode=disable krbsrvname=postgres target_session_attrs=any<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-实现postgresql的时间点还原。"><a href="#3-实现postgresql的时间点还原。" class="headerlink" title="3 实现postgresql的时间点还原。"></a>3 实现postgresql的时间点还原。</h2><blockquote>
+<p>案例说明：每天2:00备份,第二天10:00误删除数据库,如何恢复?</p>
+</blockquote>
+<h4 id="3-1-备份"><a href="#3-1-备份" class="headerlink" title="3.1 备份"></a>3.1 备份</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 在postgresql服务器上开启归档日志</span>
+<span class="token punctuation">[</span>20:08:59 root@ubuntu2004 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /pgsql/data/postgresql.conf
+archive_mode <span class="token operator">=</span> on 
+archive_command <span class="token operator">=</span> <span class="token string">'[ ! -f /archive/%f ] &amp;&amp; %p /archive/%f'</span>
+
+<span class="token comment" spellcheck="true">#2 创建测试数据</span>
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># create database testdb；</span>
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># \c testdb;</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># create table t1(id int);</span>
+CREATE TABLE
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># insert into t1 values(1);</span>
+INSERT 0 1
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select * from t1</span>
+testdb-<span class="token comment" spellcheck="true"># ;</span>
+ <span class="token function">id</span> 
+----
+  1
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#3 在备份服务器上进行完全备份</span>
+<span class="token punctuation">[</span>20:14:30 root@rocky ~<span class="token punctuation">]</span>$ pg_basebackup -D /pgsql/backup/ -Ft -Pv -Upostgres -h 10.0.0.6 -p 5432 -R
+Password: 
+pg_basebackup: initiating base backup, waiting <span class="token keyword">for</span> checkpoint to complete
+pg_basebackup: checkpoint completed
+pg_basebackup: write-ahead log start point: 0/1D000028 on timeline 1
+pg_basebackup: starting background WAL receiver
+pg_basebackup: created temporary replication slot <span class="token string">"pg_basebackup_20102"</span>
+152628/152628 kB <span class="token punctuation">(</span>100%<span class="token punctuation">)</span>, 1/1 tablespace                                         
+pg_basebackup: write-ahead log end point: 0/1D000138
+pg_basebackup: waiting <span class="token keyword">for</span> background process to finish streaming <span class="token punctuation">..</span>.
+pg_basebackup: syncing data to disk <span class="token punctuation">..</span>.
+pg_basebackup: renaming backup_manifest.tmp to backup_manifest
+pg_basebackup: base backup completed
+<span class="token comment" spellcheck="true">##至此已经完成了每天2:00进行备份的任务</span>
+
+<span class="token comment" spellcheck="true">#4 在postgresql服务器上继续生成测试数据</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># insert into t1 values(2);</span>
+INSERT 0 1
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># insert into t1 values(3);</span>
+INSERT 0 1
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select * from t1;</span>
+ <span class="token function">id</span> 
+----
+  1
+  2
+  3
+<span class="token punctuation">(</span>3 rows<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#5 模拟10:00时间误删除了这个数据库</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># \c hellodb</span>
+You are now connected to database <span class="token string">"hellodb"</span> as user <span class="token string">"postgres"</span><span class="token keyword">.</span>
+hellodb<span class="token operator">=</span><span class="token comment" spellcheck="true"># drop database testdb;</span>
+DROP DATABASE
+hellodb<span class="token operator">=</span><span class="token comment" spellcheck="true"># \l</span>
+                                  List of databases
+   Name    <span class="token operator">|</span>  Owner   <span class="token operator">|</span> Encoding <span class="token operator">|</span>   Collate   <span class="token operator">|</span>    Ctype    <span class="token operator">|</span>   Access privileges   
+-----------+----------+----------+-------------+-------------+-----------------------
+ hellodb   <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ hellodb2  <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ postgres  <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ template0 <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> <span class="token operator">=</span>c/postgres          +
+           <span class="token operator">|</span>          <span class="token operator">|</span>          <span class="token operator">|</span>             <span class="token operator">|</span>             <span class="token operator">|</span> postgres<span class="token operator">=</span>CTc/postgres
+ template1 <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> <span class="token operator">=</span>c/postgres          +
+           <span class="token operator">|</span>          <span class="token operator">|</span>          <span class="token operator">|</span>             <span class="token operator">|</span>             <span class="token operator">|</span> postgres<span class="token operator">=</span>CTc/postgres
+<span class="token punctuation">(</span>5 rows<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#6发现故障，停止用户访问</span>
+<span class="token comment" spellcheck="true">#查看当前日志文件</span>
+hellodb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select pg_walfile_name(pg_current_wal_lsn());</span>
+     pg_walfile_name      
+--------------------------
+ 00000001000000000000001E
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">#查看当前事务ID</span>
+hellodb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select txid_current();</span>
+ txid_current 
+--------------
+          904
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-2-故障还原"><a href="#3-2-故障还原" class="headerlink" title="3.2 故障还原"></a>3.2 故障还原</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 在postgresql服务器上切换归档日志</span>
+hellodb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select pg_switch_wal();</span>
+ pg_switch_wal 
+---------------
+ 0/1E000E18
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#2 在备份服务器上停止服务，准备还原</span>
+<span class="token punctuation">[</span>20:15:53 root@rocky ~<span class="token punctuation">]</span>$ systemctl stop postgresql.service
+<span class="token punctuation">[</span>20:30:55 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">rm</span> -rf /pgsql/data/*
+
+<span class="token comment" spellcheck="true">#3 在备份服务器中进行还原</span>
+<span class="token punctuation">[</span>20:31:03 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> xf /pgsql/backup/base.tar -C /pgsql/data/
+<span class="token comment" spellcheck="true">##下面可以不执行，在4中直接将PG服务器/archive中的归档日志全部拷贝过去</span>
+<span class="token punctuation">[</span>20:32:02 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> xf /pgsql/backup/pg_wal.tar -C /archive/
+<span class="token punctuation">[</span>20:32:42 root@rocky ~<span class="token punctuation">]</span>$ ll /archive/
+total 16384
+-rw------- 1 postgres postgres 16777216 Oct 18 20:15 00000001000000000000001D
+
+<span class="token comment" spellcheck="true">#4 复制PG服务器的归档日志到还原的测试服务器</span>
+<span class="token punctuation">[</span>20:32:45 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> -a 10.0.0.6:/archive/ /archive/
+
+<span class="token comment" spellcheck="true">#5 查看故障点事务ID</span>
+<span class="token comment" spellcheck="true">##前面看到删除数据库是发生在00000001000000000000001E日志文件中</span>
+<span class="token punctuation">[</span>20:38:55 root@rocky ~<span class="token punctuation">]</span>$ pg_waldump /archive/00000001000000000000001E<span class="token operator">|</span><span class="token function">grep</span> <span class="token string">"DROP dir"</span>
+rmgr: Database    len <span class="token punctuation">(</span>rec/tot<span class="token punctuation">)</span>:     38/    38, tx:        903, lsn: 0/1E000CF8, prev 0/1E000C80, desc: DROP <span class="token function">dir</span> 1663/16603
+<span class="token comment" spellcheck="true">##查看此指令的事务ID为903,所以需要恢复到此事务的前一个事务902</span>
+
+<span class="token comment" spellcheck="true">#6 修改配置文件</span>
+<span class="token punctuation">[</span>20:39:20 root@rocky ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /pgsql/data/postgresql.conf
+<span class="token comment" spellcheck="true">##将下面两个参数修改为</span>
+restore_command <span class="token operator">=</span> <span class="token string">'cp /archive/%f %p'</span>
+<span class="token comment" spellcheck="true">#指定还原至上面查到的事务ID</span>
+recovery_target_xid <span class="token operator">=</span> <span class="token string">'902'</span>
+
+<span class="token comment" spellcheck="true">##也可以通过下面方式进行指定还原的位置</span>
+recovery_target_name <span class="token operator">=</span> <span class="token string">'restore_point'</span> <span class="token comment" spellcheck="true">#指定还原点名称</span>
+recovery_target_time <span class="token operator">=</span> <span class="token string">'2021-01-17 16:26:12'</span> <span class="token comment" spellcheck="true">#指定还原至时间点</span>
+recovery_target_lsn <span class="token operator">=</span> <span class="token string">'0/3E000148'</span> <span class="token comment" spellcheck="true">#指定还原到LSN号的位置</span>
+
+<span class="token comment" spellcheck="true">#7 启动服务</span>
+<span class="token punctuation">[</span>20:42:42 root@rocky ~<span class="token punctuation">]</span>$ systemctl start postgresql.service 
+
+<span class="token comment" spellcheck="true">#8 验证数据</span>
+<span class="token punctuation">[</span>20:45:24 root@rocky ~<span class="token punctuation">]</span>$ psql
+psql <span class="token punctuation">(</span>14.2<span class="token punctuation">)</span>
+Type <span class="token string">"help"</span> <span class="token keyword">for</span> help.
+
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># \l</span>
+                                  List of databases
+   Name    <span class="token operator">|</span>  Owner   <span class="token operator">|</span> Encoding <span class="token operator">|</span>   Collate   <span class="token operator">|</span>    Ctype    <span class="token operator">|</span>   Access privileges   
+-----------+----------+----------+-------------+-------------+-----------------------
+ hellodb   <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ hellodb2  <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ postgres  <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+ template0 <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> <span class="token operator">=</span>c/postgres          +
+           <span class="token operator">|</span>          <span class="token operator">|</span>          <span class="token operator">|</span>             <span class="token operator">|</span>             <span class="token operator">|</span> postgres<span class="token operator">=</span>CTc/postgres
+ template1 <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> <span class="token operator">=</span>c/postgres          +
+           <span class="token operator">|</span>          <span class="token operator">|</span>          <span class="token operator">|</span>             <span class="token operator">|</span>             <span class="token operator">|</span> postgres<span class="token operator">=</span>CTc/postgres
+ testdb    <span class="token operator">|</span> postgres <span class="token operator">|</span> UTF8     <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> en_US.UTF-8 <span class="token operator">|</span> 
+<span class="token punctuation">(</span>6 rows<span class="token punctuation">)</span>
+
+postgres<span class="token operator">=</span><span class="token comment" spellcheck="true"># \c testdb </span>
+You are now connected to database <span class="token string">"testdb"</span> as user <span class="token string">"postgres"</span><span class="token keyword">.</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># \dt</span>
+        List of relations
+ Schema <span class="token operator">|</span> Name <span class="token operator">|</span> Type  <span class="token operator">|</span>  Owner   
+--------+------+-------+----------
+ public <span class="token operator">|</span> t1   <span class="token operator">|</span> table <span class="token operator">|</span> postgres
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select * from t1;</span>
+ <span class="token function">id</span> 
+----
+  1
+  2
+  3
+<span class="token punctuation">(</span>3 rows<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#9 当前无法写入，需要恢复到正常模式</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select pg_wal_replay_resume();</span>
+ pg_wal_replay_resume 
+----------------------
+
+<span class="token punctuation">(</span>1 row<span class="token punctuation">)</span>
+<span class="token punctuation">[</span>19:54:12 root@rocky ~<span class="token punctuation">]</span><span class="token comment" spellcheck="true"># pg_controldata </span>
+pg_control version number:            1300
+Catalog version number:               202107181
+Database system identifier:           7146423305602937695
+Database cluster state:               <span class="token keyword">in</span> production
+<span class="token comment" spellcheck="true">##现在处于production状态，可以正常写入</span>
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># insert into t1 values(4);</span>
+INSERT 0 1
+testdb<span class="token operator">=</span><span class="token comment" spellcheck="true"># select * from t1;</span>
+ <span class="token function">id</span> 
+----
+  1
+  2
+  3
+  4
+<span class="token punctuation">(</span>4 rows<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="4-规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用。"><a href="#4-规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用。" class="headerlink" title="4 规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用。"></a>4 规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用。</h2><p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/image-20221025112647106.png" alt="LAMP架构图"></p>
+<h3 id="4-1-在10-0-0-8上搭建DNS"><a href="#4-1-在10-0-0-8上搭建DNS" class="headerlink" title="4.1 在10.0.0.8上搭建DNS"></a>4.1 在10.0.0.8上搭建DNS</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 安装软件</span>
+<span class="token punctuation">[</span>09:50:56 root@DNS-server ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> bind bind-utils
+<span class="token punctuation">[</span>09:51:59 root@DNS-server ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now named.service 
+Created symlink /etc/systemd/system/multi-user.target.wants/named.service → /usr/lib/systemd/system/named.service.
+
+<span class="token comment" spellcheck="true">#2 修改配置文件</span>
+<span class="token punctuation">[</span>09:56:29 root@DNS-server ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/named.conf 
+options <span class="token punctuation">{</span>
+    listen-on port 53 <span class="token punctuation">{</span> localhost<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#修改这一行为localhost，放置以后该主机ip地址换了，还需要在修改这个配置；或则直接讲这一行注释掉也行，他就会默认监听localhos</span>
+    listen-on-v6 port 53 <span class="token punctuation">{</span> ::1<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    directory     <span class="token string">"/var/named"</span><span class="token punctuation">;</span>
+    dump-file     <span class="token string">"/var/named/data/cache_dump.db"</span><span class="token punctuation">;</span>
+    statistics-file <span class="token string">"/var/named/data/named_stats.txt"</span><span class="token punctuation">;</span>
+    memstatistics-file <span class="token string">"/var/named/data/named_mem_stats.txt"</span><span class="token punctuation">;</span>
+    secroots-file    <span class="token string">"/var/named/data/named.secroots"</span><span class="token punctuation">;</span>
+    recursing-file    <span class="token string">"/var/named/data/named.recursing"</span><span class="token punctuation">;</span>
+    allow-query     <span class="token punctuation">{</span> any<span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#修改这一行为any</span>
+
+<span class="token comment" spellcheck="true">#3 创建区域数据库配置文件</span>
+<span class="token punctuation">[</span>09:57:18 root@DNS-server ~<span class="token punctuation">]</span>$ <span class="token function">cd</span> /var/named/
+<span class="token punctuation">[</span>09:57:28 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">touch</span> yanlinux.org.zone
+<span class="token punctuation">[</span>09:57:46 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">chmod</span> 640 yanlinux.org.zone 
+<span class="token punctuation">[</span>09:58:02 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">chgrp</span> named yanlinux.org.zone 
+<span class="token punctuation">[</span>09:58:15 root@DNS-server named<span class="token punctuation">]</span>$ ll yanlinux.org.zone 
+-rw-r----- 1 root named 0 Oct 24 09:57 yanlinux.org.zone
+<span class="token punctuation">[</span>09:58:19 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">vi</span> yanlinux.org.zone
+<span class="token variable">$TTL</span> 1D
+@           IN  SOA master  admin.yanlinux.org <span class="token punctuation">(</span>
+                                                    0
+                                                    3H
+                                                    10M
+                                                    1D
+                                                    6H<span class="token punctuation">)</span>
+                NS  master
+master          A   10.0.0.8
+www             A   10.0.0.18
+www             A   10.0.0.28
+@               A   10.0.0.18
+@               A   10.0.0.28
+<span class="token punctuation">[</span>10:01:02 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/named.rfc1912.zones
+<span class="token comment" spellcheck="true">##最后面加上以下几行</span>
+zone <span class="token string">"yanlinux.org"</span> IN <span class="token punctuation">{</span>
+    <span class="token function">type</span> master<span class="token punctuation">;</span>
+    <span class="token function">file</span> <span class="token string">"yanlinux.org.zone"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">#4 检查配置文件是否错误</span>
+<span class="token punctuation">[</span>10:05:56 root@DNS-server named<span class="token punctuation">]</span>$ named-checkconf 
+<span class="token punctuation">[</span>10:06:08 root@DNS-server named<span class="token punctuation">]</span>$ named-checkzone yanlinux.org yanlinux.org.zone 
+zone yanlinux.org/IN: loaded serial 0
+OK
+
+<span class="token comment" spellcheck="true">#5 重载配置文件</span>
+<span class="token punctuation">[</span>10:06:21 root@DNS-server named<span class="token punctuation">]</span>$ rndc reload
+server reload successful
+<span class="token punctuation">[</span>10:06:27 root@DNS-server named<span class="token punctuation">]</span>$ <span class="token function">dig</span> yanlinux.org @127.0.0.1
+
+<span class="token punctuation">;</span> <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> DiG 9.11.36-RedHat-9.11.36-3.el8_6.1 <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> yanlinux.org @127.0.0.1
+<span class="token punctuation">;</span><span class="token punctuation">;</span> global options: +cmd
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Got answer:
+<span class="token punctuation">;</span><span class="token punctuation">;</span> -<span class="token operator">>></span>HEADER<span class="token operator">&lt;&lt;</span>- opcode: QUERY, status: NOERROR, id: 3302
+<span class="token punctuation">;</span><span class="token punctuation">;</span> flags: qr aa rd ra<span class="token punctuation">;</span> QUERY: 1, ANSWER: 2, AUTHORITY: 1, ADDITIONAL: 2
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> OPT PSEUDOSECTION:
+<span class="token punctuation">;</span> EDNS: version: 0, flags:<span class="token punctuation">;</span> udp: 1232
+<span class="token punctuation">;</span> COOKIE: 6666bc93f471482f0446feee6355f32b96cb93d04fc0af45 <span class="token punctuation">(</span>good<span class="token punctuation">)</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> QUESTION SECTION:
+<span class="token punctuation">;</span>yanlinux.org.            IN    A
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ANSWER SECTION:
+yanlinux.org.        86400    IN    A    10.0.0.18
+yanlinux.org.        86400    IN    A    10.0.0.28
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> AUTHORITY SECTION:
+yanlinux.org.        86400    IN    NS    master.yanlinux.org.
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ADDITIONAL SECTION:
+master.yanlinux.org.    86400    IN    A    10.0.0.8
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Query time: 0 msec
+<span class="token punctuation">;</span><span class="token punctuation">;</span> SERVER: 127.0.0.1<span class="token comment" spellcheck="true">#53(127.0.0.1)</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> WHEN: Mon Oct 24 10:06:35 CST 2022
+<span class="token punctuation">;</span><span class="token punctuation">;</span> MSG SIZE  rcvd: 138<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-2-搭建数据库服务"><a href="#4-2-搭建数据库服务" class="headerlink" title="4.2 搭建数据库服务"></a>4.2 搭建数据库服务</h3><blockquote>
+<p>利用 Mycat 实现 MySQL 的读写分离</p>
+<ul>
+<li>MyCat：10.0.0.58</li>
+<li>master：10.0.0.68</li>
+<li>slave1：10.0.0.78</li>
+<li>slave2:   10.0.0.88</li>
+</ul>
+</blockquote>
+<h4 id="4-2-1-搭建主从节点"><a href="#4-2-1-搭建主从节点" class="headerlink" title="4.2.1 搭建主从节点"></a>4.2.1 搭建主从节点</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 在10.0.0.68上安装mysql-server服务端。作为mysql master节点</span>
+<span class="token punctuation">[</span>10:26:12 root@Master-server ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mysql-server
+<span class="token punctuation">[</span>10:28:24 root@Master-server ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now mysqld
+
+<span class="token comment" spellcheck="true">##1.1 进入mysql配置网站数据库以及账号授权</span>
+<span class="token comment" spellcheck="true">##安全设置，设置密码</span>
+<span class="token punctuation">[</span>10:38:49 root@Master-server ~<span class="token punctuation">]</span>$ mysql_secure_installation
+<span class="token punctuation">[</span>10:29:05 root@Master-server ~<span class="token punctuation">]</span>$ mysql
+mysql<span class="token operator">></span> create database wordpress<span class="token punctuation">;</span>
+mysql<span class="token operator">></span> create user wordpress@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+mysql<span class="token operator">></span> grant all on wordpress.* to wordpress@<span class="token string">'10.0.0.%'</span>
+
+<span class="token comment" spellcheck="true">##1.2 修改配置文件实现主节点</span>
+<span class="token punctuation">[</span>14:26:49 root@Master-server ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token comment" spellcheck="true">###在文件中添加以下几行</span>
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>68
+log-bin<span class="token operator">=</span>/data/mysql/mysql-bin
+skip_name_resolve<span class="token operator">=</span>1
+general_log
+
+<span class="token comment" spellcheck="true">##1.3 创建存放日志文件的目录，并重启服务</span>
+<span class="token punctuation">[</span>14:33:12 root@Master-server ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /data/mysql/
+<span class="token punctuation">[</span>14:36:57 root@Master-server ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> mysql.mysql /data/mysql/
+<span class="token punctuation">[</span>14:37:20 root@Master-server ~<span class="token punctuation">]</span>$ systemctl restart mysqld.service 
+
+<span class="token comment" spellcheck="true">##1.4 创建复制账号以及授权</span>
+mysql<span class="token operator">></span> create user repluser@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+mysql<span class="token operator">></span> grant replication slave on *.* to repluser@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##1.5 备份数据库</span>
+<span class="token punctuation">[</span>14:50:44 root@Master-server ~<span class="token punctuation">]</span>$ mysqldump -uroot -p<span class="token string">'lgq123456'</span> -A -F --single-transaction --master-data <span class="token operator">></span> all.sql
+
+<span class="token comment" spellcheck="true">##1.6 将备份数据拷贝至两个slave节点</span>
+<span class="token punctuation">[</span>14:51:27 root@Master-server ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> all.sql 10.0.0.78:
+<span class="token punctuation">[</span>14:51:51 root@Master-server ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> all.sql 10.0.0.88:
+
+
+<span class="token comment" spellcheck="true">#2 slave1节点实现</span>
+<span class="token comment" spellcheck="true">##2.1 修改配置文件</span>
+<span class="token punctuation">[</span>14:52:13 root@mysql-slave1 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mysql-server
+<span class="token punctuation">[</span>14:58:57 root@mysql-slave1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token comment" spellcheck="true">###添加下面几行</span>
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>78
+log-bin<span class="token operator">=</span>/data/mysql/mysql-bin
+read-only
+relay_log_purge<span class="token operator">=</span>0
+skip_name_resolve<span class="token operator">=</span>1
+general_log
+
+<span class="token comment" spellcheck="true">##2.2 创建日志存放目录</span>
+<span class="token punctuation">[</span>15:02:49 root@mysql-slave1 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /data/mysql
+<span class="token punctuation">[</span>15:03:17 root@mysql-slave1 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> mysql.mysql /data/mysql/ -R
+
+<span class="token comment" spellcheck="true">##2.3 修改备份数据库，添加主节点信息</span>
+<span class="token punctuation">[</span>15:04:08 root@mysql-slave1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> all.sql
+<span class="token comment" spellcheck="true">###将备份数据库文件的25行修改为以下信息</span>
+25 CHANGE MASTER TO 
+26   MASTER_HOST<span class="token operator">=</span><span class="token string">'10.0.0.68'</span>,       
+27   MASTER_USER<span class="token operator">=</span><span class="token string">'repluser'</span>,
+28   MASTER_PASSWORD<span class="token operator">=</span><span class="token string">'lgq123456'</span>,
+29   MASTER_PORT<span class="token operator">=</span>3306,                                                   30   MASTER_LOG_FILE<span class="token operator">=</span><span class="token string">'mysql-bin.000002'</span>, MASTER_LOG_POS<span class="token operator">=</span>156<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">##2.4 启动服务，并还原数据库</span>
+<span class="token punctuation">[</span>15:07:26 root@mysql-slave1 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now mysqld
+<span class="token punctuation">[</span>15:10:01 root@mysql-slave1 ~<span class="token punctuation">]</span>$ mysql
+mysql<span class="token operator">></span> <span class="token keyword">set</span> sql_log_bin<span class="token operator">=</span>0<span class="token punctuation">;</span>
+mysql<span class="token operator">></span> <span class="token function">source</span> /root/all.sql<span class="token punctuation">;</span>
+mysql<span class="token operator">></span> show databases<span class="token punctuation">;</span>
++--------------------+
+<span class="token operator">|</span> Database           <span class="token operator">|</span>
++--------------------+
+<span class="token operator">|</span> information_schema <span class="token operator">|</span>
+<span class="token operator">|</span> mysql              <span class="token operator">|</span>
+<span class="token operator">|</span> performance_schema <span class="token operator">|</span>
+<span class="token operator">|</span> sys                <span class="token operator">|</span>
+<span class="token operator">|</span> wordpress          <span class="token operator">|</span>
++--------------------+
+5 rows <span class="token keyword">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> start slave<span class="token punctuation">;</span>
+Query OK, 0 rows affected, 1 warning <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting <span class="token keyword">for</span> <span class="token function">source</span> to send event
+                  Master_Host: 10.0.0.68
+                  Master_User: repluser
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 156
+               Relay_Log_File: mysql-slave1-relay-bin.000002
+                Relay_Log_Pos: 324
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 156
+              Relay_Log_Space: 540
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 68
+                  Master_UUID: 9f781520-5343-11ed-a5ab-000c29784c7b
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has <span class="token function">read</span> all relay log<span class="token punctuation">;</span> waiting <span class="token keyword">for</span> <span class="token function">more</span> updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row <span class="token keyword">in</span> set, 1 warning <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+mysql<span class="token operator">></span> <span class="token keyword">set</span> sql_log_bin<span class="token operator">=</span>1<span class="token punctuation">;</span>
+
+
+<span class="token comment" spellcheck="true">#3 slave2节点实现</span>
+<span class="token comment" spellcheck="true">##3.1 拷贝slave1上已经添加了主节点信息的备份数据库文件</span>
+<span class="token punctuation">[</span>15:16:12 root@mysql-slave2 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mysql-server
+<span class="token punctuation">[</span>15:20:55 root@mysql-slave2 ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> 10.0.0.78:/root/all.sql ./
+
+<span class="token comment" spellcheck="true">##3.2 修改配置文件</span>
+<span class="token punctuation">[</span>15:23:37 root@mysql-slave2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/my.cnf
+<span class="token comment" spellcheck="true">###添加以下几行</span>
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+server-id<span class="token operator">=</span>88                                                       
+log-bin<span class="token operator">=</span>/data/mysql/mysql-bin
+read-only
+relay_log_purge<span class="token operator">=</span>0
+skip_name_resolve<span class="token operator">=</span>1
+general_log
+
+<span class="token comment" spellcheck="true">##3.3 创建日志存放目录</span>
+<span class="token punctuation">[</span>15:24:44 root@mysql-slave2 ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /data/mysql
+<span class="token punctuation">[</span>15:25:39 root@mysql-slave2 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> -R mysql.mysql /data/mysql/
+
+<span class="token comment" spellcheck="true">##3.4 启动服务，还原数据，开启复制线程</span>
+<span class="token punctuation">[</span>15:26:03 root@mysql-slave2 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now mysqld
+<span class="token punctuation">[</span>15:27:04 root@mysql-slave2 ~<span class="token punctuation">]</span>$ mysql
+mysql<span class="token operator">></span> <span class="token keyword">set</span> sql_log_bin<span class="token operator">=</span>0<span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> <span class="token function">source</span> /root/all.sql
+mysql<span class="token operator">></span> start slave<span class="token punctuation">;</span>
+Query OK, 0 rows affected, 1 warning <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting <span class="token keyword">for</span> <span class="token function">source</span> to send event
+                  Master_Host: 10.0.0.68
+                  Master_User: repluser
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 156
+               Relay_Log_File: mysql-slave2-relay-bin.000002
+                Relay_Log_Pos: 324
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 156
+              Relay_Log_Space: 540
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 68
+                  Master_UUID: 9f781520-5343-11ed-a5ab-000c29784c7b
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Replica has <span class="token function">read</span> all relay log<span class="token punctuation">;</span> waiting <span class="token keyword">for</span> <span class="token function">more</span> updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 0
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+       Master_public_key_path: 
+        Get_master_public_key: 0
+            Network_Namespace: 
+1 row <span class="token keyword">in</span> set, 1 warning <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> <span class="token keyword">set</span> sql_log_bin<span class="token operator">=</span>1<span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.00 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-2-在管理节点10-0-0-98上安装两个包mha4mysql-manager和mha4mysql-node"><a href="#4-2-2-在管理节点10-0-0-98上安装两个包mha4mysql-manager和mha4mysql-node" class="headerlink" title="4.2.2 在管理节点10.0.0.98上安装两个包mha4mysql-manager和mha4mysql-node"></a>4.2.2 在管理节点10.0.0.98上安装两个包<code>mha4mysql-manager</code>和<code>mha4mysql-node</code></h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#下载两个rpm文件</span>
+<span class="token punctuation">[</span>15:31:24 root@MHA-manager ~<span class="token punctuation">]</span>$  <span class="token function">wget</span> https://github.com/yoshinorim/mha4mysql-manager/releases/download/v0.58/mha4mysql-manager-0.58-0.el7.centos.noarch.rpm
+<span class="token punctuation">[</span>16:29:43 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">wget</span> https://github.com/yoshinorim/mha4mysql-node/releases/download/v0.58/mha4mysql-node-0.58-0.el7.centos.noarch.rpm
+<span class="token comment" spellcheck="true">#下载安装依赖</span>
+<span class="token comment" spellcheck="true">##下面就是安装mha4mysql_manager所需的所有依赖</span>
+<span class="token punctuation">[</span>23:41:15 root@MHA-manager ~/dependece<span class="token punctuation">]</span>$ ll
+total 2348
+-rw-r--r-- 1 root root  42804 Jul  2  2019 perl-B-Hooks-EndOfScope-0.21-6.el8.noarch.rpm
+-rw-r--r-- 1 root root  17292 Jul  2  2019 perl-Class-Data-Inheritable-0.08-27.el8.noarch.rpm
+-rw-r--r-- 1 root root  49884 Jul  2  2019 perl-Class-Method-Modifiers-2.12-8.el8.noarch.rpm
+-rw-r--r-- 1 root root  26924 Jul  2  2019 perl-Devel-CallChecker-0.008-3.el8.x86_64.rpm
+-rw-r--r-- 1 root root  23460 Jul  2  2019 perl-Devel-Caller-2.06-15.el8.x86_64.rpm
+-rw-r--r-- 1 root root  12952 Nov 27  2020 perl-Devel-GlobalDestruction-0.14-1.of.el8.noarch.rpm
+-rw-r--r-- 1 root root  20328 Jul  2  2019 perl-Devel-LexAlias-0.05-16.el8.x86_64.rpm
+-rw-r--r-- 1 root root  36188 Jul  2  2019 perl-Devel-StackTrace-2.03-2.el8.noarch.rpm
+-rw-r--r-- 1 root root  24508 Jun 29  2021 perl-Dist-CheckConflicts-0.11-1.of.el8.noarch.rpm
+-rw-r--r-- 1 root root  21920 Jul  2  2019 perl-DynaLoader-Functions-0.003-2.el8.noarch.rpm
+-rw-r--r-- 1 root root  28324 Jul  2  2019 perl-Eval-Closure-0.14-5.el8.noarch.rpm
+-rw-r--r-- 1 root root  51000 Jul  2  2019 perl-Exception-Class-1.44-2.el8.noarch.rpm
+-rw-r--r-- 1 root root  54192 Jul  2  2019 perl-Exporter-Tiny-1.000000-4.el8.noarch.rpm
+-rw-r--r-- 1 root root  20436 Jul  2  2019 perl-Import-Into-1.002005-7.el8.noarch.rpm
+-rw-r--r-- 1 root root  76008 Jul  2  2019 perl-List-MoreUtils-0.428-2.el8.noarch.rpm
+-rw-r--r-- 1 root root  62340 Jul  2  2019 perl-List-MoreUtils-XS-0.428-3.el8.x86_64.rpm
+-rw-r--r-- 1 root root  93188 Sep 11  2019 perl-Log-Dispatch-2.68-1.el8.noarch.rpm
+-rw-r--r-- 1 root root  58288 Jul  2  2019 perl-Mail-Sender-0.903-7.el8.noarch.rpm
+-rw-r--r-- 1 root root  40484 Sep  6  2019 perl-Mail-Sendmail-0.80-4.el8.noarch.rpm
+-rw-r--r-- 1 root root 115344 Jul  2  2019 perl-MailTools-2.20-2.el8.noarch.rpm
+-rw-r--r-- 1 root root 102236 Sep 11  2019 perl-MIME-Lite-3.030-16.el8.noarch.rpm
+-rw-r--r-- 1 root root  78932 Jul  2  2019 perl-MIME-Types-2.17-3.el8.noarch.rpm
+-rw-r--r-- 1 root root  24276 Jul  2  2019 perl-Module-Implementation-0.09-15.el8.noarch.rpm
+-rw-r--r-- 1 root root  24440 Nov 11  2020 perl-Module-Runtime-0.016-1.of.el8.noarch.rpm
+-rw-r--r-- 1 root root  72012 Oct 17  2019 perl-Moo-2.003004-7.el8.noarch.rpm
+-rw-r--r-- 1 root root  32740 Jul  2  2019 perl-namespace-autoclean-0.28-10.el8.noarch.rpm
+-rw-r--r-- 1 root root  38280 Jul  2  2019 perl-namespace-clean-0.27-7.el8.noarch.rpm
+-rw-r--r-- 1 root root  42588 Jul  2  2019 perl-Package-Stash-0.37-9.el8.noarch.rpm
+-rw-r--r-- 1 root root  39028 Jul  2  2019 perl-Package-Stash-XS-0.28-17.el8.x86_64.rpm
+-rw-r--r-- 1 root root  31848 Jul  2  2019 perl-PadWalker-2.3-2.el8.x86_64.rpm
+-rw-r--r-- 1 root root  39892 Nov 15  2019 perl-Parallel-ForkManager-2.02-5.el8.noarch.rpm
+-rw-r--r-- 1 root root  36460 Jul  2  2019 perl-Params-Classify-0.015-2.el8.x86_64.rpm
+-rw-r--r-- 1 root root  39232 Jul  2  2019 perl-Params-ValidationCompiler-0.27-1.el8.noarch.rpm
+-rw-r--r-- 1 root root  27024 Jul  2  2019 perl-Ref-Util-0.203-4.el8.noarch.rpm
+-rw-r--r-- 1 root root  26416 Jul  2  2019 perl-Ref-Util-XS-0.117-2.el8.x86_64.rpm
+-rw-r--r-- 1 root root  30304 Jul  2  2019 perl-Role-Tiny-2.000006-2.el8.noarch.rpm
+-rw-r--r-- 1 root root 163392 Jul  2  2019 perl-Specio-0.42-2.el8.noarch.rpm
+-rw-r--r-- 1 root root  25212 Jul  2  2019 perl-Sub-Exporter-Progressive-0.001013-5.el8.noarch.rpm
+-rw-r--r-- 1 root root  29488 Jul  2  2019 perl-Sub-Identify-0.14-6.el8.x86_64.rpm
+-rw-r--r-- 1 root root  51020 Jul  2  2019 perl-Sys-Syslog-0.35-397.el8.x86_64.rpm
+-rw-r--r-- 1 root root 438388 Jul  2  2019 perltidy-20180220-1.el8.noarch.rpm
+-rw-r--r-- 1 root root  60424 Jul  2  2019 perl-Variable-Magic-0.62-3.el8.x86_64.rpm
+<span class="token punctuation">[</span>23:42:27 root@MHA-manager ~/dependece<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> *.rpm
+
+<span class="token comment" spellcheck="true">#安装mha4mysql-node和mha4mysql-manager</span>
+<span class="token punctuation">[</span>23:44:32 root@MHA-manager ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mha4mysql-node-0.58-0.el7.centos.noarch.rpm mha4mysql-manager-0.58-0.el7.centos.noarch.rpm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-3-在所有mysql节点服务器上安装mha4mysql-node"><a href="#4-2-3-在所有mysql节点服务器上安装mha4mysql-node" class="headerlink" title="4.2.3 在所有mysql节点服务器上安装mha4mysql-node"></a>4.2.3 在所有mysql节点服务器上安装mha4mysql-node</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>17:12:04 root@Master-server ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mha4mysql-node-0.58-0.el7.centos.noarch.rpm
+<span class="token punctuation">[</span>17:12:45 root@mysql-slave1 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mha4mysql-node-0.58-0.el7.centos.noarch.rpm
+<span class="token punctuation">[</span>17:12:52 root@mysql-slave2 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> mha4mysql-node-0.58-0.el7.centos.noarch.rpm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-4-在所有节点实现相互之间ssh-key验证"><a href="#4-2-4-在所有节点实现相互之间ssh-key验证" class="headerlink" title="4.2.4 在所有节点实现相互之间ssh key验证"></a>4.2.4 在所有节点实现相互之间ssh key验证</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>23:46:40 root@MHA-manager ~<span class="token punctuation">]</span>$ ssh-keygen
+<span class="token punctuation">[</span>23:46:57 root@MHA-manager ~<span class="token punctuation">]</span>$ ssh-copy-id 127.0.0.1
+<span class="token punctuation">[</span>23:51:28 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> -av .ssh/ 10.0.0.68:/root/
+<span class="token punctuation">[</span>23:52:38 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> -av .ssh/ 10.0.0.78:/root/
+<span class="token punctuation">[</span>23:52:47 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> -av .ssh/ 10.0.0.88:/root/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-5-在master上创建mha可以远程连接MYSQL所有节点的用户，授予其管理的权限"><a href="#4-2-5-在master上创建mha可以远程连接MYSQL所有节点的用户，授予其管理的权限" class="headerlink" title="4.2.5 在master上创建mha可以远程连接MYSQL所有节点的用户，授予其管理的权限"></a>4.2.5 在master上创建mha可以远程连接MYSQL所有节点的用户，授予其管理的权限</h4><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>23:55:08 root@Master-server ~<span class="token punctuation">]</span>$ mysql -uroot -p
+mysql<span class="token operator">></span> create user mhauser@<span class="token string">'10.0.0.%'</span> identified by <span class="token string">'lgq123456'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span>
+
+mysql<span class="token operator">></span> grant all on *.* to mhauser@<span class="token string">'10.0.0.%'</span><span class="token punctuation">;</span>
+Query OK, 0 rows affected <span class="token punctuation">(</span>0.01 sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-6-在管理节点建立配置文件"><a href="#4-2-6-在管理节点建立配置文件" class="headerlink" title="4.2.6 在管理节点建立配置文件"></a>4.2.6 在管理节点建立配置文件</h4><p>注意: 此文件的行尾不要加空格等符号</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#创建配置文件</span>
+<span class="token punctuation">[</span>09:45:18 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /etc/mastermha/
+<span class="token punctuation">[</span>10:03:14 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/mastermha/app1.cnf
+<span class="token punctuation">[</span>server default<span class="token punctuation">]</span>
+user<span class="token operator">=</span>mhauser
+password<span class="token operator">=</span>lgq123456
+manager_workdir<span class="token operator">=</span>/data/mastermha/app1/
+manager_log<span class="token operator">=</span>/data/mastermha/app1/manager.log 
+remote_workdir<span class="token operator">=</span>/data/mastermha/app1/
+ssh_user<span class="token operator">=</span>root
+repl_user<span class="token operator">=</span>repluser
+repl_password<span class="token operator">=</span>lgq123456                                                                                
+ping_interval<span class="token operator">=</span>1
+master_ip_failover_script<span class="token operator">=</span>/usr/local/bin/master_ip_failover
+report_script<span class="token operator">=</span>/usr/local/bin/sendmail.sh
+check_repl_delay<span class="token operator">=</span>0
+master_binlog_dir<span class="token operator">=</span>/data/mysql/
+
+<span class="token punctuation">[</span>server1<span class="token punctuation">]</span>
+hostname<span class="token operator">=</span>10.0.0.68
+candidate_master<span class="token operator">=</span>1
+<span class="token punctuation">[</span>server2<span class="token punctuation">]</span>
+hostname<span class="token operator">=</span>10.0.0.78
+candidate_master<span class="token operator">=</span>1
+<span class="token punctuation">[</span>server3<span class="token punctuation">]</span>
+hostname<span class="token operator">=</span>10.0.0.88
+
+<span class="token comment" spellcheck="true">#创建VIP切换脚本，并放在/usr/local/bin目录下</span>
+<span class="token punctuation">[</span>10:07:51 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/local/bin/master_ip_failover
+<span class="token comment" spellcheck="true">#!/usr/bin/env perl</span>
+
+use strict<span class="token punctuation">;</span>
+use warnings FATAL <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'all'</span><span class="token punctuation">;</span>
+
+use Getopt::Long<span class="token punctuation">;</span>
+use MHA::DBHelper<span class="token punctuation">;</span>
+
+my <span class="token punctuation">(</span>
+  <span class="token variable">$command</span>,        <span class="token variable">$ssh_user</span>,         <span class="token variable">$orig_master_host</span>,
+  <span class="token variable">$orig_master_ip</span>, <span class="token variable">$orig_master_port</span>, <span class="token variable">$new_master_host</span>,
+  <span class="token variable">$new_master_ip</span>,  <span class="token variable">$new_master_port</span>,  <span class="token variable">$new_master_user</span>,
+  <span class="token variable">$new_master_password</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true"># The vip IP address needs to be modified according to its own situation</span>
+my <span class="token variable">$vip</span> <span class="token operator">=</span> <span class="token string">'10.0.0.100/24'</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">#这个地址根据环境网段设置 一个没有使用的IP，带表漂移IP，目前漂移在master节点上，等master节点宕机时，会漂移到设置的新的master节点上</span>
+my <span class="token variable">$key</span> <span class="token operator">=</span> <span class="token string">"1"</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#指定VIP所在网卡的别名</span>
+my <span class="token variable">$ssh_start_vip</span> <span class="token operator">=</span> <span class="token string">"/sbin/ifconfig eth0:<span class="token variable">$key</span> <span class="token variable">$vip</span>"</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">#临时加漂移VIP时的命令</span>
+my <span class="token variable">$ssh_stop_vip</span> <span class="token operator">=</span> <span class="token string">"/sbin/ifconfig eth0:<span class="token variable">$key</span> down"</span><span class="token punctuation">;</span>
+
+GetOptions<span class="token punctuation">(</span>
+  <span class="token string">'command=s'</span>             <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$command</span>,
+  <span class="token string">'ssh_user=s'</span>            <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$ssh_user</span>,
+  <span class="token string">'orig_master_host=s'</span>    <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$orig_master_host</span>,
+  <span class="token string">'orig_master_ip=s'</span>      <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$orig_master_ip</span>,
+  <span class="token string">'orig_master_port=i'</span>    <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$orig_master_port</span>,
+  <span class="token string">'new_master_host=s'</span>     <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$new_master_host</span>,
+  <span class="token string">'new_master_ip=s'</span>       <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$new_master_ip</span>,
+  <span class="token string">'new_master_port=i'</span>     <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$new_master_port</span>,
+  <span class="token string">'new_master_user=s'</span>     <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$new_master_user</span>,
+  <span class="token string">'new_master_password=s'</span> <span class="token operator">=</span><span class="token operator">></span> \<span class="token variable">$new_master_password</span>,
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">exit</span> <span class="token operator">&amp;</span>main<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+sub main <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token variable">$command</span> eq <span class="token string">"stop"</span> <span class="token operator">||</span> <span class="token variable">$command</span> eq <span class="token string">"stopssh"</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true"># $orig_master_host, $orig_master_ip, $orig_master_port are passed.</span>
+    <span class="token comment" spellcheck="true"># If you manage master ip address at global catalog database,</span>
+    <span class="token comment" spellcheck="true"># invalidate orig_master_ip here.</span>
+    my <span class="token variable">$exit_code</span> <span class="token operator">=</span> 1<span class="token punctuation">;</span>
+    <span class="token function">eval</span> <span class="token punctuation">{</span>
+
+      <span class="token comment" spellcheck="true"># updating global catalog, etc</span>
+      <span class="token variable">$exit_code</span> <span class="token operator">=</span> 0<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$@</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      warn <span class="token string">"Got Error: <span class="token variable">$@</span>\n"</span><span class="token punctuation">;</span>
+      <span class="token keyword">exit</span> <span class="token variable">$exit_code</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$@</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            warn <span class="token variable">$@</span><span class="token punctuation">;</span>
+            <span class="token keyword">exit</span> <span class="token variable">$exit_code</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">exit</span> <span class="token variable">$exit_code</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    elsif <span class="token punctuation">(</span> <span class="token variable">$command</span> eq <span class="token string">"status"</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        print <span class="token string">"Checking the Status of the script.. OK \n"</span><span class="token punctuation">;</span>
+        `ssh <span class="token variable">$ssh_user</span>\@<span class="token variable">$orig_master_host</span> \<span class="token string">" <span class="token variable">$ssh_start_vip</span> \"<span class="token variable"><span class="token variable">`</span><span class="token punctuation">;</span>
+        <span class="token keyword">exit</span> 0<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token operator">&amp;</span>usage<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">exit</span> 1<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+
+sub start_vip<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token variable">`</span></span>ssh <span class="token variable">$ssh_user</span>\@<span class="token variable">$new_master_host</span> \" <span class="token variable">$ssh_start_vip</span> \"<span class="token variable"><span class="token variable">`</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+# A simple system call that disable the VIP on the old_master
+sub stop_vip<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token variable">`</span></span>ssh <span class="token variable">$ssh_user</span>\@<span class="token variable">$orig_master_host</span> \" <span class="token variable">$ssh_stop_vip</span> \"`;
+}
+
+
+sub usage {
+  print
+"</span>Usage: master_ip_failover --command<span class="token operator">=</span>start<span class="token operator">|</span>stop<span class="token operator">|</span>stopssh<span class="token operator">|</span>status --orig_master_host<span class="token operator">=</span>host --orig_master_ip<span class="token operator">=</span>ip --orig_master_port<span class="token operator">=</span>port --new_master_host<span class="token operator">=</span>host --new_master_ip<span class="token operator">=</span>ip --new_master_port<span class="token operator">=</span>port\n<span class="token string">";
+}
+
+#设置报警脚本
+[10:11:18 root@MHA-manager ~]$ vi /usr/local/bin/sendmail.sh
+#!/bin/bash                                                       
+echo "</span>MHA is failover<span class="token operator">!</span><span class="token string">" | mail -s "</span>MHA Warning<span class="token string">" lgq6579@163.com
+
+#给两个脚本添加执行权限
+[10:14:13 root@MHA-manager ~]$ chmod +x /usr/local/bin/master_ip_failover 
+[10:14:35 root@MHA-manager ~]$ chmod +x /usr/local/bin/sendmail.sh
+
+#检查基于key验证环境
+[10:15:45 root@MHA-manager ~]$ masterha_check_ssh --conf=/etc/mastermha/app1.cnf
+[info] All SSH connection tests passed successfully.
+
+#检查复制环境
+[10:16:22 root@MHA-manager ~]$ masterha_check_repl --conf=/etc/mastermha/app1.cnf
+Tue Oct 25 10:18:01 2022 - [warning] Global configuration file /etc/masterha_default.cnf not found. Skipping.
+Tue Oct 25 10:18:01 2022 - [info] Reading application default configuration from /etc/mastermha/app1.cnf..
+Tue Oct 25 10:18:01 2022 - [info] Reading server configuration from /etc/mastermha/app1.cnf..
+Tue Oct 25 10:18:01 2022 - [info] MHA::MasterMonitor version 0.58.
+Creating directory /data/mastermha/app1/.. done.
+Tue Oct 25 10:18:02 2022 - [error][/usr/share/perl5/vendor_perl/MHA/MasterMonitor.pm, ln427] Error happened on checking configurations. Redundant argument in sprintf at /usr/share/perl5/vendor_perl/MHA/NodeUtil.pm line 201.
+Tue Oct 25 10:18:02 2022 - [error][/usr/share/perl5/vendor_perl/MHA/MasterMonitor.pm, ln525] Error happened on monitoring servers.
+Tue Oct 25 10:18:02 2022 - [info] Got exit code 1 (Not master dead).
+
+MySQL Replication Health is NOT OK! #发现报错
+##网上查找信息作出如下修改：
+[10:39:59 root@MHA-manager ~]$ vi /usr/share/perl5/vendor_perl/MHA/NodeUtil.pm
+###将该文件的这几行
+sub parse_mysql_major_version($) {
+  my <span class="token variable">$str</span> = shift;
+  my <span class="token variable">$result</span> = sprintf( '%03d%03d', <span class="token variable">$str</span> =~ m/(\d+)/g );             return <span class="token variable">$result</span>;
+}
+###修改为下面信息
+sub parse_mysql_major_version($) {
+  my <span class="token variable">$str</span> = shift;
+  <span class="token variable">$str</span> =~ /(\d+)\.(\d+)/;
+  my <span class="token variable">$strmajor</span> = "</span><span class="token variable">$1</span><span class="token keyword">.</span><span class="token variable">$2</span>"<span class="token punctuation">;</span>
+  my <span class="token variable">$result</span> <span class="token operator">=</span> sprintf<span class="token punctuation">(</span> <span class="token string">'%03d%03d'</span>, <span class="token variable">$strmajor</span> <span class="token operator">=</span>~ m/<span class="token punctuation">(</span>\d+<span class="token punctuation">)</span>/g <span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token keyword">return</span> <span class="token variable">$result</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">#再次检查复制环境</span>
+<span class="token punctuation">[</span>10:40:36 root@MHA-manager ~<span class="token punctuation">]</span>$ masterha_check_repl --conf<span class="token operator">=</span>/etc/mastermha/app1.cnf
+<span class="token punctuation">..</span>.
+MySQL Replication Health is OK.
+
+<span class="token comment" spellcheck="true">#后台启动MHA服务</span>
+<span class="token punctuation">[</span>10:41:43 root@MHA-manager ~<span class="token punctuation">]</span>$ <span class="token function">nohup</span> masterha_manager --conf<span class="token operator">=</span>/etc/mastermha/app1.cnf --remove_dead_master_conf --ignore_last_fail
+
+<span class="token comment" spellcheck="true">#查看状态</span>
+<span class="token punctuation">[</span>10:51:48 root@MHA-manager ~<span class="token punctuation">]</span>$ masterha_check_status --conf<span class="token operator">=</span>/etc/mastermha/app1.cnf
+app1 <span class="token punctuation">(</span>pid:2047<span class="token punctuation">)</span> is running<span class="token punctuation">(</span>0:PING_OK<span class="token punctuation">)</span>, master:10.0.0.68<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-3-在web服务器上安装配置web服务"><a href="#4-3-在web服务器上安装配置web服务" class="headerlink" title="4.3 在web服务器上安装配置web服务"></a>4.3 在web服务器上安装配置web服务</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 在web1 10.0.0.18上安装wordpress服务</span>
+<span class="token punctuation">[</span>10:40:57 root@web-server1 ~<span class="token punctuation">]</span>$ <span class="token function">cat</span> install_wordpress.sh 
+<span class="token comment" spellcheck="true">#!/bin/bash</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true">#***********************************************************</span>
+<span class="token comment" spellcheck="true">#Author:            yanli</span>
+<span class="token comment" spellcheck="true">#Date:              2022-10-22</span>
+<span class="token comment" spellcheck="true">#FileName:          install_wordpress.sh</span>
+<span class="token comment" spellcheck="true">#Description:        </span>
+<span class="token comment" spellcheck="true">#***********************************************************</span>
+
+<span class="token keyword">.</span> /etc/os-release
+
+color<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    RES_COL<span class="token operator">=</span>60
+    MOVE_TO_COL<span class="token operator">=</span><span class="token string">"echo -en \\033[<span class="token variable">${RES_COL}</span>G"</span>
+    SETCOLOR_SUCCESS<span class="token operator">=</span><span class="token string">"echo -en \\033[1;32m"</span>
+    SETCOLOR_FAILURE<span class="token operator">=</span><span class="token string">"echo -en \\033[1;31m"</span>
+    SETCOLOR_WARNING<span class="token operator">=</span><span class="token string">"echo -en \\033[1;33m"</span>
+    SETCOLOR_NORMAL<span class="token operator">=</span><span class="token string">"echo -en \E[0m"</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$MOVE_TO_COL</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"["</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"success"</span> -o <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"0"</span> <span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token variable">${SETCOLOR_SUCCESS}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"  OK  "</span>
+    <span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"failure"</span> -o <span class="token variable">$2</span> <span class="token operator">=</span> <span class="token string">"1"</span>  <span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token variable">${SETCOLOR_FAILURE}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"FAILED"</span>
+    <span class="token keyword">else</span>
+        <span class="token variable">${SETCOLOR_WARNING}</span>
+        <span class="token keyword">echo</span> -n $<span class="token string">"WARNING"</span>
+    <span class="token keyword">fi</span>
+    <span class="token variable">${SETCOLOR_NORMAL}</span>
+    <span class="token keyword">echo</span> -n <span class="token string">"]"</span>
+    <span class="token keyword">echo</span>
+<span class="token punctuation">}</span>
+
+install_wordpress<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">#下载wordpress并解压</span>
+    <span class="token function">wget</span> https://cn.wordpress.org/latest-zh_CN.zip
+    unzip latest-zh_CN.zip -d /opt
+<span class="token punctuation">}</span>
+
+install_Dependent_components<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$ID</span> <span class="token operator">=</span> <span class="token string">'centos'</span> -o <span class="token variable">$ID</span> <span class="token operator">=</span> <span class="token string">'rocky'</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        yum -y <span class="token function">install</span> httpd php php-mysqlnd php-json <span class="token operator">&amp;&amp;</span> systemctl <span class="token function">enable</span> --now httpd
+    <span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$ID</span> <span class="token operator">=</span> <span class="token string">'Ubuntu'</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        color <span class="token string">"不支持Ubuntu操作系统，退出!"</span> 1
+        <span class="token keyword">exit</span>
+    <span class="token keyword">else</span>
+        color <span class="token string">"不支持此操作系统，退出!"</span> 1
+        <span class="token keyword">exit</span>
+    <span class="token keyword">fi</span>
+<span class="token punctuation">}</span>
+
+move_wordpress<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">cd</span> /opt/wordpress
+    <span class="token function">mv</span> * /var/www/html
+    <span class="token function">chown</span> -R apache. /var/www/html/ <span class="token operator">&amp;&amp;</span> color <span class="token string">"wordpress配置完成！"</span> 0 <span class="token operator">||</span> color <span class="token string">"wordpress配置失败！"</span> 1
+
+<span class="token punctuation">}</span>
+
+install_wordpress
+install_Dependent_components
+move_wordpress
+<span class="token comment" spellcheck="true">##1.1 安装</span>
+<span class="token punctuation">[</span>10:48:12 root@web-server1 ~<span class="token punctuation">]</span>$ sh install_wordpress.sh
+<span class="token comment" spellcheck="true">###其余剩下步骤在浏览器中配置网站</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/WordPress1.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/WordPress2.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/WordPress3.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/WordPress4.png" alt=""></p>
+<p><img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/WordPress5.png" alt=""></p>
+<p><strong>至此web WordPress已经搭建好，发布一篇测试博客。</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">##1.2 安装nfs-utils搭建挂载NFS，实现网站数据远程备份</span>
+<span class="token punctuation">[</span>11:19:24 root@web-server1 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> nfs-utils
+<span class="token punctuation">[</span>11:21:43 root@web-server1 ~<span class="token punctuation">]</span>$ showmount -e 10.0.0.38
+Export list <span class="token keyword">for</span> 10.0.0.38:
+/data/www *
+
+<span class="token comment" spellcheck="true">##1.3 将网站图片拷贝至NFS服务器</span>
+<span class="token punctuation">[</span>11:37:54 root@web-server1 ~<span class="token punctuation">]</span>$ <span class="token function">scp</span> -r /var/www/html/wp-content/uploads/* 10.0.0.38:/data/www/
+
+<span class="token comment" spellcheck="true">##1.4 实现永久挂载</span>
+<span class="token punctuation">[</span>11:39:20 root@web-server1 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab 
+<span class="token comment" spellcheck="true">###在文件最后添加挂载信息</span>
+10.0.0.38:/data/www     /var/www/html/wp-content/uploads          nfs     _netdev         0 0
+<span class="token punctuation">[</span>11:44:50 root@web-server1 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> -a
+<span class="token punctuation">[</span>11:44:57 root@web-server1 ~<span class="token punctuation">]</span>$ <span class="token function">df</span> -h<span class="token operator">|</span><span class="token function">grep</span> data
+10.0.0.38:/data/www   70G  2.3G   68G   4% /var/www/html/wp-content/uploads
+
+
+<span class="token comment" spellcheck="true">#2 在10.0.0.28上安装web2</span>
+<span class="token punctuation">[</span>12:19:34 root@web-server2 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> httpd php php-mysqlnd php-json <span class="token operator">&amp;&amp;</span> systemctl <span class="token function">enable</span> --now httpd
+<span class="token comment" spellcheck="true">##2.1 将10.0.0.18上的wordpress信息拷贝至/var/www/html</span>
+<span class="token punctuation">[</span>12:27:00 root@web-server2 ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> -a 10.0.0.18:/var/www/html/* /var/www/html/
+<span class="token punctuation">[</span>12:29:07 root@web-server2 ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> -R apache. /var/www/html/
+
+<span class="token comment" spellcheck="true">##2.2 安装nfs-utils</span>
+<span class="token punctuation">[</span>12:29:39 root@web-server2 ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> nfs-utils
+<span class="token punctuation">[</span>12:31:50 root@web-server2 ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now nfs-server.service
+
+<span class="token comment" spellcheck="true">##2.3 永久挂载NFS</span>
+<span class="token punctuation">[</span>12:33:14 root@web-server2 ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/fstab 
+10.0.0.38:/data/www     /var/www/html/wp-content/uploads          nfs     _netdev         0 0
+<span class="token punctuation">[</span>12:34:21 root@web-server2 ~<span class="token punctuation">]</span>$ <span class="token function">mount</span> -a
+<span class="token punctuation">[</span>12:34:34 root@web-server2 ~<span class="token punctuation">]</span>$ <span class="token function">df</span> -h <span class="token operator">|</span><span class="token function">grep</span> data
+10.0.0.38:/data/www   70G  2.3G   68G   4% /var/www/html/wp-content/uploads<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-4-搭建NFS服务器"><a href="#4-4-搭建NFS服务器" class="headerlink" title="4.4 搭建NFS服务器"></a>4.4 搭建NFS服务器</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#1 首先在10.0.0.38NFS主服务器上安装配置NFS服务</span>
+<span class="token punctuation">[</span>11:12:55 root@NFS-server ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> nfs-utils
+<span class="token punctuation">[</span>11:13:22 root@NFS-server ~<span class="token punctuation">]</span>$ systemctl <span class="token function">enable</span> --now nfs-server.service 
+<span class="token comment" spellcheck="true">##1.1 创建用于传输的账户</span>
+<span class="token punctuation">[</span>11:15:10 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">useradd</span> -u 666 www
+
+<span class="token comment" spellcheck="true">##1.2 修改共享配置文件</span>
+<span class="token punctuation">[</span>11:16:33 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/exports
+/data/www *<span class="token punctuation">(</span>rw,all_squash,anonuid<span class="token operator">=</span>666,anongid<span class="token operator">=</span>666<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">##1.3 创建NFS共享文件夹</span>
+<span class="token punctuation">[</span>11:18:07 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> /data/www/
+<span class="token punctuation">[</span>11:18:30 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> -R www. /data/www/
+
+<span class="token comment" spellcheck="true">##1.4 下载sersync，实现数据实时备份同步到NFS备份服务器</span>
+<span class="token comment" spellcheck="true">###1.4.1 下载sersync，解压，设置PATH变量</span>
+<span class="token punctuation">[</span>12:40:37 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">wget</span> https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/sersync/sersync2.5.4_64bit_binary_stable_final.tar.gz
+<span class="token punctuation">[</span>12:49:20 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">tar</span> xf sersync2.5.4_64bit_binary_stable_final.tar.gz 
+<span class="token punctuation">[</span>12:50:14 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">cp</span> -a GNU-Linux-x86 /usr/local/sersync
+<span class="token punctuation">[</span>12:50:40 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> <span class="token string">"PATH=/usr/local/sersync:<span class="token variable">$PATH</span>"</span> <span class="token operator">></span> /etc/profile.d/sersync.sh
+<span class="token punctuation">[</span>12:51:42 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">source</span> /etc/profile.d/sersync.sh
+<span class="token comment" spellcheck="true">###1.4.2 备份sersync配置文件，修改配置文件</span>
+<span class="token punctuation">[</span>12:57:53 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /usr/local/sersync/confxml.xml
+1 <span class="token operator">&lt;</span>?xml version<span class="token operator">=</span><span class="token string">"1.0"</span> encoding<span class="token operator">=</span><span class="token string">"ISO-8859-1"</span>?<span class="token operator">></span>
+  2 <span class="token operator">&lt;</span>head version<span class="token operator">=</span><span class="token string">"2.5"</span><span class="token operator">></span>
+  3     <span class="token operator">&lt;</span>host hostip<span class="token operator">=</span><span class="token string">"localhost"</span> port<span class="token operator">=</span><span class="token string">"8008"</span><span class="token operator">></span><span class="token operator">&lt;</span>/host<span class="token operator">></span>
+  4     <span class="token operator">&lt;</span>debug start<span class="token operator">=</span><span class="token string">"false"</span>/<span class="token operator">></span>
+  5     <span class="token operator">&lt;</span>fileSystem xfs<span class="token operator">=</span><span class="token string">"false"</span>/<span class="token operator">></span>
+  6     <span class="token operator">&lt;</span>filter start<span class="token operator">=</span><span class="token string">"false"</span><span class="token operator">></span>
+  7     <span class="token operator">&lt;</span>exclude expression<span class="token operator">=</span><span class="token string">"(.*)\.svn"</span><span class="token operator">></span><span class="token operator">&lt;</span>/exclude<span class="token operator">></span>
+  8     <span class="token operator">&lt;</span>exclude expression<span class="token operator">=</span><span class="token string">"(.*)\.gz"</span><span class="token operator">></span><span class="token operator">&lt;</span>/exclude<span class="token operator">></span>
+  9     <span class="token operator">&lt;</span>exclude expression<span class="token operator">=</span><span class="token string">"^info/*"</span><span class="token operator">></span><span class="token operator">&lt;</span>/exclude<span class="token operator">></span>
+ 10     <span class="token operator">&lt;</span>exclude expression<span class="token operator">=</span><span class="token string">"^static/*"</span><span class="token operator">></span><span class="token operator">&lt;</span>/exclude<span class="token operator">></span>
+ 11     <span class="token operator">&lt;</span>/filter<span class="token operator">></span>
+ 12     <span class="token operator">&lt;</span>inotify<span class="token operator">></span>
+ 13     <span class="token operator">&lt;</span>delete start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span>
+ 14     <span class="token operator">&lt;</span>createFolder start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span>
+ 15     <span class="token operator">&lt;</span>createFile start<span class="token operator">=</span><span class="token string">"false"</span>/<span class="token operator">></span>
+ 16     <span class="token operator">&lt;</span>closeWrite start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span>
+ 17     <span class="token operator">&lt;</span>moveFrom start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span>
+ 18     <span class="token operator">&lt;</span>moveTo start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span>
+ 19     <span class="token operator">&lt;</span>attrib start<span class="token operator">=</span><span class="token string">"true"</span>/<span class="token operator">></span> <span class="token comment" spellcheck="true">##修改此行为true，文件属性变化后也会同步</span>
+ 20     <span class="token operator">&lt;</span>modify start<span class="token operator">=</span><span class="token string">"false"</span>/<span class="token operator">></span>
+ 21     <span class="token operator">&lt;</span>/inotify<span class="token operator">></span>
+ 22 
+ 23     <span class="token operator">&lt;</span>sersync<span class="token operator">></span>
+ 24     <span class="token operator">&lt;</span>localpath watch<span class="token operator">=</span><span class="token string">"/data/www"</span><span class="token operator">></span> <span class="token comment" spellcheck="true">##修改此行，需要同步的源目录</span>
+ 25         <span class="token operator">&lt;</span>remote ip<span class="token operator">=</span><span class="token string">"10.0.0.48"</span> name<span class="token operator">=</span><span class="token string">"backup"</span>/<span class="token operator">></span> <span class="token comment" spellcheck="true">#修改此行，指定备份服务器地址和rsync daemon的模块名，开启了ssh start，此时name为远程的shell方式运行时的目标目录</span>
+ 26         <span class="token operator">&lt;</span><span class="token operator">!</span>--<span class="token operator">&lt;</span>remote ip<span class="token operator">=</span><span class="token string">"192.168.8.39"</span> name<span class="token operator">=</span><span class="token string">"tongbu"</span>/<span class="token operator">></span>--<span class="token operator">></span>
+ 27         <span class="token operator">&lt;</span><span class="token operator">!</span>--<span class="token operator">&lt;</span>remote ip<span class="token operator">=</span><span class="token string">"192.168.8.40"</span> name<span class="token operator">=</span><span class="token string">"tongbu"</span>/<span class="token operator">></span>--<span class="token operator">></span>
+ 28     <span class="token operator">&lt;</span>/localpath<span class="token operator">></span>
+ 29     <span class="token operator">&lt;</span>rsync<span class="token operator">></span>
+ 30         <span class="token operator">&lt;</span>commonParams params<span class="token operator">=</span><span class="token string">"-artuz"</span>/<span class="token operator">></span>
+ 31         <span class="token operator">&lt;</span>auth start<span class="token operator">=</span><span class="token string">"true"</span> users<span class="token operator">=</span><span class="token string">"rsyncuser"</span> passwordfile<span class="token operator">=</span><span class="token string">"/etc/rsync.pas"</span>/<span class="token operator">></span> <span class="token comment" spellcheck="true">#修改此行为true，指定备份服务器的rsync配置的用户和密码  </span>
+<span class="token comment" spellcheck="true">###1.4.3 以后台方式执行同步</span>
+<span class="token punctuation">[</span>13:08:24 root@NFS-server ~<span class="token punctuation">]</span>$ sersync2 -dro /usr/local/sersync/confxml.xml
+<span class="token comment" spellcheck="true">###1.4.4 生成验证文件</span>
+<span class="token punctuation">[</span>13:08:47 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> lgq123456 <span class="token operator">></span> /etc/rsync.pas
+<span class="token punctuation">[</span>13:13:35 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> 600 /etc/rsync.pas
+
+
+<span class="token comment" spellcheck="true">#2 在10.0.0.48 NFS备份服务器以独立服务方式运行rsync并实现验证功能</span>
+<span class="token punctuation">[</span>13:21:00 root@NFS-backup ~<span class="token punctuation">]</span>$ yum -y <span class="token function">install</span> rsync-daemon
+<span class="token comment" spellcheck="true">##2.1 创建备份目录</span>
+<span class="token punctuation">[</span>13:27:34 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">mkdir</span> -pv /data/backup
+<span class="token comment" spellcheck="true">##2.2 修改配置文件</span>
+<span class="token punctuation">[</span>13:27:58 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">vi</span> /etc/rsyncd.conf 
+uid <span class="token operator">=</span> www
+gid <span class="token operator">=</span> www
+max connections <span class="token operator">=</span> 0
+ignore errors
+exclude <span class="token operator">=</span> lost+found/
+log <span class="token function">file</span> <span class="token operator">=</span> /var/log/rsyncd.log
+pid <span class="token function">file</span> <span class="token operator">=</span> /var/run/rsyncd.pid
+lock <span class="token function">file</span> <span class="token operator">=</span> /var/run/rsyncd.lock
+reverse lookup <span class="token operator">=</span> no
+
+<span class="token punctuation">[</span>backup<span class="token punctuation">]</span>
+path <span class="token operator">=</span> /data/backup/
+comment <span class="token operator">=</span> backup <span class="token function">dir</span>
+<span class="token function">read</span> only <span class="token operator">=</span> no
+auth <span class="token function">users</span> <span class="token operator">=</span> rsyncuser
+secrets <span class="token function">file</span> <span class="token operator">=</span> /etc/rsync.pas
+<span class="token comment" spellcheck="true">##2.3 创建验证文件</span>
+<span class="token punctuation">[</span>13:31:23 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token keyword">echo</span> <span class="token string">"rsyncuser:lgq123456"</span> <span class="token operator">></span> /etc/rsync.pas
+<span class="token punctuation">[</span>13:32:05 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">chmod</span> 600 /etc/rsync.pas 
+<span class="token comment" spellcheck="true">##2.4 </span>
+<span class="token punctuation">[</span>13:39:13 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">useradd</span> -u 666 www
+<span class="token punctuation">[</span>13:39:51 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">chown</span> www.www /data/backup/ -R
+<span class="token punctuation">[</span>13:39:56 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">rsync</span> --daemon<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-5-测试结果"><a href="#4-5-测试结果" class="headerlink" title="4.5 测试结果"></a>4.5 测试结果</h3><pre class="line-numbers language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#NFS解析结果</span>
+<span class="token punctuation">[</span>10:45:58 root@DNS-server scripts<span class="token punctuation">]</span>$ <span class="token function">dig</span> yanlinux.org @127.0.0.1
+
+<span class="token punctuation">;</span> <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> DiG 9.11.36-RedHat-9.11.36-3.el8_6.1 <span class="token operator">&lt;&lt;</span><span class="token operator">>></span> yanlinux.org @127.0.0.1
+<span class="token punctuation">;</span><span class="token punctuation">;</span> global options: +cmd
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Got answer:
+<span class="token punctuation">;</span><span class="token punctuation">;</span> -<span class="token operator">>></span>HEADER<span class="token operator">&lt;&lt;</span>- opcode: QUERY, status: NOERROR, id: 23840
+<span class="token punctuation">;</span><span class="token punctuation">;</span> flags: qr aa rd ra<span class="token punctuation">;</span> QUERY: 1, ANSWER: 2, AUTHORITY: 1, ADDITIONAL: 2
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> OPT PSEUDOSECTION:
+<span class="token punctuation">;</span> EDNS: version: 0, flags:<span class="token punctuation">;</span> udp: 1232
+<span class="token punctuation">;</span> COOKIE: 961eff915c3fed2265b4254f63562cafa1b883d88f4ee353 <span class="token punctuation">(</span>good<span class="token punctuation">)</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> QUESTION SECTION:
+<span class="token punctuation">;</span>yanlinux.org.            IN    A
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ANSWER SECTION:
+yanlinux.org.        86400    IN    A    10.0.0.18
+yanlinux.org.        86400    IN    A    10.0.0.28
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> AUTHORITY SECTION:
+yanlinux.org.        86400    IN    NS    master.yanlinux.org.
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> ADDITIONAL SECTION:
+master.yanlinux.org.    86400    IN    A    10.0.0.8
+
+<span class="token punctuation">;</span><span class="token punctuation">;</span> Query time: 0 msec
+<span class="token punctuation">;</span><span class="token punctuation">;</span> SERVER: 127.0.0.1<span class="token comment" spellcheck="true">#53(127.0.0.1)</span>
+<span class="token punctuation">;</span><span class="token punctuation">;</span> WHEN: Mon Oct 24 14:11:59 CST 2022
+<span class="token punctuation">;</span><span class="token punctuation">;</span> MSG SIZE  rcvd: 138
+
+<span class="token comment" spellcheck="true">#2 wordpress网站发布博客测试，上传的数据都备份到了NFS服务器</span>
+<span class="token punctuation">[</span>14:09:10 root@NFS-server ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /data/www/2022/10/
+2.jpg  view.png
+<span class="token punctuation">[</span>14:09:30 root@NFS-backup ~<span class="token punctuation">]</span>$ <span class="token function">ls</span> /data/backup/2022/10/
+2.jpg  view.png<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="5-redis数据类型有哪些？"><a href="#5-redis数据类型有哪些？" class="headerlink" title="5 redis数据类型有哪些？"></a>5 redis数据类型有哪些？</h2><p>Redis支持五种数据类型：<code>string</code>（字符串），<code>list</code>（列表），<code>set</code>（集合）及<code>zset</code>(<code>sorted set</code>：有序集合)，<code>hash</code>（哈希）。</p>
+<ul>
+<li><p>字符串</p>
+<p><code>string</code> 是 redis 最基本的类型。Redis 中所有 key 都是<strong>字符串类型</strong>的。此数据类型最为常用</p>
+</li>
+<li><p>列表</p>
+<p>Redis 列表是简单的<strong>字符串列表</strong>，按照插入顺序排序。支持双向读写，你可以添加一个元素到列表的头部（左边）或者尾部（右边）。常用于存入日志等场景，此数据类型比较常用</p>
+</li>
+<li><p>集合</p>
+<p>Set 是一个无序的字符串合集，同一个集合中的每个元素是<strong>唯一无重复</strong>的，支持在两个不同的集合中对数据进行逻辑处理，常用于取交集,并集,统计等场景,例如: 实现共同的朋友</p>
+</li>
+<li><p>有序集合</p>
+<p>Redis有序集合和Redis集合类似，是不包含相同字符串的合集。它们的差别是，每个有序集合的成员都关联着一个<strong>双精度浮点型的评分</strong>，这个评分用于把有序集合中的成员按<strong>最低分到最高分</strong>排序。有序集合的成员不能重复,但评分可以重复,一个有序集合中最多的成员数为 2^32 - 1=4294967295个，经常用于排行榜的场景</p>
+</li>
+<li><p>哈希</p>
+<p><code>hash</code> 即字典, 用于保存<strong>字符串字段field和字符串值value</strong>之间的映射，即<code>key/value</code>做为数据部分,hash特别适合用于存储对象场景.<br>一个hash最多可以包含<code>2^32-1</code>个<code>key/value</code>键值对</p>
+</li>
+</ul>
+<h2 id="6-redis-RDB和AOF比较？"><a href="#6-redis-RDB和AOF比较？" class="headerlink" title="6 redis RDB和AOF比较？"></a>6 redis RDB和AOF比较？</h2><ul>
+<li>Redis 默认开启<code>RDB</code>持久化方式，在指定的时间间隔内，执行指定次数的写操作，则将内存中的数据写入到磁盘中，<strong>不能实时保存数据</strong>，可能会丢失自上一次执行RDB备份到当前的内存数据。而<code>AOF</code>则需要手动开启，默认是每秒将<strong>写操作日志追加</strong>到AOF文件中，就算发生故障，也最多丢失一秒钟数据。</li>
+<li><code>RDB</code> 持久化适合<strong>大规模的数据</strong>恢复但它的<strong>数据一致性和完整性较差</strong>。AOF 的<strong>数据完整性比RDB高</strong>，但记录内容多了，会影响数据恢复的效率。Redis 针对 AOF<strong>文件大的问题</strong>，提供<strong>重写</strong>的瘦身机制。</li>
+<li><code>RDB</code>可以理解为是一种<strong>全量数据更新</strong>机制，<code>AOF</code>可以理解为是一种<strong>增量的更新机制</strong>，<code>AOF重写</code>可以理解为是一种<strong>全量+增量的更新机制</strong>（第一次是全量，后面都是增量）</li>
+<li><code>RDB</code>适合服务器数据库数据量小，写命令频繁的场景。<code>AOF</code>适合数据量大，写命令少的场景。<code>AOF重写</code>适合在AOF运行了很久的写命令之后执行</li>
+<li>RDB在<strong>大数据集时恢复</strong>的速度比AOF方式要<strong>快</strong></li>
+<li><code>AOF</code>文件有序地保存对数据库执行的所有写入操作，可通过该文件对<strong>数据重建</strong></li>
+</ul>
+<h2 id="7-redis配置文件详解。"><a href="#7-redis配置文件详解。" class="headerlink" title="7 redis配置文件详解。"></a>7 redis配置文件详解。</h2><pre class="line-numbers language-bash"><code class="language-bash"><span class="token punctuation">[</span>09:53:25 root@rocky8 ~<span class="token punctuation">]</span>$ <span class="token function">grep</span> -vE <span class="token string">'^#|^$'</span> /etc/redis.conf
+bind 127.0.0.1 <span class="token comment" spellcheck="true">#指定监听地址，支持用空格隔开的多个监听IP</span>
+
+protected-mode <span class="token function">yes</span> <span class="token comment" spellcheck="true">#redis3.2之后加入的新特性，在没有设置bind IP和密码的时候,redis只允许访问127.0.0.1:6379，可以远程连接，但当访问将提示警告信息并拒绝远程访问</span>
+
+port 6379  <span class="token comment" spellcheck="true">#监听端口，可根据需求自己设置</span>
+
+tcp-backlog 511 <span class="token comment" spellcheck="true">#三次握手的时候server端收到client ack确认号之后的队列值，即全连接队列长度</span>
+
+<span class="token function">timeout</span> 0  <span class="token comment" spellcheck="true">#客户端和Redis服务端的连接超时时间，默认是0，表示永不超时</span>
+
+tcp-keepalive 300  <span class="token comment" spellcheck="true">#tcp 会话保持时间300s</span>
+
+daemonize no  <span class="token comment" spellcheck="true">#默认no,即直接运行redis-server程序时,不作为守护进程运行，而是以前台方式运行，如果想在后台运行需改成yes,当redis作为守护进程运行的时候，它会写一个 pid 到/var/run/redis.pid 文件</span>
+
+supervised no  <span class="token comment" spellcheck="true">#和OS相关参数，可设置通过upstart和systemd管理Redis守护进程，centos7后都使用systemd</span>
+
+pidfile /var/run/redis_6379.pid  <span class="token comment" spellcheck="true">#pid文件路径,可以修改为/apps/redis/run/redis_6379.pid</span>
+
+loglevel notice  <span class="token comment" spellcheck="true">#日志级别</span>
+
+logfile /var/log/redis/redis.log  <span class="token comment" spellcheck="true">#日志路径,示例:logfile "/apps/redis/log/redis_6379.log"</span>
+
+databases 16  <span class="token comment" spellcheck="true">#设置数据库数量，默认：0-15，共16个库</span>
+
+always-show-logo <span class="token function">yes</span>  <span class="token comment" spellcheck="true">#在启动redis时是否显示或在日志中记录记录redis的logo</span>
+
+save 900 1    <span class="token comment" spellcheck="true">#在900秒内有1个key内容发生更改,就执行快照机制</span>
+
+save 300 10   <span class="token comment" spellcheck="true">#在300秒内有10个key内容发生更改,就执行快照机制</span>
+
+save 60 10000 <span class="token comment" spellcheck="true">#60秒内如果有10000个key以上的变化，就自动快照备份</span>
+
+stop-writes-on-bgsave-error <span class="token function">yes</span> <span class="token comment" spellcheck="true">#默认为yes时,可能会因空间满等原因快照无法保存出错时，会禁止redis写入操作，生产建议为no #此项只针对配置文件中的自动save有效</span>
+
+rdbcompression <span class="token function">yes</span> <span class="token comment" spellcheck="true">#持久化到RDB文件时，是否压缩，"yes"为压缩，"no"则反之</span>
+
+rdbchecksum <span class="token function">yes</span> <span class="token comment" spellcheck="true">#是否对备份文件开启RC64校验，默认是开启</span>
+
+dbfilename dump.rdb <span class="token comment" spellcheck="true">#快照文件名</span>
+
+<span class="token function">dir</span> ./ <span class="token comment" spellcheck="true">#快照文件保存路径，示例：dir "/apps/redis/data"</span>
+
+<span class="token comment" spellcheck="true">#主从复制相关</span>
+<span class="token comment" spellcheck="true"># replicaof &lt;masterip> &lt;masterport> #指定复制的master主机地址和端口，5.0版之前的指令为slaveof</span>
+<span class="token comment" spellcheck="true"># masterauth &lt;master-password> #指定复制的master主机的密码</span>
+
+replica-serve-stale-data <span class="token function">yes</span> <span class="token comment" spellcheck="true">#当从库同主库失去连接或者复制正在进行，从机库有两种运行方式：</span>
+<span class="token comment" spellcheck="true">#1、设置为yes(默认设置)，从库会继续响应客户端的读请求，此为建议值</span>
+<span class="token comment" spellcheck="true">#2、设置为no，除去特定命令外的任何请求都会返回一个错误"SYNC with master in progress"。</span>
+
+replica-read-only <span class="token function">yes</span> <span class="token comment" spellcheck="true">#是否设置从库只读，建议值为yes,否则主库同步从库时可能会覆盖数据，造成数据丢失</span>
+
+repl-diskless-sync no <span class="token comment" spellcheck="true">#是否使用socket方式复制数据(无盘同步)，新slave第一次连接master时需要做数据的全量同步，redis server就要从内存dump出新的RDB文件，然后从master传到slave，有两种方式把RDB文件传输给客户端：</span>
+<span class="token comment" spellcheck="true">#1、基于硬盘（disk-backed）：为no时，master创建一个新进程dump生成RDB磁盘文件，RDB完成之后由父进程（即主进程）将RDB文件发送给slaves，此为默认值</span>
+<span class="token comment" spellcheck="true">#2、基于socket（diskless）：master创建一个新进程直接dump RDB至slave的网络socket，不经过主进程和硬盘</span>
+<span class="token comment" spellcheck="true">#推荐使用基于硬盘（为no），是因为RDB文件创建后，可以同时传输给更多的slave，但是基于socket(为yes)， 新slave连接到master之后得逐个同步数据。只有当磁盘I/O较慢且网络较快时，可用diskless(yes),否则一般建议使用磁盘(no)</span>
+
+repl-diskless-sync-delay 5 <span class="token comment" spellcheck="true">#diskless时复制的服务器等待的延迟时间，设置0为关闭，在延迟时间内到达的客户端，会一起通过diskless方式同步数据，但是一旦复制开始，master节点不会再接收新slave的复制请求，直到下一次同步开始才再接收新请求。即无法为延迟时间后到达的新副本提供服务，新副本将排队等待下一次RDB传输，因此服务器会等待一段时间才能让更多副本到达。推荐值：30-60</span>
+
+repl-ping-replica-period 10 <span class="token comment" spellcheck="true">#slave根据master指定的时间进行周期性的PING master,用于监测master状态,默认10s</span>
+
+repl-timeout 60 <span class="token comment" spellcheck="true">#复制连接的超时时间，需要大于repl-ping-slave-period，否则会经常报超时</span>
+
+repl-disable-tcp-nodelay no <span class="token comment" spellcheck="true">#是否在slave套接字发送SYNC之后禁用 TCP_NODELAY，如果选择"yes"，Redis将合并多个报文为一个大的报文，从而使用更少数量的包向slaves发送数据，但是将使数据传输到slave上有延迟，Linux内核的默认配置会达到40毫秒，如果 "no" ，数据传输到slave的延迟将会减少，但要使用更多的带宽</span>
+
+repl-backlog-size 512mb <span class="token comment" spellcheck="true">#复制缓冲区内存大小，当slave断开连接一段时间后，该缓冲区会累积复制副本数据，因此当slave 重新连接时，通常不需要完全重新同步，只需传递在副本中的断开连接后没有同步的部分数据即可。只有在至少有一个slave连接之后才分配此内存空间,建议建立主从时此值要调大一些或在低峰期配置,否则会导致同步到slave失败</span>
+
+repl-backlog-ttl 3600 <span class="token comment" spellcheck="true">#多长时间内master没有slave连接，就清空backlog缓冲区</span>
+
+replica-priority 100 <span class="token comment" spellcheck="true">#当master不可用，哨兵Sentinel会根据slave的优先级选举一个master，此值最低的slave会优先当选master，而配置成0，永远不会被选举，一般多个slave都设为一样的值，让其自动选择</span>
+
+<span class="token comment" spellcheck="true">#min-replicas-to-write 3 #至少有3个可连接的slave，mater才接受写操作</span>
+<span class="token comment" spellcheck="true">#min-replicas-max-lag 10 #和上面至少3个slave的ping延迟不能超过10秒，否则master也将停止写操作</span>
+
+requirepass foobared <span class="token comment" spellcheck="true">#设置redis连接密码，之后需要AUTH pass,如果有特殊符号，用" "引起来,生产建议设置</span>
+
+rename-command <span class="token comment" spellcheck="true">#重命名一些高危命令，示例：rename-command FLUSHALL "" 禁用命令</span>
+               <span class="token comment" spellcheck="true">#示例: rename-command del magedu</span>
+
+maxclients 10000 <span class="token comment" spellcheck="true">#Redis最大连接客户端</span>
+
+maxmemory <span class="token operator">&lt;</span>bytes<span class="token operator">></span> <span class="token comment" spellcheck="true">#redis使用的最大内存，单位为bytes字节，0为不限制，建议设为物理内存一半，8G内存的计算方式8(G)*1024(MB)1024(KB)*1024(Kbyte)，需要注意的是缓冲区是不计算在maxmemory内,生产中如果不设置此项,可能会导致OOM</span>
+
+<span class="token comment" spellcheck="true">#maxmemory-policy noeviction 此为默认值</span>
+<span class="token comment" spellcheck="true"># MAXMEMORY POLICY：当达到最大内存时，Redis 将如何选择要删除的内容。您可以从以下行为中选择一种：</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># volatile-lru -> Evict 使用近似 LRU，只有设置了过期时间的键。在具有过期集的键中使用近似 LRU 驱逐。</span>
+<span class="token comment" spellcheck="true"># allkeys-lru -> 使用近似 LRU 驱逐任何键。</span>
+<span class="token comment" spellcheck="true"># volatile-lfu -> 使用近似 LFU 驱逐，只有设置了过期时间的键。</span>
+<span class="token comment" spellcheck="true"># allkeys-lfu -> 使用近似 LFU 驱逐任何键。</span>
+<span class="token comment" spellcheck="true"># volatile-random -> 删除设置了过期时间的随机密钥。</span>
+<span class="token comment" spellcheck="true"># allkeys-random -> 删除一个随机密钥，任何密钥。</span>
+<span class="token comment" spellcheck="true"># volatile-ttl -> 删除过期时间最近的key（次TTL）</span>
+<span class="token comment" spellcheck="true"># noeviction -> 不要驱逐任何东西，只是在写操作时返回一个错误。</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># LRU 表示最近最少使用</span>
+<span class="token comment" spellcheck="true"># LFU 表示最不常用</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># LRU、LFU 和 volatile-ttl 都是使用近似随机算法实现的。</span>
+<span class="token comment" spellcheck="true">#</span>
+<span class="token comment" spellcheck="true"># 注意：使用上述任何一种策略，当没有合适的键用于驱逐时，Redis 将在需要更多内存的写操作时返回错误。这些通常是创建新密钥、添加数据或修改现有密钥的命令。一些示例是：SET、INCR、HSET、LPUSH、SUNIONSTORE、SORT（由于 STORE 参数）和 EXEC（如果事务包括任何需要内存的命令）。</span>
+
+appendonly no <span class="token comment" spellcheck="true">#是否开启AOF日志记录，默认redis使用的是rdb方式持久化，这种方式在许多应用中已经足够用了，但是redis如果中途宕机，会导致可能有几分钟的数据丢失(取决于dump数据的间隔时间)，根save来策略进行持久化，Append Only File是另一种持久化方式，可以提供更好的持久化特性，Redis会把每次写入的数据在接收后都写入 appendonly.aof 文件，每次启动时Redis都会先把这个文件的数据读入内存里，先忽略RDB文件。默认不启用此功能</span>
+
+appendfilename <span class="token string">"appendonly.aof"</span> <span class="token comment" spellcheck="true">#文本文件AOF的文件名，存放在dir指令指定的目录中</span>
+
+appendfsync everysec <span class="token comment" spellcheck="true">#aof持久化策略的配置</span>
+<span class="token comment" spellcheck="true">#no表示由操作系统保证数据同步到磁盘,Linux的默认fsync策略是30秒，最多会丢失30s的数据</span>
+<span class="token comment" spellcheck="true">#always表示每次写入都执行fsync，以保证数据同步到磁盘,安全性高,性能较差</span>
+<span class="token comment" spellcheck="true">#everysec表示每秒执行一次fsync，可能会导致丢失这1s数据,此为默认值,也生产建议值</span>
+
+<span class="token comment" spellcheck="true">#同时在执行bgrewriteaof操作和主进程写aof文件的操作，两者都会操作磁盘，而bgrewriteaof往往会涉及大量磁盘操作，这样就会造成主进程在写aof文件的时候出现阻塞的情形,以下参数实现控制</span>
+no-appendfsync-on-rewrite no <span class="token comment" spellcheck="true">#在aof rewrite期间,是否对aof新记录的append暂缓使用文件同步策略,主要考虑磁盘IO开支和请求阻塞时间。</span>
+<span class="token comment" spellcheck="true">#默认为no,表示"不暂缓",新的aof记录仍然会被立即同步到磁盘，是最安全的方式，不会丢失数据，但是要忍受阻塞的问题</span>
+<span class="token comment" spellcheck="true">#为yes,相当于将appendfsync设置为no，这说明并没有执行磁盘操作，只是写入了缓冲区，因此这样并不会造成阻塞（因为没有竞争磁盘），但是如果这个时候redis挂掉，就会丢失数据。丢失多少数据呢？Linux的默认fsync策略是30秒，最多会丢失30s的数据,但由于yes性能较好而且会避免出现阻塞因此比较推荐</span>
+
+<span class="token comment" spellcheck="true">#rewrite 即对aof文件进行整理,将空闲空间回收,从而可以减少恢复数据时间</span>
+auto-aof-rewrite-percentage 100 <span class="token comment" spellcheck="true">#当Aof log增长超过指定百分比例时，重写AOF文件，设置为0表示不自动重写Aof日志，重写是为了使aof体积保持最小，但是还可以确保保存最完整的数据</span>
+
+auto-aof-rewrite-min-size 64mb <span class="token comment" spellcheck="true">#触发aof rewrite的最小文件大小</span>
+
+aof-load-truncated <span class="token function">yes</span> <span class="token comment" spellcheck="true">#是否加载由于某些原因导致的末尾异常的AOF文件(主进程被kill/断电等)，建议yes</span>
+
+aof-use-rdb-preamble no <span class="token comment" spellcheck="true">#redis4.0新增RDB-AOF混合持久化格式，在开启了这个功能之后，AOF重写产生的文件将同时包含RDB格式的内容和AOF格式的内容，其中RDB格式的内容用于记录已有的数据，而AOF格式的内容则用于记录最近发生了变化的数据，这样Redis就可以同时兼有RDB持久化和AOF持久化的优点（既能够快速地生成重写文件，也能够在出现问题时，快速地载入数据）,默认为no,即不启用此功能</span>
+
+lua-time-limit 5000 <span class="token comment" spellcheck="true">#lua脚本的最大执行时间，单位为毫秒</span>
+
+cluster-enabled <span class="token function">yes</span> <span class="token comment" spellcheck="true">#是否开启集群模式，默认不开启,即单机模式</span>
+
+cluster-config-file nodes-6379.conf <span class="token comment" spellcheck="true">#由node节点自动生成的集群配置文件名称</span>
+
+cluster-node-timeout 15000 <span class="token comment" spellcheck="true">#集群中node节点连接超时时间，单位ms,超过此时间，会踢出集群</span>
+
+cluster-replica-validity-factor 10 <span class="token comment" spellcheck="true">#单位为次,在执行故障转移的时候可能有些节点和master断开一段时间导致数据比较旧，这些节点就不适用于选举为master，超过这个时间的就不会被进行故障转移,不能当选master，计算公式：(node-timeout * replica-validity-factor) + repl-ping-replica-period</span>
+
+cluster-migration-barrier 1 <span class="token comment" spellcheck="true">#集群迁移屏障，一个主节点至少拥有1个正常工作的从节点，即如果主节点的slave节点故障后会将多余的从节点分配到当前主节点成为其新的从节点。</span>
+
+cluster-require-full-coverage <span class="token function">yes</span> <span class="token comment" spellcheck="true">#集群请求槽位全部覆盖，如果一个主库宕机且没有备库就会出现集群槽位不全，那么yes时redis集群槽位验证不全,就不再对外提供服务(对key赋值时,会出现CLUSTERDOWN The cluster is down的提示,cluster_state:fail,但ping 仍PONG)，而no则可以继续使用,但是会出现查询数据查不到的情况(因为有数据丢失)。生产建议为no</span>
+
+cluster-replica-no-failover no <span class="token comment" spellcheck="true">#如果为yes,此选项阻止在主服务器发生故障时尝试对其主服务器进行故障转移。 但是，主服务器仍然可以执行手动强制故障转移，一般为no</span>
+<span class="token comment" spellcheck="true">#Slow log 是 Redis 用来记录超过指定执行时间的日志系统，执行时间不包括与客户端交谈，发送回复等I/O操作，而是实际执行命令所需的时间（在该阶段线程被阻塞并且不能同时为其它请求提供服务）,由于slow log 保存在内存里面，读写速度非常快，因此可放心地使用，不必担心因为开启 slow log 而影响Redis 的速度</span>
+
+slowlog-log-slower-than 10000 <span class="token comment" spellcheck="true">#以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作。默认值为10ms,一般一条命令执行都在微秒级,生产建议设为1ms-10ms之间</span>
+
+slowlog-max-len 128 <span class="token comment" spellcheck="true">#最多记录多少条慢日志的保存队列长度，达到此长度后，记录新命令会将最旧的命令从命令队列中删除，以此滚动删除,即,先进先出,队列固定长度,默认128,值偏小,生产建议设为1000以上</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+            </div>
+            <hr/>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力!</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207291304818.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/202207292224344.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            
+            
+            
+            <div class="reprint1">
+                <p>
+                    <span class="reprint1-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://www.yanlinux.cn" class="b-link-green">焱黎的博客</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/clch64x5w000q0sakv2jym27t/" class="b-link-green">第七周作业</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC81Njg5OC8zMzM2Mg==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/clch64x6m003a0sak6syoe1h3/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/7.jpg" class="responsive-img" alt="第八周作业">
+                        
+                        <span class="card-title">第八周作业</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            加油！
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2022-11-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/作业/" class="post-category" target="_blank">
+                                    作业
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/redis哨兵/" target="_blank">
+                        <span class="chip bg-color">redis哨兵</span>
+                    </a>
+                    
+                    <a href="/tags/LVS模型/" target="_blank">
+                        <span class="chip bg-color">LVS模型</span>
+                    </a>
+                    
+                    <a href="/tags/LVS负载策略/" target="_blank">
+                        <span class="chip bg-color">LVS负载策略</span>
+                    </a>
+                    
+                    <a href="/tags/http通信过程/" target="_blank">
+                        <span class="chip bg-color">http通信过程</span>
+                    </a>
+                    
+                    <a href="/tags/网络IO/" target="_blank">
+                        <span class="chip bg-color">网络IO</span>
+                    </a>
+                    
+                    <a href="/tags/nginx架构/" target="_blank">
+                        <span class="chip bg-color">nginx架构</span>
+                    </a>
+                    
+                    <a href="/tags/编译安装nginx/" target="_blank">
+                        <span class="chip bg-color">编译安装nginx</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/clch64x5o000a0sakv7gefmtm/">
+                    <div class="card-image">
+                        
+                        <img src="https://yanlinuxblog.oss-cn-hangzhou.aliyuncs.com/img/6.jpg" class="responsive-img" alt="今日小技巧3">
+                        
+                        <span class="card-title">今日小技巧3</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            集群网络架构是 K8s 中比较复杂的，最让用户头痛的方面之一。K8s 拥有众多的 CNI 插件网络插件 性能 隔离策略 开发者kube-router 最高 支持calico 2支持canal 3 支持flannel 3 无 CoreOSro
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2022-09-28
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/知识点/" class="post-category" target="_blank">
+                                    知识点
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/k8s/" target="_blank">
+                        <span class="chip bg-color">k8s</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('30')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'pre') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 焱黎的博客<br />'
+            + '作者: 焱黎<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+<!-- 代码语言 -->
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+<!-- 代码块复制 -->
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/clipboard.min.js"></script>
+<!-- 代码块收缩 -->
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script> 
+<!-- 代码块折行 -->
+<style type="text/css">code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }</style>
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3, h4, h5'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3, h4, h5').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+        <footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&copy; 2022 焱黎. 
+
+            <br>
+            <span id="sitetime"></span><span class="my-face">ღゝ◡╹)ノ♡</span>
+            <br>
+
+            
+
+            
+                    
+                        <span id="busuanzi_container_site_pv" style='display:none'></span>
+                        总访问量: <span id="busuanzi_value_site_pv" class="white-color"></span>
+                    
+        
+                    
+                        <span id="busuanzi_container_site_uv" style='display:none'></span>
+                        人次&nbsp; | &nbsp;访客人数: <span id="busuanzi_value_site_uv" class="white-color"></span> 人
+                    
+    
+            
+
+            
+                &nbsp; | &nbsp;字数统计:&nbsp;
+                <span class="white-color">262.3k</span> 字
+            
+
+            
+            <br>
+
+        </div>
+
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/yanlinux" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+ 
+    <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=lgq6579@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+    <a href="http://wpa.qq.com/msgrd?v=3&uin=1499214187&site=qq&menu=yes" class="tooltipped" target="_blank" data-tooltip="访问我的QQ空间" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script language=javascript>
+    function siteTime() {
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth() + 1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+
+        var t1 = Date.UTC(2022, 07, 25, 00, 00, 00); //北京时间2022-7-25 00:00:00
+        var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+        var diff = t2 - t1;
+        var diffYears = Math.floor(diff / years);
+        var diffDays = Math.floor((diff / days) - diffYears * 365);
+        var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+        var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes);
+        var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes *
+            minutes) / seconds);
+        document.getElementById("sitetime").innerHTML = "本站已勉强运行 " + diffYears + " 年 " + diffDays + " 天 " + diffHours +
+            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒" ;
+    } /*因为建站时间还没有一年，就将之注释掉了。需要的可以取消*/
+    siteTime();
+</script>
+
+
+
+
+
+
+        <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+        <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+        <script src="https://cdn.bootcss.com/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://cdn.bootcss.com/masonry/4.2.2/masonry.pkgd.min.js"></script>
+        <script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+        <script src="https://cdn.bootcss.com/scrollprogress/3.0.2/scrollProgress.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.7.2/js/lightgallery-all.min.js"></script>
+        <script src="/js/matery.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+        
+            <script src="/libs/others/clicklove.js"></script>
+        
+
+        
+            <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        
+
+        <!-- 洪卫 shw2018 add 2019.08.28 -->
+        <script type="text/javascript">
+            var OriginTitile = document.title,
+                st;
+            document.addEventListener("visibilitychange", function () {
+                document.hidden ? (document.title = "看不见我🙈~看不见我🙈~", clearTimeout(st)) : (document.title =
+                    "(๑•̀ㅂ•́) ✧被发现了～", st = setTimeout(function () {
+                        document.title = OriginTitile
+                    }, 3e3))
+            })
+        </script>
+
+        <!-- 鼠标点击烟花爆炸效果  洪卫 shw2018 add 2019.09.09 -->
+        
+
+        <!-- 背景雪花飘落特效洪卫 shw2018 add 2019.09.10 -->
+        
+            <script type="text/javascript">
+            //只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 鼠标点击文字特效 洪卫 shw2018 add 2019.09.10-->
+        
+            <script src="/js/wenzi.js" type="text/javascript"></script>
+        
+
+        <!-- 背景雪花飘落特效 洪卫 shw2018 add 2019.09.10 -->
+        
+
+        <!-- 在线聊天工具  洪卫 shw2018 add 2019.09.11 -->
+        
+
+        <!-- 背景 canvas-nest  洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" color="0,0,255" pointColor="0,0,255" opacity= "0.8" zIndex="--1" count="150"src="/libs/background/canvas-nest.js"><\/script>');
+            }
+            </script>
+        
+
+        <!-- 背景静止彩带  洪卫 shw 2018  add 2019.09.15-->
+        
+
+        <!-- 背景动态彩带 洪卫 shw 2018  add 2019.09.15-->
+        
+            <script type="text/javascript">
+            var windowWidth = $(window).width();
+            if (windowWidth > 992) {
+                document.write('<script type="text/javascript" src="/libs/background/ribbon-dynamic.js"><\/script>');
+            }
+            </script>
+        
+
+    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":150,"height":200},"mobile":{"show":false},"react":{"opacity":0.7}});</script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body>
+</html>
