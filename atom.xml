@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.yanlinux.cn/"/>
-  <updated>2022-12-08T10:41:17.000Z</updated>
+  <updated>2023-01-04T01:26:37.000Z</updated>
   <id>http://www.yanlinux.cn/</id>
   
   <author>
@@ -17,9 +17,37 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>第十一周作业</title>
+    <link href="http://www.yanlinux.cn/clcgznkob000vnoakrfnd52go/"/>
+    <id>http://www.yanlinux.cn/clcgznkob000vnoakrfnd52go/</id>
+    <published>2023-01-04T01:26:37.000Z</published>
+    <updated>2023-01-04T01:26:37.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;第十一周作业&quot;&gt;&lt;a href=&quot;#第十一周作业&quot; class=&quot;headerlink&quot; title=&quot;第十一周作业&quot;&gt;&lt;/a&gt;第十一周作业&lt;/h1&gt;&lt;h2 id=&quot;1-ansible-常用指令总结，并附有相关示例。&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="ansible" scheme="http://www.yanlinux.cn/tags/ansible/"/>
+    
+      <category term="ansible角色" scheme="http://www.yanlinux.cn/tags/ansible%E8%A7%92%E8%89%B2/"/>
+    
+  </entry>
+  
+  <entry>
     <title>第十周作业</title>
-    <link href="http://www.yanlinux.cn/clbf5g4970000ycak8eqhhe7j/"/>
-    <id>http://www.yanlinux.cn/clbf5g4970000ycak8eqhhe7j/</id>
+    <link href="http://www.yanlinux.cn/clcgznkod0010noakmic02tzu/"/>
+    <id>http://www.yanlinux.cn/clcgznkod0010noakmic02tzu/</id>
     <published>2022-12-08T10:41:17.000Z</published>
     <updated>2022-12-08T10:41:17.000Z</updated>
     
@@ -46,8 +74,8 @@
   
   <entry>
     <title>第九周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtnh0032e0ak26whg0g2/"/>
-    <id>http://www.yanlinux.cn/clbeydtnh0032e0ak26whg0g2/</id>
+    <link href="http://www.yanlinux.cn/clcgznkox0037noakbgc5x4hk/"/>
+    <id>http://www.yanlinux.cn/clcgznkox0037noakbgc5x4hk/</id>
     <published>2022-11-18T10:09:53.000Z</published>
     <updated>2022-11-18T10:09:53.000Z</updated>
     
@@ -86,8 +114,8 @@
   
   <entry>
     <title>第八周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtnx003ke0akb0zqz6ow/"/>
-    <id>http://www.yanlinux.cn/clbeydtnx003ke0akb0zqz6ow/</id>
+    <link href="http://www.yanlinux.cn/clcgznkow0036noakx6xox9k3/"/>
+    <id>http://www.yanlinux.cn/clcgznkow0036noakx6xox9k3/</id>
     <published>2022-11-10T04:51:32.000Z</published>
     <updated>2022-11-10T04:51:32.000Z</updated>
     
@@ -124,8 +152,8 @@
   
   <entry>
     <title>第七周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtmj000oe0ake4a3pxix/"/>
-    <id>http://www.yanlinux.cn/clbeydtmj000oe0ake4a3pxix/</id>
+    <link href="http://www.yanlinux.cn/clcgznknz0008noakf0v7jzbn/"/>
+    <id>http://www.yanlinux.cn/clcgznknz0008noakf0v7jzbn/</id>
     <published>2022-10-26T14:09:02.000Z</published>
     <updated>2022-10-26T14:09:02.000Z</updated>
     
@@ -144,18 +172,18 @@
       <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
     
     
-      <category term="redis" scheme="http://www.yanlinux.cn/tags/redis/"/>
-    
       <category term="Postgresql" scheme="http://www.yanlinux.cn/tags/Postgresql/"/>
     
       <category term="高可用LAMP搭建" scheme="http://www.yanlinux.cn/tags/%E9%AB%98%E5%8F%AF%E7%94%A8LAMP%E6%90%AD%E5%BB%BA/"/>
+    
+      <category term="redis" scheme="http://www.yanlinux.cn/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>今日小技巧3</title>
-    <link href="http://www.yanlinux.cn/clbeydtm10004e0akhssn2sqn/"/>
-    <id>http://www.yanlinux.cn/clbeydtm10004e0akhssn2sqn/</id>
+    <link href="http://www.yanlinux.cn/clcgznknw0004noak3a0cgfl7/"/>
+    <id>http://www.yanlinux.cn/clcgznknw0004noak3a0cgfl7/</id>
     <published>2022-09-28T13:28:04.000Z</published>
     <updated>2022-09-28T13:28:04.000Z</updated>
     
@@ -180,8 +208,8 @@
   
   <entry>
     <title>第六周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtmn000ve0aktn68q3pd/"/>
-    <id>http://www.yanlinux.cn/clbeydtmn000ve0aktn68q3pd/</id>
+    <link href="http://www.yanlinux.cn/clcgznkoc000wnoakiz48ww8k/"/>
+    <id>http://www.yanlinux.cn/clcgznkoc000wnoakiz48ww8k/</id>
     <published>2022-09-26T04:01:12.000Z</published>
     <updated>2022-09-26T04:01:12.000Z</updated>
     
@@ -218,8 +246,8 @@
   
   <entry>
     <title>第五周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtml000qe0akwwiyklti/"/>
-    <id>http://www.yanlinux.cn/clbeydtml000qe0akwwiyklti/</id>
+    <link href="http://www.yanlinux.cn/clcgznkoa000rnoak4t0u9vcl/"/>
+    <id>http://www.yanlinux.cn/clcgznkoa000rnoak4t0u9vcl/</id>
     <published>2022-09-17T01:42:44.000Z</published>
     <updated>2022-09-17T01:42:44.000Z</updated>
     
@@ -258,8 +286,8 @@
   
   <entry>
     <title>今日小技巧</title>
-    <link href="http://www.yanlinux.cn/clbeydtlx0002e0akqhf2nsc3/"/>
-    <id>http://www.yanlinux.cn/clbeydtlx0002e0akqhf2nsc3/</id>
+    <link href="http://www.yanlinux.cn/clcgznknt0002noak3yvn4goh/"/>
+    <id>http://www.yanlinux.cn/clcgznknt0002noak3yvn4goh/</id>
     <published>2022-08-26T02:07:25.000Z</published>
     <updated>2022-08-26T02:07:25.000Z</updated>
     
@@ -288,8 +316,8 @@
   
   <entry>
     <title>第四周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtqc0042e0akc4elr72a/"/>
-    <id>http://www.yanlinux.cn/clbeydtqc0042e0akc4elr72a/</id>
+    <link href="http://www.yanlinux.cn/clcgznkre0046noakhiuwehts/"/>
+    <id>http://www.yanlinux.cn/clcgznkre0046noakhiuwehts/</id>
     <published>2022-08-25T11:36:04.000Z</published>
     <updated>2022-08-27T10:36:04.000Z</updated>
     
@@ -324,8 +352,8 @@
   
   <entry>
     <title>每日小技巧1</title>
-    <link href="http://www.yanlinux.cn/clbeydtm60008e0aknnwk11nz/"/>
-    <id>http://www.yanlinux.cn/clbeydtm60008e0aknnwk11nz/</id>
+    <link href="http://www.yanlinux.cn/clcgznko3000cnoakx49ah3qj/"/>
+    <id>http://www.yanlinux.cn/clcgznko3000cnoakx49ah3qj/</id>
     <published>2022-08-19T05:21:49.000Z</published>
     <updated>2022-08-19T05:21:49.000Z</updated>
     
@@ -358,8 +386,8 @@
   
   <entry>
     <title>第三周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtmm000ue0ak5ik0c8kp/"/>
-    <id>http://www.yanlinux.cn/clbeydtmm000ue0ak5ik0c8kp/</id>
+    <link href="http://www.yanlinux.cn/clcgznko7000jnoakgp38aow7/"/>
+    <id>http://www.yanlinux.cn/clcgznko7000jnoakgp38aow7/</id>
     <published>2022-08-14T07:19:59.000Z</published>
     <updated>2022-08-15T04:19:00.000Z</updated>
     
@@ -378,9 +406,9 @@
       <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
     
     
-      <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
-    
       <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
+    
+      <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
     
       <category term="expect" scheme="http://www.yanlinux.cn/tags/expect/"/>
     
@@ -392,8 +420,8 @@
   
   <entry>
     <title>第二周作业</title>
-    <link href="http://www.yanlinux.cn/clbeydtmf000he0akt8e6sxvx/"/>
-    <id>http://www.yanlinux.cn/clbeydtmf000he0akt8e6sxvx/</id>
+    <link href="http://www.yanlinux.cn/clcgznko9000onoakfv4d3psk/"/>
+    <id>http://www.yanlinux.cn/clcgznko9000onoakfv4d3psk/</id>
     <published>2022-08-06T05:50:35.000Z</published>
     <updated>2022-08-06T05:50:35.000Z</updated>
     
@@ -423,8 +451,8 @@
   
   <entry>
     <title>第一周作业总结</title>
-    <link href="http://www.yanlinux.cn/clbeydtm8000ae0aky30ma6bv/"/>
-    <id>http://www.yanlinux.cn/clbeydtm8000ae0aky30ma6bv/</id>
+    <link href="http://www.yanlinux.cn/clcgznko6000hnoakprm1pn3x/"/>
+    <id>http://www.yanlinux.cn/clcgznko6000hnoakprm1pn3x/</id>
     <published>2022-07-31T05:08:48.000Z</published>
     <updated>2022-07-31T15:12:58.731Z</updated>
     
@@ -453,8 +481,8 @@
   
   <entry>
     <title>测试篇</title>
-    <link href="http://www.yanlinux.cn/clbeydtmc000ce0ak3ycnqfls/"/>
-    <id>http://www.yanlinux.cn/clbeydtmc000ce0ak3ycnqfls/</id>
+    <link href="http://www.yanlinux.cn/clcgznko1000anoak74jqarr0/"/>
+    <id>http://www.yanlinux.cn/clcgznko1000anoak74jqarr0/</id>
     <published>2022-07-29T10:52:16.000Z</published>
     <updated>2022-07-29T10:56:57.854Z</updated>
     
