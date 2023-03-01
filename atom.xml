@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.yanlinux.cn/"/>
-  <updated>2023-01-11T13:24:47.000Z</updated>
+  <updated>2023-03-01T13:02:46.000Z</updated>
   <id>http://www.yanlinux.cn/</id>
   
   <author>
@@ -17,9 +17,41 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>架构第四周</title>
+    <link href="http://www.yanlinux.cn/clepp1a5p003drgakytfr6u72/"/>
+    <id>http://www.yanlinux.cn/clepp1a5p003drgakytfr6u72/</id>
+    <published>2023-03-01T13:02:46.000Z</published>
+    <updated>2023-03-01T13:02:46.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;架构第四周&quot;&gt;&lt;a href=&quot;#架构第四周&quot; class=&quot;headerlink&quot; title=&quot;架构第四周&quot;&gt;&lt;/a&gt;架构第四周&lt;/h1&gt;&lt;h2 id=&quot;1-docker常用命令&quot;&gt;&lt;a href=&quot;#1-docker常用命令&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
+    
+    
+      <category term="docker" scheme="http://www.yanlinux.cn/tags/docker/"/>
+    
+      <category term="docker镜像制作" scheme="http://www.yanlinux.cn/tags/docker%E9%95%9C%E5%83%8F%E5%88%B6%E4%BD%9C/"/>
+    
+      <category term="harbor仓库" scheme="http://www.yanlinux.cn/tags/harbor%E4%BB%93%E5%BA%93/"/>
+    
+      <category term="docker-compose" scheme="http://www.yanlinux.cn/tags/docker-compose/"/>
+    
+  </entry>
+  
+  <entry>
     <title>架构课第一周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8igz000200akiwqp2lwy/"/>
-    <id>http://www.yanlinux.cn/clcrp8igz000200akiwqp2lwy/</id>
+    <link href="http://www.yanlinux.cn/clepp1a540010rgak1fccoq0e/"/>
+    <id>http://www.yanlinux.cn/clepp1a540010rgak1fccoq0e/</id>
     <published>2023-01-11T13:24:47.000Z</published>
     <updated>2023-01-11T13:24:47.000Z</updated>
     
@@ -44,8 +76,8 @@
   
   <entry>
     <title>第十二周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihk000x00akeh0mp3wf/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihk000x00akeh0mp3wf/</id>
+    <link href="http://www.yanlinux.cn/clepp1a53000zrgaka309ozp5/"/>
+    <id>http://www.yanlinux.cn/clepp1a53000zrgaka309ozp5/</id>
     <published>2023-01-04T04:32:17.000Z</published>
     <updated>2023-01-04T04:32:17.000Z</updated>
     
@@ -72,8 +104,8 @@
   
   <entry>
     <title>第十一周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8iik003a00akdhk3adig/"/>
-    <id>http://www.yanlinux.cn/clcrp8iik003a00akdhk3adig/</id>
+    <link href="http://www.yanlinux.cn/clepp1a5q003ergakj5zi5fp6/"/>
+    <id>http://www.yanlinux.cn/clepp1a5q003ergakj5zi5fp6/</id>
     <published>2023-01-04T01:26:37.000Z</published>
     <updated>2023-01-04T01:26:37.000Z</updated>
     
@@ -100,8 +132,8 @@
   
   <entry>
     <title>第十周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihm001200akkaoq61sm/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihm001200akkaoq61sm/</id>
+    <link href="http://www.yanlinux.cn/clepp1a51000vrgakvcec6l15/"/>
+    <id>http://www.yanlinux.cn/clepp1a51000vrgakvcec6l15/</id>
     <published>2022-12-08T10:41:17.000Z</published>
     <updated>2022-12-08T10:41:17.000Z</updated>
     
@@ -128,8 +160,8 @@
   
   <entry>
     <title>第九周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8iij003800akpgnjsgyu/"/>
-    <id>http://www.yanlinux.cn/clcrp8iij003800akpgnjsgyu/</id>
+    <link href="http://www.yanlinux.cn/clepp1a5q003grgak5w52gxun/"/>
+    <id>http://www.yanlinux.cn/clepp1a5q003grgak5w52gxun/</id>
     <published>2022-11-18T10:09:53.000Z</published>
     <updated>2022-11-18T10:09:53.000Z</updated>
     
@@ -168,8 +200,8 @@
   
   <entry>
     <title>第八周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8iil003d00akepl648xx/"/>
-    <id>http://www.yanlinux.cn/clcrp8iil003d00akepl648xx/</id>
+    <link href="http://www.yanlinux.cn/clepp1a5r003hrgakad7p0d4m/"/>
+    <id>http://www.yanlinux.cn/clepp1a5r003hrgakad7p0d4m/</id>
     <published>2022-11-10T04:51:32.000Z</published>
     <updated>2022-11-10T04:51:32.000Z</updated>
     
@@ -206,8 +238,8 @@
   
   <entry>
     <title>第七周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihj000u00akbssfdvsj/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihj000u00akbssfdvsj/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4w000hrgakhs6ddplm/"/>
+    <id>http://www.yanlinux.cn/clepp1a4w000hrgakhs6ddplm/</id>
     <published>2022-10-26T14:09:02.000Z</published>
     <updated>2022-10-26T14:09:02.000Z</updated>
     
@@ -236,8 +268,8 @@
   
   <entry>
     <title>今日小技巧3</title>
-    <link href="http://www.yanlinux.cn/clcrp8ih8000800akeqizgztq/"/>
-    <id>http://www.yanlinux.cn/clcrp8ih8000800akeqizgztq/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4i0002rgak3xh9rago/"/>
+    <id>http://www.yanlinux.cn/clepp1a4i0002rgak3xh9rago/</id>
     <published>2022-09-28T13:28:04.000Z</published>
     <updated>2022-09-28T13:28:04.000Z</updated>
     
@@ -262,8 +294,8 @@
   
   <entry>
     <title>第六周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihl001000ak484vl95t/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihl001000ak484vl95t/</id>
+    <link href="http://www.yanlinux.cn/clepp1a51000urgakwpmcrao5/"/>
+    <id>http://www.yanlinux.cn/clepp1a51000urgakwpmcrao5/</id>
     <published>2022-09-26T04:01:12.000Z</published>
     <updated>2022-09-26T04:01:12.000Z</updated>
     
@@ -300,8 +332,8 @@
   
   <entry>
     <title>第五周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihh000o00akz5k2e48a/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihh000o00akz5k2e48a/</id>
+    <link href="http://www.yanlinux.cn/clepp1a50000qrgakmah72c9k/"/>
+    <id>http://www.yanlinux.cn/clepp1a50000qrgakmah72c9k/</id>
     <published>2022-09-17T01:42:44.000Z</published>
     <updated>2022-09-17T01:42:44.000Z</updated>
     
@@ -340,8 +372,8 @@
   
   <entry>
     <title>今日小技巧</title>
-    <link href="http://www.yanlinux.cn/clcrp8ih3000400akh2hihi59/"/>
-    <id>http://www.yanlinux.cn/clcrp8ih3000400akh2hihi59/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4m0004rgakv2bxm1wg/"/>
+    <id>http://www.yanlinux.cn/clepp1a4m0004rgakv2bxm1wg/</id>
     <published>2022-08-26T02:07:25.000Z</published>
     <updated>2022-08-26T02:07:25.000Z</updated>
     
@@ -370,8 +402,8 @@
   
   <entry>
     <title>第四周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8iky004d00akasf52dtk/"/>
-    <id>http://www.yanlinux.cn/clcrp8iky004d00akasf52dtk/</id>
+    <link href="http://www.yanlinux.cn/clepp1aao004srgakm1pm39ih/"/>
+    <id>http://www.yanlinux.cn/clepp1aao004srgakm1pm39ih/</id>
     <published>2022-08-25T11:36:04.000Z</published>
     <updated>2022-08-27T10:36:04.000Z</updated>
     
@@ -406,8 +438,8 @@
   
   <entry>
     <title>每日小技巧1</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihf000j00ak8ypqpmbj/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihf000j00ak8ypqpmbj/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4q0008rgakcat0ku5w/"/>
+    <id>http://www.yanlinux.cn/clepp1a4q0008rgakcat0ku5w/</id>
     <published>2022-08-19T05:21:49.000Z</published>
     <updated>2022-08-19T05:21:49.000Z</updated>
     
@@ -440,8 +472,8 @@
   
   <entry>
     <title>第三周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihe000h00akw0y9vgtb/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihe000h00akw0y9vgtb/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4z000orgak03xpkn3t/"/>
+    <id>http://www.yanlinux.cn/clepp1a4z000orgak03xpkn3t/</id>
     <published>2022-08-14T07:19:59.000Z</published>
     <updated>2022-08-15T04:19:00.000Z</updated>
     
@@ -460,9 +492,9 @@
       <category term="作业" scheme="http://www.yanlinux.cn/categories/%E4%BD%9C%E4%B8%9A/"/>
     
     
-      <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
-    
       <category term="shell" scheme="http://www.yanlinux.cn/tags/shell/"/>
+    
+      <category term="yum仓库" scheme="http://www.yanlinux.cn/tags/yum%E4%BB%93%E5%BA%93/"/>
     
       <category term="expect" scheme="http://www.yanlinux.cn/tags/expect/"/>
     
@@ -474,8 +506,8 @@
   
   <entry>
     <title>第二周作业</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihi000r00aknijb2309/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihi000r00aknijb2309/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4x000jrgakwuj3uviw/"/>
+    <id>http://www.yanlinux.cn/clepp1a4x000jrgakwuj3uviw/</id>
     <published>2022-08-06T05:50:35.000Z</published>
     <updated>2022-08-06T05:50:35.000Z</updated>
     
@@ -505,8 +537,8 @@
   
   <entry>
     <title>第一周作业总结</title>
-    <link href="http://www.yanlinux.cn/clcrp8ih9000a00ak11by8fnm/"/>
-    <id>http://www.yanlinux.cn/clcrp8ih9000a00ak11by8fnm/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4t000crgakojr4xdn5/"/>
+    <id>http://www.yanlinux.cn/clepp1a4t000crgakojr4xdn5/</id>
     <published>2022-07-31T05:08:48.000Z</published>
     <updated>2022-07-31T15:12:58.731Z</updated>
     
@@ -535,8 +567,8 @@
   
   <entry>
     <title>测试篇</title>
-    <link href="http://www.yanlinux.cn/clcrp8ihc000c00akzm0kg819/"/>
-    <id>http://www.yanlinux.cn/clcrp8ihc000c00akzm0kg819/</id>
+    <link href="http://www.yanlinux.cn/clepp1a4r000argakaaibjl6f/"/>
+    <id>http://www.yanlinux.cn/clepp1a4r000argakaaibjl6f/</id>
     <published>2022-07-29T10:52:16.000Z</published>
     <updated>2022-07-29T10:56:57.854Z</updated>
     
